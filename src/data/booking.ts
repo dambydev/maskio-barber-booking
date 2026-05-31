@@ -2,24 +2,23 @@ import { Service, Barber, TimeSlot } from '../types/booking';
 
 // Definizione corretta dei servizi come da ultima richiesta
 export const fabioSpecificServices: Service[] = [
+  { id: 'taglio', name: 'Taglio', description: 'Taglio di capelli personalizzato', duration: 30, price: 20 },
+  { id: 'barba', name: 'Barba', description: 'Modellatura e contorno barba', duration: 15, price: 12 },
+  { id: 'taglio-e-barba', name: 'Taglio e Barba', description: 'Taglio capelli e sistemazione barba', duration: 40, price: 25 },
+  { id: 'altri-servizi', name: 'Altri servizi', description: 'colore o altri servizi', duration: 30, price: 0 }
+];
+
+export const micheleSpecificServices: Service[] = [
   { id: 'taglio', name: 'Taglio', description: 'Taglio di capelli personalizzato', duration: 30, price: 18 },
   { id: 'barba', name: 'Barba', description: 'Modellatura e contorno barba', duration: 15, price: 10 },
   { id: 'taglio-e-barba', name: 'Taglio e Barba', description: 'Taglio capelli e sistemazione barba', duration: 40, price: 23 },
   { id: 'altri-servizi', name: 'Altri servizi', description: 'colore o altri servizi', duration: 30, price: 0 }
 ];
 
-export const micheleSpecificServices: Service[] = [
+export const nicoloSpecificServices: Service[] = [
   { id: 'taglio', name: 'Taglio', description: 'Taglio di capelli personalizzato', duration: 30, price: 15 },
   { id: 'barba', name: 'Barba', description: 'Modellatura e contorno barba', duration: 15, price: 7 },
   { id: 'taglio-e-barba', name: 'Taglio e Barba', description: 'Taglio capelli e sistemazione barba', duration: 40, price: 18 },
-  { id: 'altri-servizi', name: 'Altri servizi', description: 'colore o altri servizi', duration: 30, price: 0 }
-];
-
-export const nicoloSpecificServices: Service[] = [
-  { id: 'taglio', name: 'Taglio', description: 'Taglio di capelli personalizzato', duration: 30, price: 12 },
-  { id: 'barba', name: 'Barba', description: 'Modellatura e contorno barba', duration: 15, price: 10 },
-  { id: 'taglio-e-barba', name: 'Taglio e Barba', description: 'Taglio capelli e sistemazione barba', duration: 40, price: 15 },
-  { id: 'completo', name: 'Completo', description: 'Taglio, barba e shampoo', duration: 45, price: 17 },
   { id: 'altri-servizi', name: 'Altri servizi', description: 'colore o altri servizi', duration: 30, price: 0 }
 ];
 
