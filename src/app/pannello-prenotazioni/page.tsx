@@ -1492,7 +1492,7 @@ Ti contatto da Maskio Barber Concept per la tua prenotazione:
 🕐 *Orario:* ${bookingTime}
 ✂️ *Servizio:* ${serviceName}
 
-Se hai domande o hai bisogno di modificare l'appuntamento, fammi sapere!
+Confermi l'appuntamento?
 
 Grazie per averci scelto 💈`;
 

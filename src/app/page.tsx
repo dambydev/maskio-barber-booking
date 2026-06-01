@@ -121,7 +121,23 @@ export default function Home() {
           />
         </div>
 
+        {/* 🔔 BANNER AVVISO AUMENTO PREZZI */}
+        <div className="relative z-50 w-full bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 border-b border-yellow-500/40 shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center gap-3 text-center">
+            <span className="text-yellow-300 text-lg flex-shrink-0">⚠️</span>
+            <p className="text-yellow-100 text-sm sm:text-base font-medium leading-snug">
+              <span className="font-bold text-white">Avviso importante:</span>{" "}
+              a partire dal <span className="font-bold text-yellow-300">1° giugno 2026</span> i nostri prezzi subiranno un aggiornamento.{" "}
+              <Link href="/servizi" className="text-yellow-300 underline font-semibold hover:text-white transition-colors">
+                Verifica qui il nuovo listino prezzi
+              </Link>
+            </p>
+            <span className="text-yellow-300 text-lg flex-shrink-0">✂️</span>
+          </div>
+        </div>
+
         {/* Hero Section */}
+
         <div className="relative h-screen">
           {/* Hero Video with lazy loading */}
           <m.div 
@@ -235,10 +251,10 @@ export default function Home() {
                   </BookingButton>
                 </div>
 
-                <Link href="/servizi">
-                  <button 
-                    className="relative border border-yellow-400/30 text-white px-10 py-5 rounded-lg font-medium text-base transition-all duration-300 hover:border-yellow-300/70 hover:text-yellow-100 hover:shadow-[0_10px_30px_rgba(251,191,36,0.15)] hover:-translate-y-1 uppercase tracking-wider bg-black/50 backdrop-blur-sm overflow-hidden group"
-                  >
+                <Link
+                  href="/servizi"
+                  className="relative inline-flex border border-yellow-400/30 text-white px-10 py-5 rounded-lg font-medium text-base transition-all duration-300 hover:border-yellow-300/70 hover:text-yellow-100 hover:shadow-[0_10px_30px_rgba(251,191,36,0.15)] hover:-translate-y-1 uppercase tracking-wider bg-black/50 backdrop-blur-sm overflow-hidden group"
+                >
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                     <span className="absolute top-[3px] left-[3px] w-3 h-3 border-l border-t border-yellow-400/40 group-hover:border-yellow-400/80 transition-colors" />
                     <span className="absolute bottom-[3px] right-[3px] w-3 h-3 border-r border-b border-yellow-400/40 group-hover:border-yellow-400/80 transition-colors" />
@@ -261,7 +277,6 @@ export default function Home() {
                         <path d="M8 12h8"></path>
                       </svg>
                     </span>
-                  </button>
                 </Link>
               </m.div>
             </m.div>
@@ -298,10 +313,8 @@ export default function Home() {
                   </p>
                 </div>
 
-                <Link href="/chi-siamo">
-                  <button className="bg-gradient-to-r from-black to-gray-800 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-1 hover:scale-105">
-                    La Nostra Storia
-                  </button>
+                <Link href="/chi-siamo" className="inline-flex bg-gradient-to-r from-black to-gray-800 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-1 hover:scale-105">
+                  La Nostra Storia
                 </Link>
               </m.div>
 
@@ -400,11 +413,9 @@ export default function Home() {
             </m.div>
 
             <m.div className="text-center mt-12" variants={fadeInUp}>
-              <Link href="/servizi">
-                <button className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_20px_40px_rgba(234,179,8,0.3)] hover:-translate-y-1 hover:from-yellow-600 hover:to-yellow-700 relative overflow-hidden group">
+              <Link href="/servizi" className="inline-flex bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_20px_40px_rgba(234,179,8,0.3)] hover:-translate-y-1 hover:from-yellow-600 hover:to-yellow-700 relative overflow-hidden group">
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
                   <span className="relative z-10">Vedi Tutti i Servizi</span>
-                </button>
               </Link>
             </m.div>
           </div>
@@ -538,11 +549,9 @@ export default function Home() {
             </m.div>
 
             <m.div className="text-center mt-12" variants={fadeInUp}>
-              <Link href="/testimonianze">
-                <button className="bg-gradient-to-r from-black to-gray-900 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1 relative overflow-hidden group">
+              <Link href="/testimonianze" className="inline-flex bg-gradient-to-r from-black to-gray-900 text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1 relative overflow-hidden group">
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
                   <span className="relative z-10">Vedi Tutte le Recensioni</span>
-                </button>
               </Link>
             </m.div>
           </div>
@@ -582,11 +591,9 @@ export default function Home() {
                   </BookingButton>
                 </div>
                 
-                <Link href="/contatti">
-                  <button className="border-2 border-white text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 relative overflow-hidden group hover:bg-white hover:text-black hover:shadow-[0_15px_30px_rgba(255,255,255,0.2)] hover:-translate-y-1">
+                <Link href="/contatti" className="inline-flex border-2 border-white text-white px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 relative overflow-hidden group hover:bg-white hover:text-black hover:shadow-[0_15px_30px_rgba(255,255,255,0.2)] hover:-translate-y-1">
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
                     <span className="relative z-10">Contattaci</span>
-                  </button>
                 </Link>
               </m.div>
             </m.div>
