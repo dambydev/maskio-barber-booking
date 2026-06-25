@@ -18,7 +18,7 @@
 ```env
 NEXTAUTH_URL=https://maskiobarberconcept.it
 NEXT_PUBLIC_SITE_URL=https://maskiobarberconcept.it
-NEXTAUTH_SECRET=[your-secret]
+NEXTAUTH_SECRET=your_nextauth_secret_here
 ```
 
 ### 🔍 **Verifiche Pre-Deploy:**

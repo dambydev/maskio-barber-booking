@@ -18,7 +18,7 @@
 - ✅ Logging migliorato per debugging
 
 ### 📧 **Email System (Resend CONFIGURATO)**
-- ✅ API Key reale: `re_dVvps8Rb_JKDK6FpSLAd4KY3G3XKTCPWL`
+- ✅ API Key reale: `your_resend_api_key_here`
 - ✅ Domain: `onboarding@resend.dev` (funzionante)
 - ✅ Destinazione: `fabio.cassano97@icloud.com`
 - ✅ Form CV pagina `/lavora-con-noi` pronto
@@ -42,17 +42,17 @@
 
 ```bash
 # Email System (OBBLIGATORIO)
-RESEND_API_KEY=re_dVvps8Rb_JKDK6FpSLAd4KY3G3XKTCPWL
+RESEND_API_KEY=your_resend_api_key_here
 FROM_EMAIL=onboarding@resend.dev
 
 # Google Reviews (GIÀ CONFIGURATO)
-GOOGLE_PLACES_API_KEY=AIzaSyB7rbR6cWXS6JpK59wB3aw19VeVqc1VSIU
+GOOGLE_PLACES_API_KEY=your_google_places_api_key_here
 GOOGLE_PLACE_ID=ChIJJxigKx51NxMRN_cHtkuYN-M
 
 # Database (GIÀ CONFIGURATO)
 DATABASE_URL=postgresql://...
 NEXTAUTH_URL=https://maskiobarberconcept.it
-NEXTAUTH_SECRET=...
+NEXTAUTH_SECRET=your_nextauth_secret_here
 ```
 
 ### **📝 STEPS VERCEL:**

@@ -92,13 +92,13 @@ async function analyzeVapidKeys() {
     console.log('\n\n🔑 TEST CHIAVI:\n');
     console.log('Se aggiorni Vercel con chiavi LOCALI:');
     console.log('   VAPID_PUBLIC_KEY = BI1mgGZVTXnfKm6IjjUEqItwjvxXBRAIUrGyang5siUndVisiblUzh02SFRhkV7u_FCtPo0PB10nKsFJgHWCHzA');
-    console.log('   VAPID_PRIVATE_KEY = 4m8mOyup9ham9JUjl_YeUvHzCzMYrnsw8nwBrerZWHU');
+    console.log('   VAPID_PRIVATE_KEY = your_vapid_private_key_here');
     console.log('   → Subscription create OGGI funzioneranno ✅');
     console.log('   → Subscription vecchie (agosto) potrebbero non funzionare ❌\n');
 
     console.log('Se aggiorni Vercel con chiavi VERCEL (agosto):');
     console.log('   VAPID_PUBLIC_KEY = BEu9U-pCWHxXKKyjMFtpGaoKqXQ3DAweitOh8VVJ4zCvNBRXk8eeCw7jLZwxytBnTSvPy6crcQvevfhgO_VbcmU');
-    console.log('   VAPID_PRIVATE_KEY = XgCnzliAu0ohJmsoiDFbHNTf1DA0vL034Mhmb-pxgko');
+    console.log('   VAPID_PRIVATE_KEY = your_vapid_private_key_here');
     console.log('   → Subscription vecchie (agosto) funzioneranno ✅');
     console.log('   → Subscription create OGGI non funzioneranno ❌\n');
 

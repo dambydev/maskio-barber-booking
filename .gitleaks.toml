@@ -1,0 +1,67 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Repository-level false-positive allowlist"
+regexTarget = "match"
+regexes = [
+  '''your_resend_api_key_here''',
+  '''your_google_places_api_key_here''',
+  '''your_google_client_secret_here''',
+  '''your_nextauth_secret_here''',
+  '''your_vapid_private_key_here''',
+  '''expired\.jwt\.token\.example'''
+]
+paths = [
+  '''^\.gitleaks\.toml$''',
+  '''^\.git/.*''',
+  '''^\.next/.*''',
+  '''^\.semgrep/.*''',
+  '''^\.zap/.*''',
+  '''^node_modules/.*''',
+  '''^output/.*''',
+  '''^public/sw\.js$''',
+  '''^tsconfig\.tsbuildinfo$''',
+  '''^docs/security-scanning\.md$''',
+  '''^\.env$''',
+  '''^\.env\.local$''',
+  '''^\.env\.[^.]+\.local$''',
+  '''^gitleaks-report\.json$''',
+  '''^_bmad/_config/files-manifest\.csv$''',
+  '''^test-.*\.json$''',
+  '''^\.agent/.*''',
+  '''^\.agents/.*''',
+  '''^\.claude/.*''',
+  '''^_bmad/.*'''
+]
+
+[[rules]]
+id = "maskio-internal-token"
+description = "Maskio internal token pattern"
+regex = '''MASKIO_[A-Z0-9]{32,}'''
+tags = ["maskio", "token"]
+
+[[rules]]
+id = "generic-api-key"
+
+  [[rules.allowlists]]
+  description = "Safe documentation placeholders for environment examples"
+  regexTarget = "line"
+  regexes = [
+    '''RESEND_API_KEY\s*=\s*['"`]?your_resend_api_key_here['"`]?''',
+    '''GOOGLE_PLACES_API_KEY\s*=\s*['"`]?your_google_places_api_key_here['"`]?''',
+    '''GOOGLE_CLIENT_SECRET\s*=\s*['"`]?your_google_client_secret_here['"`]?''',
+    '''NEXTAUTH_SECRET\s*=\s*['"`]?your_nextauth_secret_here['"`]?''',
+    '''VAPID_PRIVATE_KEY\s*=\s*['"`]?your_vapid_private_key_here['"`]?'''
+  ]
+
+[[allowlists]]
+description = "Safe documentation placeholders"
+regexTarget = "line"
+regexes = [
+  '''RESEND_API_KEY\s*=\s*['"`]?your_resend_api_key_here['"`]?''',
+  '''GOOGLE_PLACES_API_KEY\s*=\s*['"`]?your_google_places_api_key_here['"`]?''',
+  '''GOOGLE_CLIENT_SECRET\s*=\s*['"`]?your_google_client_secret_here['"`]?''',
+  '''NEXTAUTH_SECRET\s*=\s*['"`]?your_nextauth_secret_here['"`]?''',
+  '''VAPID_PRIVATE_KEY\s*=\s*['"`]?your_vapid_private_key_here['"`]?'''
+]

@@ -5,7 +5,7 @@
 DATABASE_URL=<DATABASE_CONNECTION_STRING>
 
 # NextAuth - IMPORTANTE: Cambia URL per produzione
-NEXTAUTH_SECRET=<GENERA_UN_SECRET_SICURO>
+NEXTAUTH_SECRET=your_nextauth_secret_here
 NEXTAUTH_URL=https://tuo-dominio-produzione.vercel.app
 
 # Google OAuth

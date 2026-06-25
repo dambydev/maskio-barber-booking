@@ -38,7 +38,7 @@ export default function AdminUsersPage() {
     try {
       if (!session?.user?.email) return;
 
-      const response = await fetch('/api/debug/check-permissions', {
+      const response = await fetch('/api/staff/check-permissions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

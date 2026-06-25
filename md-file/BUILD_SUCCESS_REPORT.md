@@ -104,7 +104,7 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 # NextAuth
-NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_SECRET=your_nextauth_secret_here
 NEXTAUTH_URL=your_production_url
 ```
 

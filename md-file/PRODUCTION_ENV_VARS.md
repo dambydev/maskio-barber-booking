@@ -10,7 +10,7 @@ NEXTAUTH_URL=https://maskiobarberconcept.it
 NEXT_PUBLIC_SITE_URL=https://maskiobarberconcept.it
 
 # Secret per NextAuth (genera nuovo per produzione)
-NEXTAUTH_SECRET=your-production-secret-here
+NEXTAUTH_SECRET=your_nextauth_secret_here
 ```
 
 ## 🔑 Google OAuth (se configurato)

@@ -51,8 +51,7 @@ export default function AreaPersonale() {
     if (session?.user?.email === 'davide431@outlook.it') {
       console.log('🔍 Checking permissions for davide431@outlook.it...');
       
-      // Usa il nuovo endpoint che non richiede autenticazione
-      fetch('/api/debug/check-permissions', {
+      fetch('/api/staff/check-permissions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

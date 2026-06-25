@@ -86,7 +86,7 @@ Il sistema Maskio Barber è stato aggiornato da JSON file storage a un'architett
    KV_REST_API_READ_ONLY_TOKEN=...
 
    # NextAuth
-   NEXTAUTH_SECRET=genera-stringa-casuale-32-caratteri
+   NEXTAUTH_SECRET=your_nextauth_secret_here
    NEXTAUTH_URL=https://tuodominio.com
 
    # Google OAuth (opzionale)

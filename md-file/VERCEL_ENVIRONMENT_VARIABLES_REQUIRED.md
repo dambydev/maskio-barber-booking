@@ -19,7 +19,7 @@ DATABASE_URL=<DATABASE_CONNECTION_STRING>
 
 ### NextAuth
 ```
-NEXTAUTH_SECRET=<GENERA_UN_SECRET_SICURO>
+NEXTAUTH_SECRET=your_nextauth_secret_here
 NEXTAUTH_URL=<URL_DEL_TUO_SITO_VERCEL>
 ```
 - Fonte trovata in: `src/app/api/auth/[...nextauth]/route.ts`, `src/lib/auth.ts`
@@ -37,7 +37,7 @@ GOOGLE_CLIENT_SECRET=<IL_TUO_GOOGLE_CLIENT_SECRET>
 
 ### Email (Resend o altro provider)
 ```
-RESEND_API_KEY=re_123456789
+RESEND_API_KEY=your_resend_api_key_here
 ```
 - Fonte trovata in: `src/lib/email.ts`
 - Descrizione: Chiave API per il servizio di email Resend

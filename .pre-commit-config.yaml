@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.22.1
+    hooks:
+      - id: gitleaks
+        args:
+          - detect
+          - --config
+          - .gitleaks.toml
+          - --redact
+
+  - repo: https://github.com/semgrep/semgrep
+    rev: v1.102.0
+    hooks:
+      - id: semgrep
+        args:
+          - --config
+          - p/security-audit
+          - --config
+          - p/owasp-top-ten
+          - --config
+          - .semgrep/custom-rules.yml
+          - --severity
+          - ERROR
+          - --error

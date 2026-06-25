@@ -1,0 +1,78 @@
+rules:
+  - id: nextjs-no-debug-env-endpoints
+    message: Debug environment endpoints can expose deployment configuration. Keep them out of production routes.
+    severity: ERROR
+    languages:
+      - typescript
+    paths:
+      include:
+        - /src/app/api/debug/**/route.ts
+    pattern-either:
+      - pattern: |
+          export async function $METHOD(...) {
+            ...
+            process.env
+            ...
+          }
+      - pattern: |
+          export function $METHOD(...) {
+            ...
+            process.env
+            ...
+          }
+    metavariable-regex:
+      metavariable: $METHOD
+      regex: GET|POST|PUT|PATCH|DELETE
+    metadata:
+      cwe: "CWE-200: Exposure of Sensitive Information"
+      owasp: "A01:2021 - Broken Access Control"
+
+  - id: node-child-process-in-api-route
+    message: API route executes a child process. Review carefully for command injection and privilege escalation risk.
+    severity: ERROR
+    languages:
+      - typescript
+      - javascript
+    paths:
+      include:
+        - /src/app/api/**/*
+    pattern-either:
+      - pattern: |
+          import { ... } from "child_process"
+          ...
+      - pattern: |
+          require("child_process")
+          ...
+    metadata:
+      cwe: "CWE-78: OS Command Injection"
+      owasp: "A03:2021 - Injection"
+
+  - id: nextjs-dangerous-html
+    message: dangerousSetInnerHTML can introduce XSS. Sanitize trusted HTML before rendering.
+    severity: ERROR
+    languages:
+      - typescript
+      - javascript
+    pattern: |
+      <$EL dangerouslySetInnerHTML={...} />
+    metadata:
+      cwe: "CWE-79: Cross-site Scripting"
+      owasp: "A03:2021 - Injection"
+
+  - id: auth-cookie-without-security-flags
+    message: Cookies set in server code should use httpOnly, secure, and sameSite protections unless explicitly non-sensitive.
+    severity: ERROR
+    languages:
+      - typescript
+      - javascript
+    paths:
+      include:
+        - /src/app/api/**/*
+        - /src/middleware.ts
+    pattern: |
+      cookies().set($NAME, $VALUE, $OPTIONS)
+    pattern-not: |
+      cookies().set($NAME, $VALUE, { ..., httpOnly: true, secure: true, sameSite: $SAMESITE, ... })
+    metadata:
+      cwe: "CWE-614: Sensitive Cookie in HTTPS Session Without Secure Attribute"
+      owasp: "A05:2021 - Security Misconfiguration"

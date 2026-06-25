@@ -4,7 +4,7 @@
 
 ### **1. RESEND API KEY (OBBLIGATORIO)**
 ```
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxx
+RESEND_API_KEY=your_resend_api_key_here
 ```
 
 **Come ottenerlo:**
@@ -21,7 +21,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxx
 ### **📧 Email System (Tutte obbligatorie)**
 ```bash
 # Resend Service (per CV e notifiche)
-RESEND_API_KEY=re_your_actual_api_key_here
+RESEND_API_KEY=your_resend_api_key_here
 
 # Email fallback (se Resend non funziona)
 EMAIL_SERVICE=gmail
@@ -104,7 +104,7 @@ https://tuo-sito.vercel.app/api/test
 
 ```bash
 # ✅ CORRETTI
-RESEND_API_KEY=re_AbCdEfGh123456789
+RESEND_API_KEY=your_resend_api_key_here
 ADMIN_EMAILS=fabio.cassano97@icloud.com
 BARBER_EMAILS=fabio.cassano97@icloud.com,altro@esempio.com
 

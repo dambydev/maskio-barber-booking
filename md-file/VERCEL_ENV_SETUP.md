@@ -18,7 +18,7 @@ DATABASE_URL=postgres://neondb_owner:npg_Wj09qDUmTsxE@ep-old-forest-a2ur722g-poo
 
 ### **🔐 NextAuth Configuration**
 ```
-NEXTAUTH_SECRET=HZiu6VQpIPpCfrKTsW/O91x5+9aF7IZcRrITf3NzBuA=
+NEXTAUTH_SECRET=your_nextauth_secret_here
 NEXTAUTH_URL=https://your-vercel-domain.vercel.app
 ```
 **⚠️ IMPORTANTE**: Cambia `NEXTAUTH_URL` con il dominio effettivo che ti darà Vercel!

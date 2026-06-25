@@ -269,11 +269,11 @@ DATABASE_URL=postgresql://...
 
 # Auth
 NEXTAUTH_URL=http://localhost:3001
-NEXTAUTH_SECRET=...
+NEXTAUTH_SECRET=your_nextauth_secret_here
 
 # VAPID per Push Notifications
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=BI1mgGZVTXnfKm6Ijj...
-VAPID_PRIVATE_KEY=4m8mOyup9ham9JUjl_YeUvHzCzMYrnsw8nwBrerZWHU
+VAPID_PRIVATE_KEY=your_vapid_private_key_here
 VAPID_EMAIL=davide431@outlook.it
 ```
 
