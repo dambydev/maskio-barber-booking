@@ -89,37 +89,41 @@ export default function NotificationPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white rounded-lg shadow-2xl border border-gray-200 p-4 z-50 animate-slide-up">
+    <div className="pointer-events-auto relative w-full max-w-md rounded-2xl border border-yellow-500/25 bg-zinc-950/95 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.42)] backdrop-blur-xl animate-slide-up">
       <button
         onClick={handleDismiss}
-        className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+        className="absolute right-3 top-3 rounded-full p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-white"
         aria-label="Chiudi"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
         </svg>
       </button>
 
-      <div className="flex items-start gap-3">
-        <div className="text-3xl">🔔</div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-900 mb-1">
-            Attiva le Notifiche
+      <div className="flex items-start gap-3 pr-7">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-300">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.8" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 18.75a2.25 2.25 0 0 1-4.5 0m9-3.75V11a6.75 6.75 0 0 0-13.5 0v4l-1.5 2.25h18L18.75 15Z" />
+          </svg>
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-sm font-semibold text-white sm:text-base">
+            Avvisi quando si libera un posto
           </h3>
-          <p className="text-sm text-gray-600 mb-3">
-            Ricevi avvisi quando si liberano posti nei giorni che ti interessano. Sarai il primo a saperlo!
+          <p className="mt-1 text-sm leading-relaxed text-zinc-300">
+            Attiva le notifiche per ricevere aggiornamenti sulle disponibilità che ti interessano.
           </p>
-          <div className="flex gap-2">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <button
               onClick={handleEnable}
               disabled={loading}
-              className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+              className="rounded-full bg-yellow-400 px-5 py-2 text-sm font-semibold text-black transition-colors hover:bg-yellow-300 disabled:opacity-60"
             >
-              {loading ? 'Attivazione...' : 'Attiva Ora'}
+              {loading ? 'Attivazione...' : 'Attiva ora'}
             </button>
             <button
               onClick={handleDismiss}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+              className="rounded-full border border-white/15 px-5 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-yellow-400/40 hover:text-yellow-100"
             >
               Non ora
             </button>

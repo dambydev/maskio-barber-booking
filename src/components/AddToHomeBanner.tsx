@@ -26,13 +26,19 @@ export default function AddToHomeBanner() {
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 w-[95vw] max-w-md bg-yellow-900 text-white rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-fade-in">
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24" className="flex-shrink-0"><path fill="#fff" d="M12 2a1 1 0 0 1 1 1v12.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V3a1 1 0 0 1 1-1Z"/></svg>
-      <div className="flex-1 text-sm">
-        <b>Consiglio:</b> Per un'esperienza migliore, aggiungi Maskio Barber alla schermata Home.<br/>
-        <span className="text-xs opacity-80">Dal menu del browser, scegli "Aggiungi a schermata Home".</span>
+    <div className="pointer-events-auto flex w-full max-w-md items-start gap-3 rounded-2xl border border-yellow-500/25 bg-zinc-950/95 px-4 py-3 text-white shadow-[0_18px_50px_rgba(0,0,0,0.42)] backdrop-blur-xl animate-fade-in">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-300">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a1 1 0 0 1 1 1v12.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V3a1 1 0 0 1 1-1Z"/></svg>
       </div>
-      <button onClick={handleClose} aria-label="Chiudi notifica" className="ml-2 text-white/80 hover:text-white text-lg">&times;</button>
+      <div className="min-w-0 flex-1 text-sm leading-relaxed text-zinc-300">
+        <p className="font-semibold text-white">Aggiungi Maskio alla Home</p>
+        <p className="mt-0.5 text-xs text-zinc-400">Apri il menu del browser e scegli “Aggiungi a schermata Home”.</p>
+      </div>
+      <button onClick={handleClose} aria-label="Chiudi notifica" className="rounded-full p-1 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white">
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   );
 }
