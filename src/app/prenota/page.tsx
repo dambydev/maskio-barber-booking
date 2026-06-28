@@ -1,11 +1,11 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { motion } from 'framer-motion';
 import BookingForm from '../../components/BookingForm';
 import BookingNotificationModal from '../../components/BookingNotificationModal';
-import { motion } from 'framer-motion';
 
 export default function Page() {
   const { data: session, status } = useSession();
@@ -13,61 +13,54 @@ export default function Page() {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') return; // Still loading
+    if (status === 'loading') return;
     if (!session) {
-      // Redirect to signin with return URL
       router.push('/auth/signin?callbackUrl=' + encodeURIComponent('/prenota'));
       return;
     }
-
-    // ✅ MODIFICA: Banner rimosso - Non mostrare più il modal di notifica
-    // const hasSeenNotification = localStorage.getItem('maskio-booking-notification-dismissed');
-    // if (!hasSeenNotification) {
-    //   setShowNotificationModal(true);
-    // }
   }, [session, status, router]);
 
-  // Show loading while checking auth
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-500 mx-auto"></div>
-          <p className="mt-4 text-xl">Caricamento...</p>
+      <main className="maskio-page flex min-h-screen items-center justify-center">
+        <div className="text-center text-white">
+          <div className="mx-auto h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-yellow-300" />
+          <p className="mt-5 text-lg font-semibold">Caricamento prenotazione...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
-  // Don't render anything if not authenticated (will redirect)
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-black py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="maskio-page maskio-grain py-24 sm:py-28">
+      <div className="maskio-wide relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-12"
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-12 grid gap-6 lg:grid-cols-[1fr_0.75fr] lg:items-end"
         >
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-4">
-            Prenota il tuo appuntamento
-          </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Scegli il servizio perfetto per te e prenota con il nostro team di professionisti
+          <div>
+            <p className="maskio-kicker">Prenotazione</p>
+            <h1 className="maskio-heading mt-6 max-w-4xl text-6xl font-bold text-white sm:text-7xl">
+              Scegli servizio, barbiere e orario.
+            </h1>
+          </div>
+          <p className="max-w-xl text-lg leading-relaxed text-zinc-300 lg:justify-self-end">
+            Il flusso resta quello originale: qui abbiamo solo reso la cornice più leggibile e coerente con il sito.
           </p>
         </motion.div>
+
         <BookingForm userSession={session} />
       </div>
 
-      {/* ✅ MODIFICA: Modal banner rimosso */}
+      {/* Modal banner rimosso */}
       {/* <BookingNotificationModal
         isOpen={showNotificationModal}
         onClose={() => setShowNotificationModal(false)}
       /> */}
-    </div>
+    </main>
   );
 }

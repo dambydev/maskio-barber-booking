@@ -39,7 +39,7 @@ export default function AreaPersonale() {
   const isBarber = session?.user?.role === 'barber';
   const isAdmin = session?.user?.role === 'admin';
   const hasManagementAccess = isBarber || isAdmin;
-  
+
   // Stato per i permessi reali dal backend
   const [realPermissions, setRealPermissions] = useState({
     isAdmin: false,
@@ -50,7 +50,7 @@ export default function AreaPersonale() {
   useEffect(() => {
     if (session?.user?.email === 'davide431@outlook.it') {
       console.log('🔍 Checking permissions for davide431@outlook.it...');
-      
+
       fetch('/api/staff/check-permissions', {
         method: 'POST',
         headers: {
@@ -130,15 +130,15 @@ export default function AreaPersonale() {
         effectiveIsBarber,
         effectiveHasManagementAccess
       };
-      
+
       console.log('🎯 Debug Info for davide431@outlook.it:', debugInfo);
-      
+
       // Debug aggiuntivo per il rendering condizionale
       console.log('🖼️ Rendering conditions:');
       console.log('- Will show management access?', effectiveHasManagementAccess);
       console.log('- Will show admin features?', effectiveIsAdmin);
       console.log('- Permissions checked?', realPermissions.checked);
-      
+
       // Se c'è una discrepanza tra session e real permissions
       if (session.user.role === 'customer' && effectiveIsAdmin) {
         console.log('⚠️ Role mismatch: session shows customer but API shows admin');
@@ -150,7 +150,7 @@ export default function AreaPersonale() {
     // Tutti iniziano da 'appointments', sia customer che barbieri che admin
     setActiveTab('appointments');
   }, [effectiveHasManagementAccess]);
-  
+
   // Hook per gestire il telefono richiesto
   const { showPhoneModal, handlePhoneComplete, userEmail, userName } = usePhoneRequired();
 
@@ -173,14 +173,14 @@ export default function AreaPersonale() {
         // I clienti vedono gli appuntamenti prenotati da loro
         params.append('userId', session.user.id);
       }
-      
+
       const response = await fetch(`/api/bookings?${params.toString()}`);
       // --- FINE LOGICA MODIFICATA ---
 
       if (!response.ok) throw new Error('Errore nel caricamento delle prenotazioni');
-      
+
       const data = await response.json();
-      
+
       // La risposta dell'API include un campo customer_name, che usiamo per i barbieri
       // e un campo barber_name, che usiamo per i clienti.
       // L'interfaccia UserBooking può essere arricchita se necessario.
@@ -216,7 +216,7 @@ export default function AreaPersonale() {
       router.push('/auth/signin?callbackUrl=' + encodeURIComponent('/area-personale'));
       return;
     }
-    
+
     fetchUserBookings();
     fetchUserProfile();
   }, [session, status, router, fetchUserBookings, fetchUserProfile]);
@@ -285,16 +285,16 @@ export default function AreaPersonale() {
 
   const generateWhatsAppLink = (phone: string, barberName: string, serviceName: string, date: string, time: string) => {
     if (!phone) return '';
-    
+
     // Pulisce il numero di telefono da spazi e caratteri speciali, mantiene solo numeri e +
     const cleanPhone = phone.replace(/[^\d+]/g, '');
-    
+
     // Crea il messaggio per WhatsApp
     const message = `Ciao ${barberName}! Ti scrivo per la mia prenotazione del ${date} alle ${time} per ${serviceName}.`;
-    
+
     // Codifica il messaggio per URL
     const encodedMessage = encodeURIComponent(message);
-    
+
     return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
   };
   const handleLogout = async () => {
@@ -305,29 +305,29 @@ export default function AreaPersonale() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-500 mx-auto"></div>
-          <p className="mt-4 text-xl">Caricamento...</p>
+      <main className="maskio-page flex min-h-screen items-center justify-center">
+        <div className="text-center text-white">
+          <div className="mx-auto h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-yellow-300" />
+          <p className="mt-5 text-lg font-semibold">Caricamento area personale...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   if (!session) return null;
 
   // Ordina tutte le prenotazioni per data prima di filtrarle
-  const sortedBookings = [...bookings].sort((a, b) => 
-    new Date(`${a.booking_date}T${a.booking_time}`).getTime() - 
+  const sortedBookings = [...bookings].sort((a, b) =>
+    new Date(`${a.booking_date}T${a.booking_time}`).getTime() -
     new Date(`${b.booking_date}T${b.booking_time}`).getTime()
   );
 
-  const upcomingBookings = sortedBookings.filter(booking => 
-    new Date(booking.booking_date + 'T' + booking.booking_time) > new Date() && 
+  const upcomingBookings = sortedBookings.filter(booking =>
+    new Date(booking.booking_date + 'T' + booking.booking_time) > new Date() &&
     booking.status !== 'cancelled'
   );
-  
-  const pastBookings = sortedBookings.filter(booking => 
+
+  const pastBookings = sortedBookings.filter(booking =>
     new Date(booking.booking_date + 'T' + booking.booking_time) <= new Date() ||
     booking.status === 'cancelled'
   ).reverse(); // .reverse() per avere il più recente in cima
@@ -339,41 +339,40 @@ export default function AreaPersonale() {
   };
 
   return (
-    <div className="min-h-screen bg-black">      {/* Header con Tab Navigation */}
-      <div className="bg-gray-900/50 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">          {/* Welcome Header */}
-          <div className="py-4 text-center">
-            <h1 className="text-xl md:text-2xl font-bold text-white mb-1">
-              Ciao, {session.user.name?.split(' ')[0]}! 👋
+    <main className="maskio-page maskio-grain min-h-screen py-24">      {/* Header con Tab Navigation */}
+      <div className="sticky top-[5.5rem] z-40 px-4 sm:px-6">
+        <div className="maskio-panel mx-auto max-w-7xl rounded-2xl px-4 sm:px-6">          {/* Welcome Header */}
+          <div className="py-5 text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-yellow-200">Area personale</p>
+            <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">
+              Ciao, {session.user.name?.split(' ')[0]}
             </h1>
-            <p className="text-gray-400 text-xs md:text-sm">
-              La tua area personale
+            <p className="mt-2 text-xs text-zinc-400 md:text-sm">
+              Appuntamenti, profilo e impostazioni in un unico spazio.
             </p>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex justify-center pb-3">            <div className="flex bg-gray-800/50 rounded-xl p-1 space-x-1">
+          <div className="flex justify-center pb-4">            <div className="flex rounded-full border border-white/10 bg-black/35 p-1">
               <button
                 onClick={() => setActiveTab('appointments')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === 'appointments' 
-                    ? 'bg-amber-600 text-black shadow-lg' 
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                  activeTab === 'appointments'
+                    ? 'bg-yellow-300 text-black shadow-lg'
+                    : 'text-zinc-300 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
-                <span>📅</span>
                 <span className="hidden sm:inline">Appuntamenti</span>
               </button>
-              
+
               <button
                 onClick={() => setActiveTab('profile')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === 'profile' 
-                    ? 'bg-amber-600 text-black shadow-lg' 
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                  activeTab === 'profile'
+                    ? 'bg-yellow-300 text-black shadow-lg'
+                    : 'text-zinc-300 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
-                <span>👤</span>
                 <span className="hidden sm:inline">Profilo</span>
               </button>
 
@@ -381,11 +380,10 @@ export default function AreaPersonale() {
                 onClick={() => setActiveTab('account')}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   activeTab === 'account'
-                    ? 'bg-amber-600 text-black shadow-lg' 
-                    : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                    ? 'bg-yellow-300 text-black shadow-lg'
+                    : 'text-zinc-300 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
-                <span>⚙️</span>
                 <span className="hidden sm:inline">Account</span>
               </button>
             </div>
@@ -602,7 +600,7 @@ export default function AreaPersonale() {
                     </h3>
                     <p className="text-white">{userProfile.email}</p>
                   </div>
-                  
+
                   <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
                     <h3 className="text-amber-500 font-semibold mb-2 flex items-center">
                       <span className="mr-2">📱</span>
@@ -706,7 +704,7 @@ export default function AreaPersonale() {
             {/* Account Actions */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white mb-4">Azioni Account</h3>
-              
+
               <Link
                 href="/area-personale/profilo"
                 className="w-full bg-gray-800/50 border border-gray-700 hover:border-amber-500/50 rounded-xl p-4 flex items-center justify-between transition duration-300 group"
@@ -752,8 +750,7 @@ export default function AreaPersonale() {
                 onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center space-x-2"
               >
-                <span>🚪</span>
-                <span>Disconnetti Account</span>
+                <span>Disconnetti account</span>
               </button>
             </div>
 
@@ -763,13 +760,13 @@ export default function AreaPersonale() {
               <div className="space-y-2 text-sm text-gray-400">
                 <p>Versione: 1.0.0</p>
                 <p>Ultimo aggiornamento: {new Date().toLocaleDateString('it-IT')}</p>
-                <p>Sviluppato con ❤️ per Maskio Barber Concept</p>
+                <p>Sviluppato per Maskio Barber Concept</p>
               </div>
             </div>
           </motion.div>
         )}
       </div>
-      
+
       {/* Modal per richiesta telefono */}
       <PhoneRequiredModal
         isOpen={showPhoneModal}
@@ -777,6 +774,6 @@ export default function AreaPersonale() {
         userName={userName}
         onComplete={handlePhoneComplete}
       />
-    </div>
+    </main>
   );
 }

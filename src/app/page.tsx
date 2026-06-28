@@ -107,22 +107,22 @@ export default function Home() {
 
   const services = [
     {
-      title: 'Taglio capelli',
-      description: 'Linee pulite, proporzioni e consulenza per un look costruito sulla persona.',
+      title: 'Taglio & Styling',
+      description: 'Tagli personalizzati per esaltare la tua personalità e stile',
       image: '/servizi-taglio.webp',
-      label: 'Core service'
+      price: 'da 18€'
     },
     {
-      title: 'Styling e rifinitura',
-      description: 'Dettagli finali, controllo dei volumi e finish professionale prima di uscire dal salone.',
-      image: '/taglio2.webp',
-      label: 'Look completo'
-    },
-    {
-      title: 'Barba, su richiesta',
-      description: 'Contorno e modellatura quando serve completare il taglio senza spostare il focus dai capelli.',
+      title: 'Taglio Barba',
+      description: 'Taglio barba con rifinitura professionale',
       image: '/servizi-barba.webp',
-      label: 'Supporto'
+      price: 'da 10€'
+    },
+    {
+      title: 'Altri Servizi',
+      description: 'Colore capelli o servizi su richiesta',
+      image: '/servizi-altri.webp',
+      price: 'Contattare Maskio Barber Concept'
     }
   ];
 
@@ -183,9 +183,9 @@ export default function Home() {
       {/* 🎄 DECORAZIONI NATALIZIE */}
       <ChristmasDecorations />
       
-      <div className="min-h-screen overflow-x-hidden bg-black pb-16 text-white">
+      <div className="relative isolate min-h-screen overflow-x-hidden bg-black text-white">
         {/* Premium background atmosphere */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div className="absolute -left-24 top-24 h-80 w-80 rounded-full bg-yellow-500/10 blur-[110px]" />
           <div className="absolute bottom-10 right-0 h-[28rem] w-[28rem] rounded-full bg-yellow-700/10 blur-[130px]" />
           <div 
@@ -260,14 +260,13 @@ export default function Home() {
                 variants={fadeInUp}
                 className="mt-7 max-w-3xl text-balance text-xl font-light leading-relaxed tracking-[0.02em] text-zinc-100 sm:text-2xl"
               >
-                Capelli, stile, identità: un taglio costruito su di te, tra tradizione e visione contemporanea.
-              </m.p>
-
-              <m.p
-                variants={fadeInUp}
-                className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base"
-              >
-                Un’esperienza premium pensata per valorizzare il tuo look, senza rumore e senza compromessi.
+                <span className="font-serif text-yellow-400/45">&quot;</span>
+                Una nuova concezione del barbiere, dove{' '}
+                <span className="font-medium">tradizione</span> e{' '}
+                <span className="font-medium">innovazione</span>{' '}
+                si incontrano per creare il tuo{' '}
+                <span className="font-normal italic text-yellow-200">stile perfetto</span>
+                <span className="font-serif text-yellow-400/45">&quot;</span>
               </m.p>
 
               {/* Buttons */}
@@ -375,39 +374,39 @@ export default function Home() {
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-yellow-300">Servizi</p>
                 <h2 className="mt-4 text-balance font-alien text-5xl font-bold leading-none text-white sm:text-6xl md:text-7xl">
-                  Capelli al centro.
+                  I Nostri Servizi
                 </h2>
               </div>
               <p className="max-w-2xl text-base leading-relaxed text-zinc-300 lg:justify-self-end lg:text-lg">
-                Dalla consulenza al finish, la homepage mette in primo piano taglio e styling. La barba è disponibile come rifinitura o completamento del servizio.
+                Dalla consulenza personalizzata ai trattamenti più avanzati, offriamo una gamma completa di servizi per la cura dell&apos;uomo moderno.
               </p>
             </m.div>
 
-            <m.div className="grid gap-5 lg:grid-cols-3" variants={staggerContainer}>
-              {services.map((service, index) => (
+            <m.div className="grid gap-5 md:grid-cols-3" variants={staggerContainer}>
+              {services.map((service) => (
                 <m.article
                   key={service.title}
                   variants={scaleIn}
-                  className={`group relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-zinc-950 ${index === 0 ? 'lg:col-span-2' : ''}`}
+                  className="group relative overflow-hidden rounded-2xl border border-yellow-500/15 bg-zinc-950 shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
                 >
-                  <div className={`${index === 0 ? 'h-[28rem]' : 'h-80'} relative overflow-hidden`}>
-                    <Image 
+                  <div className="relative h-72 overflow-hidden bg-black">
+                    <Image
                       src={service.image}
                       alt={service.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      sizes={index === 0 ? '(max-width: 1024px) 100vw, 66vw' : '(max-width: 1024px) 100vw, 33vw'}
+                      className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.04]"
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       loading="lazy"
                       quality={78}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent" />
                   </div>
-                  <div className="absolute inset-x-0 bottom-0 p-6 sm:p-7">
-                    <span className="mb-3 inline-flex rounded-full border border-yellow-300/30 bg-black/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-yellow-200 backdrop-blur">
-                      {service.label}
-                    </span>
-                    <h3 className="text-2xl font-semibold text-white sm:text-3xl">{service.title}</h3>
-                    <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-300 sm:text-base">{service.description}</p>
+                  <div className="p-6 sm:p-7">
+                    <div className="mb-4 inline-flex rounded-full border border-yellow-300/30 bg-yellow-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-yellow-200">
+                      {service.price}
+                    </div>
+                    <h3 className="text-2xl font-semibold text-white">{service.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-base">{service.description}</p>
                   </div>
                 </m.article>
               ))}
@@ -496,12 +495,12 @@ export default function Home() {
                   variants={scaleIn}
                   className={`${index === 0 ? 'sm:col-span-2 lg:col-span-2' : ''} group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950`}
                 >
-                  <div className={`${index === 0 ? 'aspect-[4/3]' : 'aspect-[3/4] sm:aspect-square lg:aspect-[3/4]'} relative overflow-hidden`}>
+                  <div className={`${index === 0 ? 'aspect-[4/3]' : 'aspect-[4/5] sm:aspect-square lg:aspect-[4/5]'} relative overflow-hidden bg-zinc-950`}>
                     <Image
                       src={item.src}
                       alt={item.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      className="scale-[1.03] object-cover object-center transition-transform duration-700 group-hover:scale-[1.07]"
                       sizes={index === 0 ? '(max-width: 1024px) 100vw, 50vw' : '(max-width: 768px) 100vw, 25vw'}
                       loading="lazy"
                     />

@@ -18,55 +18,55 @@ export const metadata: Metadata = {
 
 export default function CookiePolicy() {
   return (
-    <div className="min-h-screen bg-gray-50 py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Cookie Policy</h1>
+    <div className="maskio-page maskio-grain py-24 text-white sm:py-28">
+      <div className="maskio-container relative z-10">
+        <div className="maskio-panel rounded-2xl p-6 sm:p-9">
+          <h1 className="maskio-heading mb-8 text-6xl font-bold leading-none text-white sm:text-7xl">Cookie Policy</h1>
           
-          <div className="prose prose-lg max-w-none">
-            <p className="text-gray-600 mb-6">
+          <div className="maskio-document max-w-none">
+            <p className="text-zinc-400 mb-6">
               Ultimo aggiornamento: {new Date().toLocaleDateString('it-IT')}
             </p>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Cosa sono i cookie</h2>
-              <p className="text-gray-700 mb-4">
+              <h2 className="text-2xl font-semibold text-white mb-4">Cosa sono i cookie</h2>
+              <p className="text-zinc-300 mb-4">
                 I cookie sono piccoli file di testo che vengono memorizzati sul tuo dispositivo quando visiti un sito web. 
                 Ci aiutano a migliorare la tua esperienza di navigazione e a fornire servizi personalizzati.
               </p>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Cookie utilizzati da Maskio Barber</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">Cookie utilizzati da Maskio Barber</h2>
               
               <div className="space-y-6">
-                <div className="border-l-4 border-yellow-500 pl-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Cookie Necessari</h3>
-                  <p className="text-gray-700 mb-2">
+                <div className="maskio-card rounded-2xl p-4">
+                  <h3 className="text-xl font-semibold text-white mb-2">Cookie Necessari</h3>
+                  <p className="text-zinc-300 mb-2">
                     Questi cookie sono essenziali per il funzionamento del sito web e non possono essere disabilitati.
                   </p>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <ul className="list-disc list-inside text-zinc-300 space-y-1">
                     <li><strong>next-auth.session-token</strong> - Gestione dell'autenticazione utente</li>
                     <li><strong>next-auth.csrf-token</strong> - Protezione da attacchi CSRF</li>
                   </ul>
                 </div>
 
-                <div className="border-l-4 border-blue-500 pl-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Cookie Analitici</h3>
-                  <p className="text-gray-700 mb-2">
+                <div className="maskio-card rounded-2xl p-4">
+                  <h3 className="text-xl font-semibold text-white mb-2">Cookie Analitici</h3>
+                  <p className="text-zinc-300 mb-2">
                     Questi cookie ci aiutano a capire come i visitatori utilizzano il sito web.
                   </p>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <ul className="list-disc list-inside text-zinc-300 space-y-1">
                     <li><strong>Google Analytics</strong> - Analisi del traffico del sito (se configurato)</li>
                   </ul>
                 </div>
 
-                <div className="border-l-4 border-green-500 pl-4">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Cookie di Terze Parti</h3>
-                  <p className="text-gray-700 mb-2">
+                <div className="maskio-card rounded-2xl p-4">
+                  <h3 className="text-xl font-semibold text-white mb-2">Cookie di Terze Parti</h3>
+                  <p className="text-zinc-300 mb-2">
                     Questi cookie sono impostati da servizi esterni che utilizziamo.
                   </p>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <ul className="list-disc list-inside text-zinc-300 space-y-1">
                     <li><strong>Google OAuth</strong> - Autenticazione tramite account Google</li>
                     <li><strong>Google Places API</strong> - Visualizzazione delle recensioni</li>
                   </ul>
@@ -75,15 +75,15 @@ export default function CookiePolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Gestione dei cookie</h2>
-              <p className="text-gray-700 mb-4">
+              <h2 className="text-2xl font-semibold text-white mb-4">Gestione dei cookie</h2>
+              <p className="text-zinc-300 mb-4">
                 Puoi gestire i cookie attraverso le impostazioni del tuo browser. Tieni presente che 
                 disabilitare alcuni cookie potrebbe influire sulla funzionalità del sito.
               </p>
               
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-yellow-800 mb-2">Come disabilitare i cookie</h3>
-                <ul className="list-disc list-inside text-yellow-700 space-y-1">
+              <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4">
+                <h3 className="text-lg font-semibold text-yellow-100 mb-2">Come disabilitare i cookie</h3>
+                <ul className="list-disc list-inside text-yellow-200 space-y-1">
                   <li><strong>Chrome:</strong> Impostazioni → Privacy e sicurezza → Cookie</li>
                   <li><strong>Firefox:</strong> Opzioni → Privacy e sicurezza → Cookie</li>
                   <li><strong>Safari:</strong> Preferenze → Privacy → Cookie</li>
@@ -93,26 +93,26 @@ export default function CookiePolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Durata dei cookie</h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">Durata dei cookie</h2>
               <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="maskio-table min-w-full border border-white/10 bg-zinc-950/80">
+                  <thead className="bg-zinc-900/80">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cookie</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durata</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scopo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-[0.14em] text-zinc-400">Cookie</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-[0.14em] text-zinc-400">Durata</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-[0.14em] text-zinc-400">Scopo</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-white/10">
                     <tr>
-                      <td className="px-6 py-4 text-sm text-gray-900">Session Token</td>
-                      <td className="px-6 py-4 text-sm text-gray-700">30 giorni</td>
-                      <td className="px-6 py-4 text-sm text-gray-700">Mantenere l'accesso</td>
+                      <td className="px-6 py-4 text-sm text-white">Session Token</td>
+                      <td className="px-6 py-4 text-sm text-zinc-300">30 giorni</td>
+                      <td className="px-6 py-4 text-sm text-zinc-300">Mantenere l'accesso</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 text-sm text-gray-900">CSRF Token</td>
-                      <td className="px-6 py-4 text-sm text-gray-700">Sessione</td>
-                      <td className="px-6 py-4 text-sm text-gray-700">Sicurezza</td>
+                      <td className="px-6 py-4 text-sm text-white">CSRF Token</td>
+                      <td className="px-6 py-4 text-sm text-zinc-300">Sessione</td>
+                      <td className="px-6 py-4 text-sm text-zinc-300">Sicurezza</td>
                     </tr>
                   </tbody>
                 </table>
@@ -120,9 +120,9 @@ export default function CookiePolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Contatti</h2>
-              <p className="text-gray-700">
-                Per domande su questa Cookie Policy, contattaci all'indirizzo:{' '}                <a href="mailto:fabio.cassano97@icloud.com" className="text-yellow-600 hover:text-yellow-700">
+              <h2 className="text-2xl font-semibold text-white mb-4">Contatti</h2>
+              <p className="text-zinc-300">
+                Per domande su questa Cookie Policy, contattaci all'indirizzo:{' '}                <a href="mailto:fabio.cassano97@icloud.com" className="text-yellow-300 hover:text-yellow-200">
                   fabio.cassano97@icloud.com
                 </a>
               </p>

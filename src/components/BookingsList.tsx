@@ -75,7 +75,7 @@ export default function BookingsList() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center py-12"
         >
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b border-yellow-400 mx-auto mb-4"></div>
           <p className="text-gray-400 text-lg">Verificando autorizzazioni...</p>
         </motion.div>
       ) : !session ? (
@@ -128,7 +128,7 @@ export default function BookingsList() {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-900/50 border-l-4 border-red-400 text-red-300 text-center"
+              className="mb-6 p-4 bg-red-900/50 border border-red-400 text-red-300 text-center"
             >
               <p className="font-medium">⚠️ {error}</p>
             </motion.div>
@@ -141,7 +141,7 @@ export default function BookingsList() {
               animate="visible"
               className="text-center py-12"
             >
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b border-yellow-400 mx-auto mb-4"></div>
               <p className="text-gray-400 text-lg">Caricamento prenotazioni...</p>
             </motion.div>
           ) : !bookings || bookings.length === 0 ? (
@@ -165,7 +165,7 @@ export default function BookingsList() {
             <motion.div
               key={booking.id}
               variants={fadeInUp}
-              className="bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-6 border-l-4 border-l-yellow-400"
+              className="bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-6 border border-l-yellow-400"
             >
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-lg font-semibold text-white">{booking.customerInfo.name}</h3>

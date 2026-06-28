@@ -141,7 +141,7 @@ export default function UserWaitlist({ userEmail }: UserWaitlistProps) {
       >
         <h2 className="text-2xl font-bold text-white mb-4">📋 Le Mie Liste d'Attesa</h2>
         <div className="text-center text-gray-400 py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b border-amber-500 mx-auto mb-4"></div>
           Caricamento liste d'attesa...
         </div>
       </motion.div>

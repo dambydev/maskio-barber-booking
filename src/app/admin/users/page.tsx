@@ -181,52 +181,58 @@ export default function AdminUsersPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-500"></div>
-      </div>
+      <main className="maskio-page flex min-h-screen items-center justify-center">
+        <div className="text-center text-white">
+          <div className="mx-auto h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-yellow-300" />
+          <p className="mt-5 text-lg font-semibold">Caricamento utenti...</p>
+        </div>
+      </main>
     );
   }
   if (!session || !hasAdminAccess) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Accesso Negato</h1>
-          <p className="text-gray-400">Solo gli amministratori o barbieri possono accedere a questa pagina.</p>
+      <main className="maskio-page flex min-h-screen items-center justify-center px-4">
+        <div className="maskio-panel max-w-md rounded-2xl p-8 text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Accesso negato</h1>
+          <p className="text-zinc-400">Solo gli amministratori o barbieri possono accedere a questa pagina.</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">        <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <main className="maskio-page maskio-grain py-24 sm:py-28">
+      <div className="maskio-wide relative z-10">        <div className="mb-8">
+        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-              Gestione Utenti
-              <span className={`text-sm px-3 py-1 rounded-full ${isAdmin ? 'bg-red-900/50 text-red-200 border border-red-800' : 'bg-amber-900/50 text-amber-200 border border-amber-800'}`}>
-                {isAdmin ? '👑 Admin' : '✂️ Barbiere'}
+            <p className="maskio-kicker">Admin</p>
+            <h1 className="maskio-heading mt-5 flex flex-wrap items-center gap-3 text-5xl font-bold text-white sm:text-6xl">
+              Gestione utenti
+              <span className={`text-sm px-3 py-1 rounded-full font-sans ${isAdmin ? 'bg-red-500/12 text-red-100 border border-red-500/30' : 'bg-yellow-500/12 text-yellow-100 border border-yellow-500/30'}`}>
+                {isAdmin ? 'Admin' : 'Barbiere'}
               </span>
             </h1>
-            <p className="text-gray-400 mt-2">
-              Gestisci i ruoli degli utenti ed elimina account.
+            <p className="text-zinc-400 mt-4 max-w-2xl">
+              Gestisci ruoli e account con controlli chiari. Le azioni distruttive restano confermate dalla logica esistente.
             </p>
           </div>
 
           {/* Search Bar */}
           <div className="w-full md:w-auto">
+            <label htmlFor="user-search" className="mb-2 block text-sm font-semibold text-zinc-300">Cerca utente</label>
             <input
+              id="user-search"
               type="text"
-              placeholder="Cerca utente per nome o email..."
+              placeholder="Nome o email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-80 px-4 py-2 bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all shadow-sm"
+              className="maskio-input w-full md:w-96"
             />
           </div>
         </div>
 
         {/* Avviso di sicurezza */}
-        <div className="mt-4 bg-red-900/20 border border-red-800 rounded-lg p-4">
+        <div className="maskio-panel mt-6 rounded-2xl border-red-500/25 bg-red-500/10 p-4">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
@@ -234,8 +240,8 @@ export default function AdminUsersPage() {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-300">
-                ⚠️ Attenzione - Poteri di Amministratore
+              <h3 className="text-sm font-semibold text-red-200">
+                Attenzione - poteri di amministratore
               </h3>
               <div className="mt-2 text-sm text-red-400">
                 <p>Come admin hai il potere di:</p>
@@ -243,7 +249,7 @@ export default function AdminUsersPage() {
                   <li><strong>Cambiare ruoli</strong> (Cliente → Barbiere → Admin)</li>
                   <li><strong>Eliminare account</strong> in modo permanente (include prenotazioni e dati)</li>
                 </ul>
-                <p className="mt-2 font-semibold">🚨 L'eliminazione degli account è irreversibile!</p>
+                <p className="mt-2 font-semibold">L'eliminazione degli account è irreversibile.</p>
               </div>
             </div>
           </div>
@@ -253,11 +259,11 @@ export default function AdminUsersPage() {
         {/* Mobile View: Cards */}
         <div className="space-y-4 md:hidden">
           {filteredUsers.map(user => (
-            <div key={user.id} className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700 space-y-4">
+            <div key={user.id} className="maskio-card rounded-2xl p-4 space-y-4">
               <div className="flex justify-between items-start">
                 <div className="min-w-0 pr-2">
                   <h3 className="text-white font-bold text-lg truncate">{user.name}</h3>
-                  <p className="text-gray-400 text-sm break-all">{user.email}</p>
+                  <p className="text-zinc-400 text-sm break-all">{user.email}</p>
                 </div>
                 <span className={`flex-shrink-0 px-2 py-1 text-xs font-semibold rounded-full h-fit ${user.role === 'admin'
                   ? 'bg-red-900/50 text-red-200 border border-red-800'
@@ -269,7 +275,7 @@ export default function AdminUsersPage() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 border-t border-gray-700 pt-3">
+              <div className="grid grid-cols-2 gap-2 text-xs text-zinc-500 border-t border-white/10 pt-3">
                 <div>
                   <span className="block text-gray-600">Registrato</span>
                   <span className="text-gray-300">{new Date(user.createdAt).toLocaleDateString('it-IT')}</span>
@@ -316,12 +322,12 @@ export default function AdminUsersPage() {
                   disabled={updateLoading === user.id || deleteLoading === user.id}
                   className="w-full text-red-500 hover:bg-red-900/20 border border-red-900/50 rounded py-3 text-sm font-bold flex items-center justify-center gap-2 mt-1 transition-colors"
                 >
-                  <span className="text-lg">🗑️</span> Elimina Account Definitivamente
+                  Elimina account definitivamente
                 </button>
 
                 {(updateLoading === user.id || deleteLoading === user.id) && (
                   <div className="w-full flex justify-center mt-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-500"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-transparent border-t-amber-500"></div>
                   </div>
                 )}
               </div>
@@ -329,10 +335,10 @@ export default function AdminUsersPage() {
           ))}
         </div>
 
-        <div className="hidden md:block bg-gray-800 shadow-md rounded-lg overflow-hidden border border-gray-700">
+        <div className="maskio-panel hidden overflow-hidden rounded-2xl md:block">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-gray-900/50">
+              <thead className="bg-black/40">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Utente
@@ -352,9 +358,9 @@ export default function AdminUsersPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-white/10">
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-700/50 transition-colors">
+                  <tr key={user.id} className="transition-colors hover:bg-white/[0.035]">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-white">{user.name}</div>
                     </td>
@@ -407,7 +413,7 @@ export default function AdminUsersPage() {
                             </button>
                           )}
                           {updateLoading === user.id && (
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-500"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-transparent border-t-amber-500"></div>
                           )}
                         </div>
 
@@ -419,10 +425,10 @@ export default function AdminUsersPage() {
                             className="text-red-400 hover:text-red-300 hover:bg-red-900/20 disabled:opacity-50 text-xs px-3 py-1 border border-red-800 rounded font-medium transition-colors"
                             title="Elimina account definitivamente"
                           >
-                            🗑️ Elimina Account
+                            Elimina account
                           </button>
                           {deleteLoading === user.id && (
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-transparent border-t-red-500"></div>
                           )}
                         </div>
                       </div>
@@ -436,10 +442,10 @@ export default function AdminUsersPage() {
 
         {filteredUsers.length === 0 && (
           <div className="text-center py-8">
-            <p className="text-gray-500">Nessun utente trovato {searchTerm && `per "${searchTerm}"`}.</p>
+            <p className="text-zinc-500">Nessun utente trovato {searchTerm && `per "${searchTerm}"`}.</p>
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

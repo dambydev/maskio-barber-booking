@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Barlow } from 'next/font/google';
 import './globals.css';
 import '../styles/pwa.css';
 import '../styles/fonts.css';
@@ -25,7 +25,11 @@ import JsonLdScript from '../components/JsonLdScript';
 import { CookieConsentProvider } from '../components/CookieConsentContext';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 
-const inter = Inter({ subsets: ['latin'] });
+const barlow = Barlow({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.maskiobarberconcept.it'),
@@ -164,7 +168,7 @@ export default function RootLayout({
         <script src="/sw-init.js"></script>
         <script src="/push-manager.js"></script>
       </head>
-      <body className={inter.className}>
+      <body className={barlow.className}>
         <CookieConsentProvider>
           <GoogleAnalytics />
           <SessionProvider>

@@ -103,7 +103,7 @@ export default function WaitlistDashboard() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b border-yellow-500"></div>
         <p className="text-gray-400 mt-4">Caricamento lista d'attesa...</p>
       </div>
     );

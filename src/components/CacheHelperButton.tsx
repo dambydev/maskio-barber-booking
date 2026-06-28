@@ -51,7 +51,7 @@ export default function CacheHelperButton() {
           transition-all duration-300
           ${isOpen 
             ? 'bg-red-500 hover:bg-red-600 rotate-45' 
-            : 'bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900'
+            : 'bg-gradient-to-br from-yellow-500 to-purple-800 hover:from-yellow-600 hover:to-purple-900'
           }
         `}
         aria-label="Helper menu"
