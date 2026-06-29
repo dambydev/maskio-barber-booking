@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DatabaseService } from '@/lib/database';
 import { isDateClosed, getClosureSettings } from '@/lib/closure-utils';
-import { isBarberClosed } from '@/lib/barber-closures';
+import { isBarberClosed, isBarberClosedRecurring } from '@/lib/barber-closures';
+import { getScheduleTimeSlots, isManualExceptionalSchedule } from '@/lib/barber-schedule-exceptions';
 
 interface TimeSlot {
   time: string;
@@ -42,32 +43,29 @@ export async function GET(request: NextRequest) {
     // Get schedule from database to determine ALL possible slots for this specific day
     // This is important because barber_schedules might have custom hours (e.g., Monday with morning slots)
     const schedule = await DatabaseService.getBarberSchedule(barberId, date);
+    const isRecurringClosed = barberEmail ? await isBarberClosedRecurring(barberEmail, date) : false;
+    const isManualExceptionalOpening = !!schedule && !schedule.dayOff && isRecurringClosed && isManualExceptionalSchedule(schedule);
+
+    // Una chiusura ricorrente vince sugli schedule generati automaticamente.
+    // Solo un'apertura eccezionale manuale può riaprire quella data.
+    if (isRecurringClosed && !isManualExceptionalOpening) {
+      console.log(`Barber ${barberEmail} is closed on ${date} due to recurring closure`);
+      return NextResponse.json([]);
+    }
+
     let allPossibleSlots: string[] = [];
 
     if (date === '2026-04-11') {
       allPossibleSlots = generateAllTimeSlots(date, barberName);
     } else if (schedule && !schedule.dayOff && schedule.availableSlots) {
-      // Use slots from database schedule (includes both available and unavailable)
-      try {
-        const availableFromSchedule = JSON.parse(schedule.availableSlots);
-        const unavailableFromSchedule = schedule.unavailableSlots ? JSON.parse(schedule.unavailableSlots) : [];
-        // All possible slots = available + unavailable (everything configured for that day)
-        allPossibleSlots = [...new Set([...availableFromSchedule, ...unavailableFromSchedule])];
-      } catch (error) {
-        console.error('Error parsing schedule slots:', error);
-        // Fallback to generated slots
-        allPossibleSlots = generateAllTimeSlots(date, barberName);
-      }
+      // Use slots from database schedule (includes both available and unavailable time slots)
+      allPossibleSlots = getScheduleTimeSlots(schedule.availableSlots, schedule.unavailableSlots);
     } else {
       // No specific schedule found, use standard generated slots
       allPossibleSlots = generateAllTimeSlots(date, barberName);
     }
 
     const morningCutoffHour = date === '2026-04-11' ? 15 : 14;
-    
-    // ✅ FIX: Determina se questo è un'apertura eccezionale
-    // Se lo schedule esiste e ha day_off=false, NON controllare le chiusure ricorrenti
-    const isExceptionalOpening = schedule && !schedule.dayOff;
     
     // ✅ NEW: Ottieni le chiusure specifiche del barbiere per questa data
     const { getBarberClosures } = await import('@/lib/barber-closures');
@@ -118,9 +116,9 @@ export async function GET(request: NextRequest) {
       // MA: per aperture eccezionali, controlla SOLO chiusure specifiche per orario,
       // NON le chiusure ricorrenti (sono già sovrascritte dallo schedule)
       if (available && barberEmail) {
-        if (isExceptionalOpening) {
-          // Per aperture eccezionali: controlla SOLO chiusure specifiche per orario
-          // (ignora le chiusure ricorrenti)
+        if (isManualExceptionalOpening) {
+          // Per aperture eccezionali manuali: controlla SOLO chiusure specifiche per orario
+          // (la chiusura ricorrente è stata sovrascritta manualmente)
           if (barberClosures.length > 0) {
             const hour = parseInt(time.split(':')[0]);
             const isMorning = hour < morningCutoffHour;
