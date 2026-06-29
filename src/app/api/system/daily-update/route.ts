@@ -7,6 +7,7 @@ import {
     getAutoClosureReason,
     type DayOfWeek
 } from '@/lib/universal-slots';
+import { isManualExceptionalSchedule } from '@/lib/barber-schedule-exceptions';
 
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -34,13 +35,13 @@ async function isBarberClosedOnDay(barberEmail: string, dayOfWeek: number): Prom
  * Crea una chiusura automatica se necessaria per il barbiere e il giorno specificato.
  * ✅ NON ricrea la chiusura se è stata rimossa manualmente dal barbiere.
  * ✅ Rispetta le chiusure manuali aggiunte dal barbiere (full day, ecc.).
- * 
+ *
  * FLUSSO:
  * 1. Sistema crea schedule con tutti gli slot (mattina + pomeriggio)
  * 2. Sistema crea chiusure automatiche (Nicolò mattina, Fabio lunedì full, ecc.)
  * 3. Se barbiere elimina chiusura → sistema NON la ricrea (rispetta scelta)
  * 4. Se barbiere aggiunge chiusura manuale → sistema la rispetta
- * 
+ *
  * Ritorna true se ha creato una nuova chiusura, false altrimenti.
  */
 async function createAutoClosureIfNeeded(
@@ -144,7 +145,7 @@ export async function POST(request: NextRequest) {
 
                     // Check if schedule already exists
                     const existingSchedule = await sql`
-                        SELECT id, available_slots FROM barber_schedules 
+                        SELECT id, available_slots, unavailable_slots, day_off, created_at, updated_at FROM barber_schedules
                         WHERE barber_id = ${barber.id} AND date = ${dateString}
                     `;
 
@@ -163,11 +164,11 @@ export async function POST(request: NextRequest) {
                         `;
                         addedCount++;
                     } else {
-                        // ✅ FIX: NON sovrascrivere schedule eccezionali (day_off=false su giorni normalmente chiusi)
-                        // Se lo schedule esistente ha day_off=false su un giorno con chiusura ricorrente,
-                        // è un'apertura eccezionale e NON deve essere sovrascritto dal daily update
+                        // Non sovrascrivere solo le vere aperture eccezionali manuali.
+                        // Gli schedule generati automaticamente con day_off=false devono invece essere
+                        // corretti a day_off=true quando il barbiere ha una chiusura ricorrente.
                         const currentSchedule = existingSchedule[0];
-                        const isExceptionalOpening = !currentSchedule.day_off && isRecurringClosed;
+                        const isExceptionalOpening = !currentSchedule.day_off && isRecurringClosed && isManualExceptionalSchedule(currentSchedule);
 
                         if (isExceptionalOpening) {
                             // Skip exceptional openings - they are manually managed
@@ -176,7 +177,7 @@ export async function POST(request: NextRequest) {
                         } else {
                             // Update existing schedule with correct slots
                             await sql`
-                                UPDATE barber_schedules 
+                                UPDATE barber_schedules
                                 SET available_slots = ${JSON.stringify(slotsForDay)},
                                     day_off = ${isDayOff || isRecurringClosed}
                                 WHERE barber_id = ${barber.id} AND date = ${dateString}
@@ -195,7 +196,7 @@ export async function POST(request: NextRequest) {
         yesterday.setDate(today.getDate() - 1);
         const yesterdayString = yesterday.toISOString().split('T')[0];
         const deletedResult = await sql`
-            DELETE FROM barber_schedules 
+            DELETE FROM barber_schedules
             WHERE date < ${yesterdayString}
         `;
 
@@ -239,11 +240,11 @@ export async function GET(request: NextRequest) {
 
         // Check current schedule coverage
         const scheduleCount = await sql`
-            SELECT COUNT(*) as total FROM barber_schedules 
+            SELECT COUNT(*) as total FROM barber_schedules
             WHERE date >= ${today}
         `;
         const barberCount = await sql`
-            SELECT COUNT(*) as total FROM barbers 
+            SELECT COUNT(*) as total FROM barbers
             WHERE is_active = true
         `;
 

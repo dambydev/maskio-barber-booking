@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Barlow } from 'next/font/google';
 import './globals.css';
 import '../styles/pwa.css';
 import '../styles/fonts.css';
@@ -25,7 +25,11 @@ import JsonLdScript from '../components/JsonLdScript';
 import { CookieConsentProvider } from '../components/CookieConsentContext';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 
-const inter = Inter({ subsets: ['latin'] });
+const barlow = Barlow({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.maskiobarberconcept.it'),
@@ -164,16 +168,13 @@ export default function RootLayout({
         <script src="/sw-init.js"></script>
         <script src="/push-manager.js"></script>
       </head>
-      <body className={inter.className}>
+      <body className={barlow.className}>
         <CookieConsentProvider>
           <GoogleAnalytics />
-          <CookieConsentBanner />
           <SessionProvider>
             <SecurityProvider>
               <DynamicManifest />
               <DailyUpdateManager />
-              {/* Banner custom per richiedere notifiche prima del sistema */}
-              <PushNotificationBanner />
               {/* <PWANotificationBanner /> */}
               <Navbar />
               <main className="min-h-screen pt-[70px] standalone:pt-0">
@@ -183,13 +184,20 @@ export default function RootLayout({
               <MobileBottomNav />
               <PWAFloatingMenu />
               {/* <CacheHelperButton /> */} {/* Disabilitato in produzione - riabilitare solo per debug */}
-              <NotificationPrompt />
+
+              {/* Stack unico per banner globali: evita sovrapposizioni tra prompt, cookie e install app */}
+              <div className="fixed inset-x-0 bottom-0 z-[85] flex max-h-[calc(100svh-5rem)] flex-col-reverse items-center gap-3 overflow-y-auto px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pointer-events-none sm:items-end sm:px-6">
+                <CookieConsentBanner />
+                <AddToHomeBanner />
+                <NotificationPrompt />
+                <PushNotificationBanner />
+              </div>
+
               {/* Schema.org JSON-LD script */}
               <JsonLdScript />
             </SecurityProvider>
           </SessionProvider>
         </CookieConsentProvider>
-        <AddToHomeBanner />
       </body>
     </html>
   );

@@ -904,7 +904,7 @@ export default function BookingForm({ userSession }: BookingFormProps) {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 bg-red-900/50 border-l-4 border-red-500 text-red-300"
+          className="mb-6 p-4 bg-red-900/50 border border-red-500 text-red-300"
         >
           <p className="font-medium">⚠️ {error}</p>
         </motion.div>
@@ -913,7 +913,7 @@ export default function BookingForm({ userSession }: BookingFormProps) {
       {/* Loading Initial Data */}
       {barbers.length === 0 && !error && (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b border-yellow-400 mx-auto"></div>
           <p className="mt-4 text-gray-300">Caricamento barbieri e servizi...</p>
         </div>
       )}
@@ -922,7 +922,7 @@ export default function BookingForm({ userSession }: BookingFormProps) {
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-900 p-6 rounded-lg border border-gray-700">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b border-yellow-400 mx-auto"></div>
             <p className="mt-4 text-center text-white">Caricamento...</p>
           </div>        </div>
       )}
@@ -1034,7 +1034,7 @@ export default function BookingForm({ userSession }: BookingFormProps) {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded-md"
+              className="bg-yellow-100 border border-yellow-500 text-yellow-700 p-4 mb-6 rounded-md"
               role="alert"
             >
               <p className="font-bold">Per altri servizi</p>
@@ -1243,7 +1243,7 @@ export default function BookingForm({ userSession }: BookingFormProps) {
               )}</div>            {/* Loading/Debouncing indicator */}
             {(isDebouncing || loading) && formData.selectedDate && formData.selectedBarber && (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b border-yellow-500 mx-auto"></div>
                 <p className="text-sm text-gray-300 mt-3 font-medium">Caricamento orari disponibili...</p>
                 <p className="text-xs text-gray-400 mt-1">Attendi qualche secondo</p>
               </div>

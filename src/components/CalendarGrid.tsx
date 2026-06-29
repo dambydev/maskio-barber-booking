@@ -451,7 +451,7 @@ const CalendarGrid = ({
             🔔 Liste d'Attesa del {format(parseISO(selectedDate), 'dd/MM/yyyy')}
           </h3>
           {loadingWaitlist && (
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-500"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b border-yellow-500"></div>
           )}
         </div>
 
@@ -467,7 +467,7 @@ const CalendarGrid = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-gray-700 rounded-lg p-3 border-l-4 border-yellow-500"
+                className="bg-gray-700 rounded-lg p-3 border border-yellow-500"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex-1">

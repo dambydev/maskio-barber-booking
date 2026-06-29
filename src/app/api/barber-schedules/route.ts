@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../lib/auth';
 import { neon } from '@neondatabase/serverless';
+import { withManualExceptionMarker } from '@/lib/barber-schedule-exceptions';
 
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -59,6 +60,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const unavailableSlots = !dayOff ? withManualExceptionMarker('[]') : '[]';
+
     // Check if schedule already exists
     const existingSchedule = await sql`
       SELECT * FROM barber_schedules
@@ -71,6 +74,7 @@ export async function POST(request: NextRequest) {
         UPDATE barber_schedules
         SET day_off = ${dayOff},
             available_slots = ${JSON.stringify(availableSlots)},
+            unavailable_slots = ${unavailableSlots},
             updated_at = NOW()
         WHERE barber_id = ${barberId} AND date = ${date}
       `;
@@ -80,7 +84,7 @@ export async function POST(request: NextRequest) {
       // Create new schedule
       await sql`
         INSERT INTO barber_schedules (barber_id, date, available_slots, unavailable_slots, day_off)
-        VALUES (${barberId}, ${date}, ${JSON.stringify(availableSlots)}, '[]', ${dayOff})
+        VALUES (${barberId}, ${date}, ${JSON.stringify(availableSlots)}, ${unavailableSlots}, ${dayOff})
       `;
 
       console.log('✅ Schedule created:', { barberId, date, dayOff, slotsCount: availableSlots.length });

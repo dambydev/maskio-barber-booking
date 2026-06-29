@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DatabaseService } from '@/lib/database';
 import { isDateClosed } from '@/lib/closure-utils';
 import { getBarberRecurringClosures, getBarberClosures } from '@/lib/barber-closures';
+import { getScheduleTimeSlots, isManualExceptionalSchedule } from '@/lib/barber-schedule-exceptions';
 
 interface BatchAvailabilityRequest {
   barberId: string;
@@ -31,7 +32,7 @@ interface RequestCache {
 export async function POST(request: NextRequest) {
   try {
     const { barberId, dates }: BatchAvailabilityRequest = await request.json();
-    
+
     if (!barberId || !dates || !Array.isArray(dates)) {
       return NextResponse.json(
         { error: 'barberId and dates array are required' },
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
       try {
         // ✅ PRIMA: Controlla se esiste schedule specifico per questo barbiere/data
         const schedule = await DatabaseService.getBarberSchedule(barberId, date);
-        
+
         // Debug log for Oct 30
         if (date === '2025-10-30') {
           console.log(`🔍 [Oct 30] Schedule found:`, {
@@ -86,89 +87,12 @@ export async function POST(request: NextRequest) {
             hasAvailableSlots: !!schedule?.availableSlots
           });
         }
-        
-        // Se c'è uno schedule con day_off=false, il barbiere è APERTO (apertura eccezionale)
-        if (schedule && !schedule.dayOff && schedule.availableSlots) {
-          try {
-            const availableFromSchedule = JSON.parse(schedule.availableSlots);
-            const unavailableFromSchedule = schedule.unavailableSlots ? JSON.parse(schedule.unavailableSlots) : [];
-            const allTimeSlots = [...new Set([...availableFromSchedule, ...unavailableFromSchedule])];
-            
-            if (date === '2025-10-30') {
-              console.log(`🔍 [Oct 30] Parsed slots:`, {
-                availableFromSchedule: availableFromSchedule.length,
-                unavailableFromSchedule: unavailableFromSchedule.length,
-                allTimeSlots: allTimeSlots.length,
-                willEnterBlock: allTimeSlots.length > 0
-              });
-            }
-            
-            if (allTimeSlots.length > 0) {
-              // Get available slots
-              const availableSlotTimes = await DatabaseService.getAvailableSlots(barberId, date);
-              
-              // ✅ FIX: Per aperture eccezionali, controlla SOLO le chiusure specifiche per orario
-              // NON controllare le chiusure ricorrenti (sono già sovrascritte dallo schedule)
-              let finalAvailableSlots = availableSlotTimes;
-              if (barberEmail) {
-                finalAvailableSlots = [];
-                
-                // Carica le chiusure specifiche per questa data (solo se non già in cache)
-                if (!requestCache.barberSpecificClosures!.has(date)) {
-                  const originalConsoleLog = console.log;
-                  console.log = () => {}; // Disabilita temporaneamente i log
-                  const specificClosures = await getBarberClosures(barberEmail, date);
-                  console.log = originalConsoleLog; // Ripristina i log
-                  requestCache.barberSpecificClosures!.set(date, specificClosures);
-                }
-                
-                const specificClosures = requestCache.barberSpecificClosures!.get(date) || [];
-                
-                for (const time of availableSlotTimes) {
-                  // Controlla SOLO le chiusure specifiche per orario, ignora quelle ricorrenti
-                  let isClosedSpecific = false;
-                  
-                  if (specificClosures.length > 0) {
-                    const hour = parseInt(time.split(':')[0]);
-                    const isMorning = hour < 14;
-                    
-                    isClosedSpecific = specificClosures.some(closure => {
-                      if (closure.closureType === 'full') return true;
-                      if (closure.closureType === 'morning' && isMorning) return true;
-                      if (closure.closureType === 'afternoon' && !isMorning) return true;
-                      return false;
-                    });
-                  }
-                  
-                  if (!isClosedSpecific) {
-                    finalAvailableSlots.push(time);
-                  }
-                }
-              }
-              
-              availability[date] = {
-                hasSlots: finalAvailableSlots.length > 0,
-                availableCount: finalAvailableSlots.length,
-                totalSlots: allTimeSlots.length
-              };
-              
-              // ✅ Mark this date as exceptional opening (overrides recurring closures)
-              exceptionalOpenings.push(date);
-              
-              if (date === '2025-10-30') {
-                console.log(`🎯 [Oct 30] MARKED AS EXCEPTIONAL OPENING!`);
-                console.log(`   exceptionalOpenings array now:`, exceptionalOpenings);
-              }
-              
-              console.log(`✅ ${date}: Apertura eccezionale - ${finalAvailableSlots.length}/${allTimeSlots.length} slot disponibili`);
-              continue;
-            }
-          } catch (error) {
-            console.error(`Error parsing exceptional schedule for ${date}:`, error);
-          }
-        }
-        
-        // Se schedule ha day_off=true o non esiste, controlla chiusure generali
+
+        const isRecurringClosed = barberEmail ? isBarberClosedRecurringCached(date, requestCache) : false;
+        const isManualExceptionalOpening = !!schedule && !schedule.dayOff && isRecurringClosed && isManualExceptionalSchedule(schedule);
+
+        // Prima rispetta le chiusure generali del salone: non sono sovrascritte
+        // dagli schedule del singolo barbiere.
         const dateIsClosed = await isDateClosedCached(date, requestCache);
         if (dateIsClosed) {
           availability[date] = {
@@ -179,27 +103,114 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
+        // Le chiusure ricorrenti del barbiere devono chiudere la data anche se esiste
+        // uno schedule generato automaticamente con day_off=false. Solo un'apertura
+        // eccezionale manuale può sovrascriverle.
+        if (isRecurringClosed && !isManualExceptionalOpening) {
+          availability[date] = {
+            hasSlots: false,
+            availableCount: 0,
+            totalSlots: 0
+          };
+          continue;
+        }
+
+        // Se c'è uno schedule con day_off=false, usa gli slot configurati per quel giorno.
+        // Se la data era ricorrentemente chiusa, arriva qui solo se è un'apertura eccezionale manuale.
+        if (schedule && !schedule.dayOff && schedule.availableSlots) {
+          const allTimeSlots = getScheduleTimeSlots(schedule.availableSlots, schedule.unavailableSlots);
+
+          if (date === '2025-10-30') {
+            console.log(`🔍 [Oct 30] Parsed slots:`, {
+              allTimeSlots: allTimeSlots.length,
+              willEnterBlock: allTimeSlots.length > 0,
+              isManualExceptionalOpening
+            });
+          }
+
+          if (allTimeSlots.length > 0) {
+            // Get available slots
+            const availableSlotTimes = await DatabaseService.getAvailableSlots(barberId, date);
+
+            let finalAvailableSlots = availableSlotTimes;
+            if (barberEmail) {
+              finalAvailableSlots = [];
+
+              if (isManualExceptionalOpening) {
+                // Per aperture eccezionali manuali, controlla SOLO le chiusure specifiche per orario
+                // (la chiusura ricorrente è già stata sovrascritta manualmente).
+                if (!requestCache.barberSpecificClosures!.has(date)) {
+                  const originalConsoleLog = console.log;
+                  console.log = () => {}; // Disabilita temporaneamente i log
+                  const specificClosures = await getBarberClosures(barberEmail, date);
+                  console.log = originalConsoleLog; // Ripristina i log
+                  requestCache.barberSpecificClosures!.set(date, specificClosures);
+                }
+
+                const specificClosures = requestCache.barberSpecificClosures!.get(date) || [];
+
+                for (const time of availableSlotTimes) {
+                  let isClosedSpecific = false;
+
+                  if (specificClosures.length > 0) {
+                    const hour = parseInt(time.split(':')[0]);
+                    const isMorning = hour < 14;
+
+                    isClosedSpecific = specificClosures.some(closure => {
+                      if (closure.closureType === 'full') return true;
+                      if (closure.closureType === 'morning' && isMorning) return true;
+                      if (closure.closureType === 'afternoon' && !isMorning) return true;
+                      return false;
+                    });
+                  }
+
+                  if (!isClosedSpecific) {
+                    finalAvailableSlots.push(time);
+                  }
+                }
+              } else {
+                // Giorno normale con schedule: applica sia chiusure specifiche sia eventuali ricorrenti.
+                for (const time of availableSlotTimes) {
+                  const barberIsClosed = await isBarberClosedCached(barberEmail, date, time, requestCache);
+                  if (!barberIsClosed) {
+                    finalAvailableSlots.push(time);
+                  }
+                }
+              }
+            }
+
+            availability[date] = {
+              hasSlots: finalAvailableSlots.length > 0,
+              availableCount: finalAvailableSlots.length,
+              totalSlots: allTimeSlots.length
+            };
+
+            if (isManualExceptionalOpening) {
+              exceptionalOpenings.push(date);
+            }
+
+            if (date === '2025-10-30' && isManualExceptionalOpening) {
+              console.log(`🎯 [Oct 30] MARKED AS EXCEPTIONAL OPENING!`);
+              console.log(`   exceptionalOpenings array now:`, exceptionalOpenings);
+            }
+
+            console.log(`✅ ${date}: ${isManualExceptionalOpening ? 'Apertura eccezionale' : 'Disponibilità'} - ${finalAvailableSlots.length}/${allTimeSlots.length} slot disponibili`);
+            continue;
+          }
+        }
+
         // Generate all possible time slots for the day
         // IMPORTANT: Use schedule from database if available, as it may have custom hours
         let allTimeSlots: string[] = [];
-        
+
         if (schedule && !schedule.dayOff && schedule.availableSlots) {
           // Use slots from database (custom schedule for this specific day)
-          try {
-            const availableFromSchedule = JSON.parse(schedule.availableSlots);
-            const unavailableFromSchedule = schedule.unavailableSlots ? JSON.parse(schedule.unavailableSlots) : [];
-            // All possible slots = available + unavailable
-            allTimeSlots = [...new Set([...availableFromSchedule, ...unavailableFromSchedule])];
-          } catch (error) {
-            console.error(`Error parsing schedule for ${date}:`, error);
-            // Fallback to generated standard slots
-            allTimeSlots = await generateAllTimeSlots(date, requestCache);
-          }
+          allTimeSlots = getScheduleTimeSlots(schedule.availableSlots, schedule.unavailableSlots);
         } else {
           // No specific schedule, use standard generated slots
           allTimeSlots = await generateAllTimeSlots(date, requestCache);
         }
-        
+
         const totalSlots = allTimeSlots.length;
 
         if (totalSlots === 0) {
@@ -213,10 +224,10 @@ export async function POST(request: NextRequest) {
 
         // Get available slots from database
         const availableSlotTimes = await DatabaseService.getAvailableSlots(barberId, date);
-        
+
         // Filter out slots where barber is closed (with cache)
         let finalAvailableSlots = availableSlotTimes;
-        
+
         if (barberEmail) {
           finalAvailableSlots = [];
           for (const time of availableSlotTimes) {
@@ -245,10 +256,10 @@ export async function POST(request: NextRequest) {
 
     console.log(`✅ Batch availability completed - processed ${dates.length} dates`);
     console.log(`📊 Exceptional openings found: ${exceptionalOpenings.length}`, exceptionalOpenings);
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       availability,
-      exceptionalOpenings 
+      exceptionalOpenings
     } as BatchAvailabilityResponse, {
       headers: {
         'Cache-Control': 'private, max-age=300, stale-while-revalidate=600'
@@ -279,12 +290,12 @@ async function generateAllTimeSlots(dateString: string, requestCache?: RequestCa
     slots.push('13:00', '13:30', '14:00', '14:30');
     return slots;
   }
-  
+
   // Check if the day is closed according to closure settings
-  const dateIsClosed = requestCache 
+  const dateIsClosed = requestCache
     ? await isDateClosedCached(dateString, requestCache)
     : await isDateClosed(dateString);
-    
+
   if (dateIsClosed) {
     return slots; // Return empty array if day is closed
   }
@@ -310,7 +321,7 @@ async function generateAllTimeSlots(dateString: string, requestCache?: RequestCa
         slots.push(timeString);
       }
     }
-    
+
     // Afternoon slots 15:00-17:30
     for (let hour = 15; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
@@ -332,7 +343,7 @@ async function generateAllTimeSlots(dateString: string, requestCache?: RequestCa
         slots.push(timeString);
       }
     }
-    
+
     // Afternoon slots 15:00-19:00
     for (let hour = 15; hour <= 19; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
@@ -341,18 +352,18 @@ async function generateAllTimeSlots(dateString: string, requestCache?: RequestCa
       }
     }
   }
-  
+
   return slots;
 }
 
 // Funzioni cache per evitare query ripetitive durante una singola richiesta batch
 async function isDateClosedCached(date: string, cache: RequestCache): Promise<boolean> {
   const cacheKey = `date_${date}`;
-  
+
   if (cache.closedDatesCache.has(cacheKey)) {
     return cache.closedDatesCache.get(cacheKey)!;
   }
-  
+
   // Usa le impostazioni dalla cache invece di rileggerle dal database
   if (!cache.closureSettings) {
     // Fallback nel caso la cache non sia stata inizializzata
@@ -360,39 +371,58 @@ async function isDateClosedCached(date: string, cache: RequestCache): Promise<bo
     cache.closedDatesCache.set(cacheKey, isClosed);
     return isClosed;
   }
-  
+
   const settings = cache.closureSettings;
-  
+
   // Controlla se è una data specifica chiusa
   if (settings.closedDates.includes(date)) {
     cache.closedDatesCache.set(cacheKey, true);
     return true;
   }
-  
+
   // Controlla se è un giorno della settimana chiuso
   const dateObj = new Date(date + 'T00:00:00');
   const dayOfWeek = dateObj.getDay();
   const isClosed = settings.closedDays.includes(dayOfWeek);
-  
+
   cache.closedDatesCache.set(cacheKey, isClosed);
   return isClosed;
 }
 
+function isBarberClosedRecurringCached(date: string, cache: RequestCache): boolean {
+  if (!cache.barberRecurringClosures || cache.barberRecurringClosures.length === 0) {
+    return false;
+  }
+
+  const parsedDate = new Date(date + 'T00:00:00');
+  const dayOfWeek = parsedDate.getDay();
+
+  return cache.barberRecurringClosures.some(closure => {
+    try {
+      const closedDays = JSON.parse(closure.closedDays);
+      return Array.isArray(closedDays) && closedDays.includes(dayOfWeek);
+    } catch (error) {
+      console.error('Error parsing closed days:', error);
+      return false;
+    }
+  });
+}
+
 async function isBarberClosedCached(barberEmail: string, date: string, time: string, cache: RequestCache): Promise<boolean> {
   const cacheKey = `barber_${barberEmail}_${date}_${time}`;
-  
+
   if (cache.barberClosedCache.has(cacheKey)) {
     return cache.barberClosedCache.get(cacheKey)!;
   }
-  
+
   let isClosed = false;
-  
+
   try {
     // Prima controlla le chiusure ricorrenti (giorni della settimana) dalla cache
     if (cache.barberRecurringClosures && cache.barberRecurringClosures.length > 0) {
       const parsedDate = new Date(date + 'T00:00:00');
       const dayOfWeek = parsedDate.getDay();
-      
+
       const isClosedRecurring = cache.barberRecurringClosures.some(closure => {
         try {
           const closedDays = JSON.parse(closure.closedDays);
@@ -402,12 +432,12 @@ async function isBarberClosedCached(barberEmail: string, date: string, time: str
           return false;
         }
       });
-      
+
       if (isClosedRecurring) {
         isClosed = true;
       }
     }
-    
+
     // Se non è chiuso per chiusure ricorrenti, controlla le chiusure specifiche per quella data
     if (!isClosed) {
       // Carica le chiusure specifiche per questa data (solo se non già in cache)
@@ -415,21 +445,21 @@ async function isBarberClosedCached(barberEmail: string, date: string, time: str
         // Usa getBarberClosures ma silenzia i log per evitare spam
         const originalConsoleLog = console.log;
         console.log = () => {}; // Disabilita temporaneamente i log
-        
+
         const specificClosures = await getBarberClosures(barberEmail, date);
-        
+
         console.log = originalConsoleLog; // Ripristina i log
-        
+
         cache.barberSpecificClosures!.set(date, specificClosures);
       }
-      
+
       const specificClosures = cache.barberSpecificClosures!.get(date) || [];
-      
+
       if (specificClosures.length > 0) {
         // Determina se l'orario è mattina o pomeriggio
         const hour = parseInt(time.split(':')[0]);
         const isMorning = hour < 14; // Prima delle 14:00 è mattina
-        
+
         // Controlla se c'è una chiusura che copre questo orario
         isClosed = specificClosures.some(closure => {
           if (closure.closureType === 'full') return true;
@@ -443,7 +473,7 @@ async function isBarberClosedCached(barberEmail: string, date: string, time: str
     console.error('Error checking barber closure:', error);
     isClosed = false;
   }
-  
+
   cache.barberClosedCache.set(cacheKey, isClosed);
   return isClosed;
 }

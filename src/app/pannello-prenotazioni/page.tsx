@@ -745,41 +745,45 @@ export default function PannelloPrenotazioni() {
   // If still loading session or permissions, show loading
   if (status === 'loading' || !permissionsChecked) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <main className="maskio-page flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
-          <p className="text-white text-lg">Caricamento...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-transparent border-t-yellow-300" />
+          <p className="text-lg font-semibold text-white">Caricamento pannello...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   // If not logged in or not authorized, show access denied
   if (!session || !isAuthorized) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <main className="maskio-page flex min-h-screen items-center justify-center px-4">
         <motion.div
-          className="text-center max-w-md mx-auto p-8"
+          className="maskio-panel mx-auto max-w-md rounded-2xl p-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="text-6xl mb-6">🔒</div>
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Accesso Negato
+          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-yellow-500/25 bg-yellow-500/10 text-yellow-200">
+            <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z" />
+            </svg>
+          </div>
+          <h1 className="mb-4 text-2xl font-bold text-white">
+            Accesso negato
           </h1>
-          <p className="text-gray-400 text-lg mb-6">
+          <p className="mb-6 text-lg text-zinc-400">
             Solo i barbieri autorizzati possono accedere a questo pannello.
           </p>
           <motion.a
             href="/"
-            className="inline-block bg-amber-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="maskio-button px-6 py-3"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            Torna alla Home
+            Torna alla home
           </motion.a>        </motion.div>
-      </div>
+      </main>
     );
   }
 
@@ -1614,24 +1618,24 @@ Grazie! 😊`;
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-transparent border-t-amber-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 md:space-y-6 pb-20 md:pb-6">
+    <main className="maskio-page maskio-grain space-y-5 px-4 py-24 md:space-y-7 md:pb-10 sm:px-6">
       {/* Barra Azioni Principali */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
+      <div className="maskio-wide relative z-10 flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() => setShowCustomerSearch(!showCustomerSearch)}
-          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm flex items-center gap-2 ${showCustomerSearch
-            ? 'bg-blue-600 text-white hover:bg-blue-700'
-            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${showCustomerSearch
+            ? 'bg-yellow-300 text-black'
+            : 'border border-white/10 bg-white/[0.04] text-zinc-200 hover:border-yellow-300/35'
             }`}
         >
-          🔍 Ricerca Cliente
+          Ricerca cliente
         </button>
       </div>
 
@@ -1640,11 +1644,11 @@ Grazie! 😊`;
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-900 border border-gray-800 p-6 rounded-lg shadow-lg"
+          className="maskio-panel maskio-wide relative z-10 rounded-2xl p-6"
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              🔍 Ricerca Prenotazioni Cliente
+              Ricerca prenotazioni cliente
             </h2>
             <button
               type="button"
@@ -1672,7 +1676,7 @@ Grazie! 😊`;
                   searchCustomerBookings(e.target.value);
                 }}
                 placeholder="Inserisci il nome del cliente..."
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="maskio-input"
               />
               <p className="text-xs text-gray-400 mt-1">
                 Inserisci almeno 2 caratteri per cercare
@@ -1681,7 +1685,7 @@ Grazie! 😊`;
 
             {isSearching && (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-transparent border-t-blue-500"></div>
               </div>
             )}
 
@@ -1755,36 +1759,36 @@ Grazie! 😊`;
 
       {/* Statistiche - Ottimizzate per Mobile */}
       {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-          <div className="bg-gray-900 border border-gray-800 p-4 md:p-6 rounded-lg shadow-lg">
-            <div className="text-lg md:text-2xl font-bold text-white">{stats.totalBookings}</div>
-            <div className="text-xs md:text-sm text-gray-300 leading-tight">Prenotazioni Totali</div>
+        <div className="maskio-wide relative z-10 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
+          <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
+            <div className="text-xl font-semibold text-white md:text-2xl">{stats.totalBookings}</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-400 md:text-sm">Prenotazioni totali</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 p-4 md:p-6 rounded-lg shadow-lg">
-            <div className="text-lg md:text-2xl font-bold text-amber-400">{stats.todayBookings}</div>
-            <div className="text-xs md:text-sm text-gray-300 leading-tight">Oggi</div>
+          <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
+            <div className="text-xl font-semibold text-yellow-200 md:text-2xl">{stats.todayBookings}</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-300 md:text-sm">Oggi</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 p-4 md:p-6 rounded-lg shadow-lg">
-            <div className="text-lg md:text-2xl font-bold text-blue-400">{stats.selectedDateBookings}</div>
-            <div className="text-xs md:text-sm text-gray-300 leading-tight">
+          <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
+            <div className="text-xl font-semibold text-white md:text-2xl">{stats.selectedDateBookings}</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-400 md:text-sm">
               {format(parseISO(selectedDate + 'T00:00:00'), 'dd/MM', { locale: it })}
             </div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 p-4 md:p-6 rounded-lg shadow-lg">
-            <div className="text-lg md:text-2xl font-bold text-green-400">€{stats.dailyRevenue.toFixed(2)}</div>
-            <div className="text-xs md:text-sm text-gray-300 leading-tight">
+          <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
+            <div className="text-xl font-semibold text-green-200 md:text-2xl">€{stats.dailyRevenue.toFixed(2)}</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-300 md:text-sm">
               Ricavi {format(parseISO(selectedDate + 'T00:00:00'), 'dd/MM', { locale: it })}
             </div>
           </div>
         </div>
-      )}      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      )}      <div className="maskio-wide relative z-10 py-8">
+        <div className="maskio-panel mb-8 flex flex-col justify-between gap-4 rounded-2xl p-5 md:flex-row md:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              📅 Pannello Prenotazioni
-              {isAdmin && <span className="text-sm bg-red-900/50 text-red-200 px-2 py-1 rounded border border-red-800">Admin Mode</span>}
+            <h1 className="flex items-center gap-3 text-2xl font-semibold text-white md:text-3xl">
+              Pannello Prenotazioni
+              {isAdmin && <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-200">Admin Mode</span>}
             </h1>
-            <p className="text-amber-500/80 mt-1">
+            <p className="mt-2 text-sm text-yellow-200/80">
               {isAdmin ? 'Gestione completa del sistema' : `Bentornato, ${session?.user?.name || 'Barbiere'}`}
             </p>
           </div>
@@ -1792,11 +1796,10 @@ Grazie! 😊`;
           <div className="flex flex-wrap gap-3">
             <a
               href="/admin/users"
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors border border-gray-700"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-yellow-400/40"
               title="Gestione Clienti e Account"
             >
-              <span>👥</span>
-              <span className="hidden sm:inline">Gestione Clienti</span>
+              <span className="hidden sm:inline">Gestione clienti</span>
             </a>
 
             <button
@@ -1804,20 +1807,18 @@ Grazie! 😊`;
                 const updated = !displayMode || displayMode === 'grid' ? 'table' : 'grid';
                 setDisplayMode(updated);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors border border-gray-700"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-yellow-400/40"
             >
-              <span>{displayMode === 'table' ? '📅' : '📋'}</span>
-              <span className="hidden sm:inline">{displayMode === 'table' ? 'Vista Calendario' : 'Vista Storico'}</span>
+              <span className="hidden sm:inline">{displayMode === 'table' ? 'Vista calendario' : 'Vista storico'}</span>
             </button>
             <button
               onClick={() => setShowClosureSettings(!showClosureSettings)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors border ${showClosureSettings
-                ? 'bg-amber-600 text-white border-amber-500'
-                : 'bg-gray-800 hover:bg-gray-700 text-white border-gray-700'
+              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showClosureSettings
+                ? 'border-yellow-400/40 bg-yellow-400 text-black'
+                : 'border-white/10 bg-zinc-900 text-white hover:border-yellow-400/40'
                 }`}
             >
-              <span>🔒</span>
-              <span className="hidden sm:inline">Gestione Chiusure</span>
+              <span className="hidden sm:inline">Gestione chiusure</span>
             </button>
           </div>
         </div>  {showClosureSettings && (
@@ -2769,7 +2770,7 @@ Grazie! 😊`;
                         <td className="px-6 py-4">
                           <div className="text-sm text-white max-w-xs">
                             {booking.notes ? (
-                              <div className="bg-blue-900/50 border border-blue-500 p-2 rounded text-xs border-l-4 border-l-blue-400">
+                              <div className="rounded-lg border border-blue-500/40 bg-blue-900/40 p-2 text-xs">
                                 {booking.notes}
                               </div>
                             ) : (<span className="text-gray-500 italic">Nessuna nota</span>
@@ -2934,6 +2935,6 @@ Grazie! 😊`;
           onSwapComplete={onSwapComplete}
         />
       )}
-    </div>
+    </main>
   );
 }

@@ -98,7 +98,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
       const result = await response.json();
 
       if (response.ok) {
-        alert('🎉 Candidatura inviata con successo! Ti contatteremo presto.');
+        alert('Candidatura inviata con successo. Ti contatteremo presto.');
         // Reset form
         setFormData({
           name: '',
@@ -112,11 +112,11 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
         const fileInput = document.getElementById('cv') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       } else {
-        alert(`❌ Errore: ${result.error}`);
+        alert(`Errore: ${result.error}`);
       }
     } catch (error) {
       console.error('Errore durante l\'invio:', error);
-      alert('❌ Errore durante l\'invio. Riprova più tardi.');
+      alert('Errore durante l\'invio. Riprova più tardi.');
     } finally {
       setIsSubmitting(false);
     }
@@ -150,9 +150,9 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
     visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } }
   };
   return (
-    <div className="min-h-screen bg-black">{/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-gray-800 pt-20">
-        <div className="absolute inset-0 bg-black/40"></div>
+    <div className="maskio-page maskio-grain min-h-screen">{/* Hero Section */}
+      <section className="relative overflow-hidden pt-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(216,173,76,0.12),transparent_30rem)]"></div>
         {/* Qui potrai aggiungere la tua immagine hero personalizzata */}
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -170,9 +170,9 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
             </motion.div>
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-7xl font-bold text-white mb-6"
+              className="maskio-heading text-6xl font-bold text-white mb-6 md:text-8xl"
             >
-              Lavora con <span className="text-yellow-400">Noi</span>
+              Lavora con <span className="text-yellow-200">Noi</span>
             </motion.h1>
             <motion.p 
               variants={fadeInUp}
@@ -203,7 +203,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
 
       
       {/* Why Choose Us */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-800">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -251,7 +251,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                     key={index}
                     variants={fadeInUp}
                     transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-4 p-6 bg-gray-800 border border-gray-700 rounded-xl hover:bg-gray-700 transition-all duration-300 group"
+                    className="maskio-card flex items-start gap-4 rounded-2xl p-6 transition-colors hover:border-yellow-300/30 group"
                   >
                     <div className="flex-shrink-0 w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
                       <Icon className="h-6 w-6 text-yellow-600" />
@@ -270,7 +270,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
           </div>
         </div>
       </section>      {/* Application Form */}
-      <section id="application-form" className="py-20 bg-gray-900">
+      <section id="application-form" className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -292,7 +292,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
             whileInView="visible"
             viewport={{ once: true }}
             variants={scaleIn}
-            className="bg-gray-800 border border-gray-700 rounded-3xl p-8 md:p-12 shadow-2xl"
+            className="maskio-panel rounded-2xl p-8 md:p-12"
           >
             <form onSubmit={handleSubmit} className="space-y-6">              <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -306,7 +306,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-4 border border-gray-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-300 bg-gray-700 shadow-sm text-white placeholder-gray-400"
+                    className="maskio-input py-4"
                     placeholder="Mario Rossi"
                   />
                 </div>
@@ -322,7 +322,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-4 border border-gray-600 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 bg-gray-700 shadow-sm text-white placeholder-gray-400"
+                    className="maskio-input py-4"
                     placeholder="mario.rossi@email.com"
                   />
                 </div>
@@ -338,7 +338,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                     value={formData.phone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-4 border border-gray-600 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 bg-gray-700 shadow-sm text-white placeholder-gray-400"
+                    className="maskio-input py-4"
                     placeholder="+39 123 456 7890"
                   />
                 </div>
@@ -354,7 +354,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                   name="experience"
                   value={formData.experience}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-4 border border-gray-600 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 bg-gray-700 shadow-sm text-white placeholder-gray-400"
+                  className="maskio-input py-4"
                   placeholder="Es. 3 anni nel settore barbering, specializzato in tagli classici"
                 />
               </div>
@@ -384,7 +384,7 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                   value={formData.message}
                   onChange={handleInputChange}
                   rows={5}
-                  className="w-full px-4 py-4 border border-gray-600 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 resize-none bg-gray-700 shadow-sm text-white placeholder-gray-400"
+                  className="maskio-input min-h-36 resize-none py-4"
                   placeholder="Raccontaci di te, delle tue passioni e perché vorresti far parte del team Maskio..."
                 ></textarea>
               </div>              <motion.button
@@ -398,14 +398,14 @@ export default function LavoraConNoi() {  const [formData, setFormData] = useSta
                     : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white'
                 }`}
               >
-                {isSubmitting ? '🔄 Invio in corso...' : '🚀 Invia la Tua Candidatura'}
+                {isSubmitting ? 'Invio in corso...' : 'Invia la candidatura'}
               </motion.button>
             </form>
           </motion.div>
         </div>
       </section>      {/* Contact & CTA */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-yellow-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/40"></div>
+      <section className="relative overflow-hidden py-20 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(216,173,76,0.12),transparent_30rem)]"></div>
         {/* Qui potrai aggiungere la tua immagine di sfondo personalizzata */}
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -24,10 +24,10 @@ export default function Page() {
     const address = "Via Sant'Agata 24, San Giovanni Rotondo, FG, Italy";
     const coordinates = "41.7060835,15.7188087";
     const placeName = "Maskio Barber Concept";
-    
+
     // Rileva il dispositivo e apre l'app appropriata
     const userAgent = navigator.userAgent;
-    
+
     if (/iPad|iPhone|iPod/.test(userAgent)) {
       // iOS - Apple Maps
       window.open(`http://maps.apple.com/?q=${encodeURIComponent(placeName)}&ll=${coordinates}&address=${encodeURIComponent(address)}`, '_blank');
@@ -45,9 +45,9 @@ export default function Page() {
     const address = "Via Sant'Agata 24, San Giovanni Rotondo, FG, Italy";
     const coordinates = "41.7060835,15.7188087";
     const placeName = "Maskio Barber Concept";
-    
+
     const userAgent = navigator.userAgent;
-    
+
     if (/iPad|iPhone|iPod/.test(userAgent)) {
       // iOS - Apple Maps indicazioni
       window.open(`http://maps.apple.com/?daddr=${coordinates}&dirflg=d`, '_blank');
@@ -59,15 +59,15 @@ export default function Page() {
       window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(placeName + ", " + address)}`, '_blank');
     }
   };
-  
+
   // Professional Animation Variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { 
-        duration: 0.8, 
+      transition: {
+        duration: 0.8,
         ease: [0.25, 0.46, 0.45, 0.94],
         type: "spring",
         stiffness: 100
@@ -77,11 +77,11 @@ export default function Page() {
 
   const fadeInLeft = {
     hidden: { opacity: 0, x: -50, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       scale: 1,
-      transition: { 
+      transition: {
         duration: 0.7,
         ease: [0.25, 0.46, 0.45, 0.94],
         type: "spring",
@@ -92,11 +92,11 @@ export default function Page() {
 
   const fadeInRight = {
     hidden: { opacity: 0, x: 50, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       scale: 1,
-      transition: { 
+      transition: {
         duration: 0.7,
         ease: [0.25, 0.46, 0.45, 0.94],
         type: "spring",
@@ -119,11 +119,11 @@ export default function Page() {
 
   const scaleIn = {
     hidden: { scale: 0.8, opacity: 0 },
-    visible: { 
-      scale: 1, 
+    visible: {
+      scale: 1,
       opacity: 1,
-      transition: { 
-        duration: 0.6, 
+      transition: {
+        duration: 0.6,
         ease: [0.25, 0.46, 0.45, 0.94],
         type: "spring",
         stiffness: 150
@@ -159,15 +159,15 @@ export default function Page() {
 
   const magneticHover = {
     rest: { scale: 1, rotateZ: 0 },
-    hover: { 
-      scale: 1.05, 
+    hover: {
+      scale: 1.05,
       rotateZ: 1,
       transition: {
         duration: 0.3,
         ease: "easeInOut"
       }
     },
-    tap: { 
+    tap: {
       scale: 0.98,
       transition: {
         duration: 0.1
@@ -176,7 +176,7 @@ export default function Page() {
   };
 
   const gradientShift = {
-    hidden: { 
+    hidden: {
       background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)"
     },
     visible: {
@@ -194,7 +194,7 @@ export default function Page() {
     }
   };
   return (
-    <main className="min-h-screen bg-black">      {/* Floating Background Elements */}
+    <main className="maskio-page maskio-grain min-h-screen">      {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div
           initial="hidden"
@@ -239,8 +239,8 @@ export default function Page() {
         <div className="max-w-6xl mx-auto">          {/* Animated Background Shape */}
           <motion.div
             initial={{ scale: 0, rotate: 0 }}
-            animate={{ 
-              scale: 1, 
+            animate={{
+              scale: 1,
               rotate: 360,
               borderRadius: ["20%", "50%", "30%", "20%"]
             }}
@@ -251,16 +251,16 @@ export default function Page() {
             }}
             className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 opacity-5 -z-10"
           />          <motion.div variants={fadeInUp} className="text-center mb-4">
-            <motion.h1 
+            <motion.h1
               variants={fadeInUp}
-              className="text-4xl md:text-6xl font-bold text-white mb-6"
+              className="maskio-heading text-6xl font-bold text-white mb-6 md:text-8xl"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
               La Nostra{" "}
-              <motion.span 
+              <motion.span
                 className="text-amber-500 inline-block"
-                animate={{ 
+                animate={{
                   textShadow: [
                     "0 0 0px rgba(245, 158, 11, 0)",
                     "0 0 20px rgba(245, 158, 11, 0.5)",
@@ -277,8 +277,8 @@ export default function Page() {
                 Sede
               </motion.span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               variants={fadeInUp}
               className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
             >
@@ -296,9 +296,9 @@ export default function Page() {
       >
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
+
             {/* Image Section with 3D Effects */}
-            <motion.div 
+            <motion.div
               variants={fadeInLeft}
               className="relative"
               onMouseEnter={() => setHoveredCard('image')}
@@ -306,7 +306,7 @@ export default function Page() {
             >
               <motion.div
                 className="relative overflow-hidden rounded-2xl shadow-2xl"
-                whileHover={{ 
+                whileHover={{
                   scale: 1.02,
                   rotateY: 5,
                   rotateX: 2,
@@ -323,7 +323,7 @@ export default function Page() {
                   height={400}
                   className="w-full h-[400px] object-cover"
                 />
-                
+
                 {/* Overlay with gradient */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-amber-500/20"
@@ -391,7 +391,7 @@ export default function Page() {
                 variants={staggerContainer}
                 viewport={{ once: true }}
                 className="space-y-6"
-              >                <motion.h2 
+              >                <motion.h2
                   variants={scaleIn}
                   className="text-3xl md:text-4xl font-bold text-white"
                   whileHover={{ scale: 1.02 }}
@@ -399,8 +399,8 @@ export default function Page() {
                 >
                   Un'Esperienza di Stile Unica
                 </motion.h2>
-                
-                <motion.p 
+
+                <motion.p
                   variants={slideInFromBottom}
                   className="text-lg text-gray-300 leading-relaxed"
                 >
@@ -444,8 +444,8 @@ export default function Page() {
                         repeatType: "reverse",
                         delay: index * 0.5
                       }}
-                      whileHover={{ 
-                        scale: 1.2, 
+                      whileHover={{
+                        scale: 1.2,
                         rotate: 10,
                         boxShadow: "0 10px 25px rgba(75, 85, 99, 0.3)"
                       }}
@@ -463,7 +463,7 @@ export default function Page() {
                         {feature.icon}
                       </motion.span>
                     </motion.div>
-                    <motion.span 
+                    <motion.span
                       className="text-gray-300 font-medium"
                       whileHover={{ color: "#f59e0b" }}
                       transition={{ duration: 0.2 }}
@@ -504,9 +504,9 @@ export default function Page() {
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
+
             {/* Tools Image Section */}
-            <motion.div 
+            <motion.div
               variants={fadeInLeft}
               className="relative order-2 lg:order-1"
               onMouseEnter={() => setHoveredCard('tools')}
@@ -514,7 +514,7 @@ export default function Page() {
             >
               <motion.div
                 className="relative overflow-hidden rounded-3xl shadow-2xl"
-                whileHover={{ 
+                whileHover={{
                   scale: 1.03,
                   rotateY: 3,
                   rotateX: 2,
@@ -532,7 +532,7 @@ export default function Page() {
                   height={500}
                   className="w-full h-[500px] object-cover"
                 />
-                
+
                 {/* Dynamic Overlay Effects */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-amber-600/20"
@@ -618,7 +618,7 @@ export default function Page() {
             </motion.div>
 
             {/* Content Section */}
-            <motion.div 
+            <motion.div
               variants={fadeInRight}
               className="space-y-8 order-1 lg:order-2"
             >
@@ -629,15 +629,15 @@ export default function Page() {
                 viewport={{ once: true }}
                 className="space-y-6"
               >
-                <motion.h2 
+                <motion.h2
                   variants={scaleIn}
                   className="text-4xl md:text-5xl font-bold text-white"
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}                >
                   Strumenti di{" "}
-                  <motion.span 
+                  <motion.span
                     className="text-amber-500 inline-block"
-                    animate={{ 
+                    animate={{
                       textShadow: [
                         "0 0 0px rgba(245, 158, 11, 0)",
                         "0 0 30px rgba(245, 158, 11, 0.7)",
@@ -654,20 +654,20 @@ export default function Page() {
                     Eccellenza
                   </motion.span>
                 </motion.h2>
-                
-                <motion.p 
+
+                <motion.p
                   variants={slideInFromBottom}
                   className="text-lg text-gray-300 leading-relaxed"
                 >
-                  Utilizziamo esclusivamente strumenti professionali delle migliori marche internazionali. 
+                  Utilizziamo esclusivamente strumenti professionali delle migliori marche internazionali.
                   Ogni forbice, rasoio e accessorio è selezionato per garantire precisione, comfort e risultati impeccabili.
                 </motion.p>
 
-                <motion.p 
+                <motion.p
                   variants={slideInFromBottom}
                   className="text-lg text-gray-300 leading-relaxed"
                 >
-                  La qualità dei nostri strumenti si riflette nella perfezione di ogni taglio, 
+                  La qualità dei nostri strumenti si riflette nella perfezione di ogni taglio,
                   nella precisione di ogni rasatura e nella cura di ogni dettaglio.
                 </motion.p>
               </motion.div>
@@ -690,8 +690,8 @@ export default function Page() {
                     key={index}
                     variants={slideInFromBottom}
                     className="bg-gray-900/80 border border-gray-800/50 backdrop-blur-sm p-6 rounded-xl hover:bg-gray-800/80 transition-all duration-300 group"
-                    whileHover={{ 
-                      y: -5, 
+                    whileHover={{
+                      y: -5,
                       scale: 1.02,
                       boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)"
                     }}
@@ -718,8 +718,8 @@ export default function Page() {
                           repeatType: "reverse",
                           delay: index * 0.5
                         }}
-                        whileHover={{ 
-                          scale: 1.15, 
+                        whileHover={{
+                          scale: 1.15,
                           rotate: 5,
                           borderColor: "rgba(245, 158, 11, 0.6)"
                         }}
@@ -776,17 +776,17 @@ export default function Page() {
             repeatType: "reverse"
           }}
         />
-        
+
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div variants={fadeInUp} className="text-center mb-16">
-            <motion.h2 
+            <motion.h2
               className="text-4xl md:text-5xl font-bold text-white mb-6"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
-              📍 Trova la Nostra Sede
+              Trova la nostra sede
             </motion.h2>
-            <motion.p 
+            <motion.p
               variants={fadeInUp}
               className="text-xl text-gray-300 max-w-3xl mx-auto"
             >
@@ -804,7 +804,7 @@ export default function Page() {
             >
               <motion.div
                 className="relative overflow-hidden rounded-3xl shadow-2xl bg-gray-900 border border-gray-800"
-                whileHover={{ 
+                whileHover={{
                   scale: 1.02,
                   y: -5,
                 }}
@@ -822,7 +822,7 @@ export default function Page() {
                         } : {}}
                         transition={{ duration: 0.8, ease: "easeInOut" }}
                       >
-                        <span className="text-white text-sm">🗺️</span>
+                        <span className="text-white text-sm"></span>
                       </motion.div>
                       <h3 className="text-white font-bold text-lg">Maskio Barber Concept</h3>
                     </div>
@@ -833,7 +833,7 @@ export default function Page() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        📍 Visualizza
+                        Visualizza
                       </motion.button>
                       <motion.button
                         onClick={openDirections}
@@ -862,7 +862,7 @@ export default function Page() {
                   )}
                     {/* Error Fallback with Static Map */}
                   {mapError && (
-                    <motion.div 
+                    <motion.div
                       className="absolute inset-0 bg-gray-800 flex items-center justify-center cursor-pointer"
                       onClick={openMaps}
                       whileHover={{ scale: 1.02 }}
@@ -881,7 +881,7 @@ export default function Page() {
                         />
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                           <div className="text-center p-8">
-                            <div className="text-6xl mb-4">🗺️</div>
+                            <div className="text-6xl mb-4"></div>
                             <h3 className="text-white text-xl font-bold mb-2">Visualizza Mappa</h3>
                             <p className="text-gray-300 mb-4">Clicca per aprire la mappa interattiva</p>
                             <div className="bg-amber-500 text-white px-6 py-2 rounded-full font-medium">
@@ -910,7 +910,7 @@ export default function Page() {
                       setMapError(true);
                     }}
                   />
-                  
+
                   {/* Map Overlay for better interaction */}
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gray-900/10 pointer-events-none"
@@ -925,7 +925,7 @@ export default function Page() {
                 <div className="bg-gray-900 p-4 border-t border-gray-700">
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2 text-gray-300">
-                      <span className="text-amber-500">📍</span>
+                      <span className="text-amber-500">•</span>
                       <span>Via Sant'Agata 24, San Giovanni Rotondo (FG)</span>
                     </div>
                     <div className="flex gap-2">
@@ -964,7 +964,7 @@ export default function Page() {
                   repeatType: "reverse"
                 }}
               >
-                <span className="text-white text-xs">📍</span>
+                <span className="text-white text-xs"></span>
               </motion.div>
             </motion.div>
 
@@ -977,10 +977,10 @@ export default function Page() {
                 viewport={{ once: true }}
                 className="space-y-6"
               >
-                <motion.div 
+                <motion.div
                   variants={scaleIn}
-                  className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl"
-                  whileHover={{ 
+                  className="maskio-panel rounded-2xl p-8"
+                  whileHover={{
                     y: -5,
                     boxShadow: "0 25px 50px rgba(0, 0, 0, 0.25)"
                   }}
@@ -995,7 +995,7 @@ export default function Page() {
                     </motion.div>
                     <h3 className="text-2xl font-bold text-white">Come Raggiungerci</h3>
                   </div>
-                  
+
                   <div className="space-y-4 text-gray-300">
                     <div className="flex items-start gap-3">
                       <span className="text-amber-500 mt-1">🚗</span>
@@ -1004,7 +1004,7 @@ export default function Page() {
                         <p>Parcheggio disponibile nelle vicinanze. Facilmente raggiungibile dal centro città.</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-3">
                       <span className="text-blue-500 mt-1">🚌</span>
                       <div>
@@ -1012,7 +1012,7 @@ export default function Page() {
                         <p>Fermata autobus nelle vicinanze. Linee urbane disponibili dal centro.</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-3">
                       <span className="text-green-500 mt-1">🚶</span>
                       <div>
@@ -1023,10 +1023,10 @@ export default function Page() {
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   variants={scaleIn}
-                  className="bg-gray-900 border border-amber-500/20 rounded-2xl p-8"
-                  whileHover={{ 
+                  className="maskio-panel rounded-2xl p-8"
+                  whileHover={{
                     scale: 1.02,
                     boxShadow: "0 15px 35px rgba(245, 158, 11, 0.2)"
                   }}
@@ -1049,7 +1049,7 @@ export default function Page() {
                     </motion.div>
                     <h3 className="text-2xl font-bold text-white">Consigli Utili</h3>
                   </div>
-                  
+
                   <div className="space-y-3 text-gray-300">
                     <p className="flex items-center gap-2">
                       <span className="text-amber-500">✓</span>
@@ -1133,15 +1133,15 @@ export default function Page() {
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <motion.div variants={fadeInUp} className="text-center mb-20">
-            <motion.h2 
+            <motion.h2
               className="text-4xl md:text-5xl font-bold text-white mb-6"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
               Vieni a{" "}
-              <motion.span 
+              <motion.span
                 className="text-amber-500 inline-block"
-                animate={{ 
+                animate={{
                   textShadow: [
                     "0 0 0px rgba(245, 158, 11, 0)",
                     "0 0 25px rgba(245, 158, 11, 0.6)",
@@ -1158,11 +1158,11 @@ export default function Page() {
                 Trovarci
               </motion.span>
             </motion.h2>
-            <motion.p 
+            <motion.p
               variants={fadeInUp}
               className="text-xl text-gray-200 max-w-4xl mx-auto leading-relaxed"
             >
-              Siamo facilmente raggiungibili nel centro di San Giovanni Rotondo. Prenota il tuo appuntamento 
+              Siamo facilmente raggiungibili nel centro di San Giovanni Rotondo. Prenota il tuo appuntamento
               e vieni a scoprire l'eccellenza del nostro servizio in un ambiente moderno e accogliente.
             </motion.p>
           </motion.div>
@@ -1170,9 +1170,9 @@ export default function Page() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">            {/* Enhanced Address Card */}
             <motion.div
               variants={scaleIn}
-              className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-lg border border-gray-700/50 rounded-3xl p-8 shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 group"
-              whileHover={{ 
-                y: -12, 
+              className="maskio-card rounded-2xl p-8 transition-colors hover:border-yellow-300/30 group"
+              whileHover={{
+                y: -12,
                 scale: 1.03,
                 boxShadow: "0 30px 60px rgba(245, 158, 11, 0.15)"
               }}
@@ -1192,7 +1192,7 @@ export default function Page() {
                 } : {}}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
               >
-                <motion.span 
+                <motion.span
                   className="text-3xl text-white"
                   animate={{ rotate: [0, 12, -12, 0] }}
                   transition={{
@@ -1202,7 +1202,7 @@ export default function Page() {
                     repeatType: "reverse"
                   }}
                 >
-                  📍
+
                 </motion.span>
               </motion.div>
               <h3 className="text-2xl font-bold text-white mb-6 text-center group-hover:text-amber-400 transition-colors duration-300">
@@ -1213,7 +1213,7 @@ export default function Page() {
                 <p className="text-gray-300 text-base">71013 San Giovanni Rotondo (FG)</p>
                 <p className="text-gray-300 text-base">Italia</p>
               </div>
-              
+
               {/* Animated Border */}
               <motion.div
                 className="absolute inset-0 rounded-3xl border-2 border-transparent"
@@ -1227,9 +1227,9 @@ export default function Page() {
             {/* Enhanced Hours Card */}
             <motion.div
               variants={scaleIn}
-              className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-lg border border-gray-700/50 rounded-3xl p-8 shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 group"
-              whileHover={{ 
-                y: -12, 
+              className="maskio-card rounded-2xl p-8 transition-colors hover:border-yellow-300/30 group"
+              whileHover={{
+                y: -12,
                 scale: 1.03,
                 boxShadow: "0 30px 60px rgba(59, 130, 246, 0.15)"
               }}
@@ -1249,7 +1249,7 @@ export default function Page() {
                 } : {}}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
               >
-                <motion.span 
+                <motion.span
                   className="text-3xl text-white"
                   animate={{ rotate: [0, 360] }}
                   transition={{
@@ -1260,7 +1260,7 @@ export default function Page() {
                 >
                   🕐
                 </motion.span>
-              </motion.div>              
+              </motion.div>
               <h3 className="text-2xl font-bold text-white mb-6 text-center group-hover:text-blue-400 transition-colors duration-300">
                 Orari di Apertura
               </h3>
@@ -1282,7 +1282,7 @@ export default function Page() {
                   <span className="text-red-400 font-semibold">Chiuso</span>
                 </div>
               </div>
-              
+
               {/* Animated Border */}
               <motion.div
                 className="absolute inset-0 rounded-3xl border-2 border-transparent"
@@ -1296,9 +1296,9 @@ export default function Page() {
             {/* Enhanced Contact Card */}
             <motion.div
               variants={scaleIn}
-              className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-lg border border-gray-700/50 rounded-3xl p-8 shadow-2xl hover:shadow-green-500/10 transition-all duration-500 md:col-span-2 lg:col-span-1 group"
-              whileHover={{ 
-                y: -12, 
+              className="maskio-card rounded-2xl p-8 transition-colors hover:border-yellow-300/30 md:col-span-2 lg:col-span-1 group"
+              whileHover={{
+                y: -12,
                 scale: 1.03,
                 boxShadow: "0 30px 60px rgba(34, 197, 94, 0.15)"
               }}
@@ -1318,9 +1318,9 @@ export default function Page() {
                 } : {}}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
               >
-                <motion.span 
+                <motion.span
                   className="text-3xl text-white"
-                  animate={{ 
+                  animate={{
                     scale: [1, 1.3, 1],
                     opacity: [1, 0.8, 1]
                   }}
@@ -1338,21 +1338,21 @@ export default function Page() {
                 Contatti
               </h3>
               <div className="space-y-4 text-center">
-                <motion.div 
+                <motion.div
                   className="flex items-center justify-center gap-3 p-3 rounded-xl hover:bg-gray-700/30 transition-colors duration-300"
                   whileHover={{ scale: 1.05 }}
                 >
                   <span className="text-xl">📱</span>
                   <span className="text-gray-200 font-medium">+39 331 710 0730</span>
                 </motion.div>
-                <motion.div 
+                <motion.div
                   className="flex items-center justify-center gap-3 p-3 rounded-xl hover:bg-gray-700/30 transition-colors duration-300"
                   whileHover={{ scale: 1.05 }}
                 >
                   <span className="text-xl">✉️</span>
                   <span className="text-gray-200 font-medium">fabio.cassano97@icloud.com</span>
                 </motion.div>
-                <motion.div 
+                <motion.div
                   className="flex items-center justify-center gap-3 p-3 rounded-xl hover:bg-gray-700/30 transition-colors duration-300"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -1360,7 +1360,7 @@ export default function Page() {
                   <span className="text-gray-200 font-medium">WhatsApp: +39 331 710 0730</span>
                 </motion.div>
               </div>
-              
+
               {/* Animated Border */}
               <motion.div
                 className="absolute inset-0 rounded-3xl border-2 border-transparent"
@@ -1407,21 +1407,21 @@ export default function Page() {
         ))}
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h2 
+          <motion.h2
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold text-white mb-6"
           >
             Prenota il Tuo Appuntamento
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             variants={fadeInUp}
             className="text-xl text-gray-200 mb-10 leading-relaxed"
           >
-            Non aspettare, vieni a scoprire l'esperienza Maskio Barber. 
+            Non aspettare, vieni a scoprire l'esperienza Maskio Barber.
             Il tuo stile ti aspetta.
           </motion.p>
-          
+
           <motion.div
             variants={scaleIn}
             className="flex flex-col sm:flex-row gap-4 justify-center"

@@ -129,56 +129,47 @@ export default function PushNotificationBanner() {
     <AnimatePresence>
       {showBanner && (
         <motion.div
-          initial={{ y: -100, opacity: 0 }}
+          initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed top-[70px] left-0 right-0 z-40 bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 text-white shadow-2xl"
+          exit={{ y: 24, opacity: 0 }}
+          transition={{ duration: 0.28, ease: "easeOut" }}
+          className="pointer-events-auto w-full max-w-xl overflow-hidden rounded-2xl border border-yellow-500/25 bg-zinc-950/95 text-white shadow-[0_18px_50px_rgba(0,0,0,0.42)] backdrop-blur-xl"
         >
-          {/* Padding-right extra per evitare sovrapposizione con menu hamburger (z-50) */}
-          <div className="container mx-auto px-4 pr-20 py-3 max-w-5xl">
-            <div className="flex flex-col sm:flex-row items-start gap-3">
-              {/* Icon + Content (sempre insieme) */}
-              <div className="flex items-start gap-3 flex-1 min-w-0">
-                <div className="flex-shrink-0 text-3xl sm:text-4xl">
-                  🔔
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-base sm:text-lg font-bold mb-1">
-                    Rimani sempre aggiornato!
-                  </h3>
-                  <p className="text-xs sm:text-sm opacity-90 mb-2">
-                    Attiva le notifiche per ricevere aggiornamenti su:
-                  </p>
-                  <ul className="text-xs sm:text-sm space-y-1 opacity-90">
-                    <li>• <strong>Liste d'attesa</strong>: Ti avvisiamo quando si libera un posto</li>
-                    <li>• <strong>Promemoria</strong>: Non dimenticare il tuo appuntamento</li>
-                    <li>• <strong>Conferme</strong>: Ricevi conferma istantanea delle prenotazioni</li>
-                  </ul>
-                </div>
+          <div className="p-4 sm:p-5">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-300">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.8" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 18.75a2.25 2.25 0 0 1-4.5 0m9-3.75V11a6.75 6.75 0 0 0-13.5 0v4l-1.5 2.25h18L18.75 15Z" />
+                </svg>
               </div>
-
-              {/* Actions (in colonna su mobile, compatte su desktop) */}
-              <div className="flex flex-row sm:flex-col gap-2 flex-shrink-0 w-full sm:w-auto">
-                <button
-                  onClick={handleEnable}
-                  disabled={isRequesting}
-                  className="bg-white text-blue-700 px-4 sm:px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex-1 sm:flex-none whitespace-nowrap"
-                >
-                  {isRequesting ? '⏳ Attesa...' : '✅ Attiva'}
-                </button>
-                <button
-                  onClick={handleDismiss}
-                  className="text-white text-xs sm:text-sm underline hover:no-underline opacity-75 hover:opacity-100 flex-1 sm:flex-none"
-                >
-                  Più tardi
-                </button>
-                <button
-                  onClick={handleDismissPermanently}
-                  className="text-white text-xs opacity-50 hover:opacity-75 flex-1 sm:flex-none hidden sm:block"
-                >
-                  Non mostrare più
-                </button>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-semibold text-white sm:text-base">
+                  Notifiche utili per il tuo appuntamento
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-300 sm:text-sm">
+                  Avvisi per lista d&apos;attesa, promemoria e conferme: solo quando servono.
+                </p>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <button
+                    onClick={handleEnable}
+                    disabled={isRequesting}
+                    className="rounded-full bg-yellow-400 px-5 py-2 text-sm font-semibold text-black transition-colors hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isRequesting ? 'Attivazione...' : 'Attiva notifiche'}
+                  </button>
+                  <button
+                    onClick={handleDismiss}
+                    className="rounded-full border border-white/15 px-5 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-yellow-400/40 hover:text-yellow-100"
+                  >
+                    Più tardi
+                  </button>
+                  <button
+                    onClick={handleDismissPermanently}
+                    className="text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-300 sm:ml-auto"
+                  >
+                    Non mostrare più
+                  </button>
+                </div>
               </div>
             </div>
           </div>

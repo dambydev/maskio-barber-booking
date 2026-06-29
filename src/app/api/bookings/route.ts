@@ -6,8 +6,9 @@ import { randomUUID } from 'crypto';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { isDateClosed } from '@/lib/closure-utils';
-import { isBarberClosed } from '@/lib/barber-closures';
+import { isBarberClosed, isBarberClosedRecurring } from '@/lib/barber-closures';
 import { getBarberClosures } from '@/lib/barber-closures';
+import { isManualExceptionalSchedule } from '@/lib/barber-schedule-exceptions';
 
 
 // API Version: 1.0.1 - Fix barber_id inclusion
@@ -312,17 +313,17 @@ export async function POST(request: NextRequest) {  try {    // Check authentica
     }
 
     // Controlla le chiusure del barbiere per la data e fascia oraria.
-    // Se esiste uno schedule specifico con dayOff=false (apertura eccezionale),
-    // ignora le chiusure ricorrenti e applica solo eventuali chiusure specifiche per data.
+    // Una chiusura ricorrente può essere sovrascritta solo da un'apertura eccezionale manuale.
     if (bookingData.barberId) {
       const barber = await DatabaseService.getBarberById(String(bookingData.barberId));
       if (barber?.email) {
         const schedule = await DatabaseService.getBarberSchedule(String(bookingData.barberId), bookingData.date);
-        const isExceptionalOpening = !!schedule && !schedule.dayOff;
+        const isRecurringClosed = await isBarberClosedRecurring(barber.email, bookingData.date);
+        const isManualExceptionalOpening = !!schedule && !schedule.dayOff && isRecurringClosed && isManualExceptionalSchedule(schedule);
 
         let barberClosed = false;
 
-        if (isExceptionalOpening) {
+        if (isManualExceptionalOpening) {
           const specificClosures = await getBarberClosures(barber.email, bookingData.date);
           const hour = parseInt(bookingData.time.split(':')[0]);
           const isMorning = hour < 14;

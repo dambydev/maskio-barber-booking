@@ -29,53 +29,47 @@ export default function CookieConsentBanner() {
         <AnimatePresence>
             {isVisible && (
                 <motion.div
-                    initial={{ y: 100, opacity: 0 }}
+                    initial={{ y: 24, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 100, opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="fixed bottom-0 left-0 right-0 z-[60] p-4 md:p-6"
+                    exit={{ y: 24, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: "easeOut" }}
+                    className="pointer-events-auto w-full max-w-5xl rounded-2xl border border-yellow-500/25 bg-zinc-950/95 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:p-5"
                 >
-                    <div className="max-w-7xl mx-auto">
-                        <div className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-[0_-4px_24px_rgba(0,0,0,0.1)] rounded-2xl p-6 md:flex md:items-center md:justify-between gap-6">
-
-                            <div className="flex-1 mb-6 md:mb-0">
-                                <div className="flex items-start gap-4">
-                                    <div className="hidden sm:flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-yellow-100 text-yellow-600">
-                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                            Rispettiamo la tua privacy
-                                        </h3>
-                                        <p className="text-gray-600 text-sm leading-relaxed">
-                                            Utilizziamo i cookie per migliorare la tua esperienza e analizzare il traffico del sito.
-                                            Cliccando su "Accetta tutto", acconsenti all'uso di tutti i cookie.
-                                            Puoi rifiutare o modificare le tue preferenze in qualsiasi momento.
-                                            <Link href="/cookie-policy" className="text-yellow-600 hover:text-yellow-700 font-medium ml-1 underline decoration-yellow-600/30 hover:decoration-yellow-600">
-                                                Leggi la Cookie Policy
-                                            </Link>
-                                        </p>
-                                    </div>
+                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div className="flex-1">
+                            <div className="flex items-start gap-3">
+                                <div className="hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-300 sm:flex">
+                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.6" stroke="currentColor" aria-hidden="true">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-semibold text-white sm:text-base">
+                                        Privacy e cookie
+                                    </h3>
+                                    <p className="mt-1 text-xs leading-relaxed text-zinc-300 sm:text-sm">
+                                        Usiamo cookie per migliorare l&apos;esperienza e analizzare il traffico. Puoi accettare o rifiutare ora; maggiori dettagli nella
+                                        <Link href="/cookie-policy" className="ml-1 font-medium text-yellow-300 underline decoration-yellow-300/30 underline-offset-4 transition-colors hover:text-yellow-200 hover:decoration-yellow-200">
+                                            Cookie Policy
+                                        </Link>.
+                                    </p>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="flex flex-col sm:flex-row gap-3 min-w-fit">
-                                <button
-                                    onClick={declineCookies}
-                                    className="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-medium bg-white hover:bg-gray-50 hover:text-gray-900 transition-colors focus:ring-4 focus:ring-gray-100"
-                                >
-                                    Rifiuta
-                                </button>
-                                <button
-                                    onClick={acceptCookies}
-                                    className="px-6 py-2.5 rounded-xl bg-yellow-500 text-white font-semibold hover:bg-yellow-400 shadow-lg shadow-yellow-500/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-yellow-500/30"
-                                >
-                                    Accetta tutto
-                                </button>
-                            </div>
-
+                        <div className="flex flex-col gap-2 sm:flex-row md:min-w-fit">
+                            <button
+                                onClick={declineCookies}
+                                className="rounded-full border border-white/15 px-5 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-yellow-400/40 hover:text-yellow-100 focus:ring-4 focus:ring-yellow-500/20"
+                            >
+                                Rifiuta
+                            </button>
+                            <button
+                                onClick={acceptCookies}
+                                className="rounded-full bg-yellow-400 px-5 py-2 text-sm font-semibold text-black transition-colors hover:bg-yellow-300 focus:ring-4 focus:ring-yellow-500/30"
+                            >
+                                Accetta tutto
+                            </button>
                         </div>
                     </div>
                 </motion.div>

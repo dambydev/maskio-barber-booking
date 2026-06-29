@@ -1,8 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { StarIcon } from '@heroicons/react/24/solid';
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface GoogleReview {
   author_name: string;
@@ -24,12 +25,9 @@ export default function ReviewsPage() {
   const fetchReviews = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await fetch('/api/google-reviews');
-      
-      if (!response.ok) {
-        throw new Error('Errore nel caricamento delle recensioni');
-      }
-      
+      if (!response.ok) throw new Error('Errore nel caricamento delle recensioni');
       const data = await response.json();
       setReviews(data.reviews || []);
     } catch (error) {
@@ -40,154 +38,113 @@ export default function ReviewsPage() {
     }
   };
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString('it-IT', {
+  const formatDate = (timestamp: number) =>
+    new Date(timestamp * 1000).toLocaleDateString('it-IT', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
-  };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <StarIcon
-        key={index}
-        className={`w-5 h-5 ${
-          index < rating ? 'text-yellow-400' : 'text-gray-300'
-        }`}
-      />
+  const renderStars = (rating: number) =>
+    Array.from({ length: 5 }, (_, index) => (
+      <StarIcon key={index} className={`h-5 w-5 ${index < rating ? 'text-yellow-300' : 'text-zinc-700'}`} />
     ));
-  };
 
   return (
-    <div className="min-h-screen bg-gray-900 py-16 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Cosa Dicono di Noi
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Le opinioni dei nostri clienti sono il nostro biglietto da visita. 
-            Scopri cosa pensano del nostro servizio e della nostra professionalità.
+    <main className="maskio-page maskio-grain py-24 sm:py-28">
+      <div className="maskio-wide relative z-10">
+        <section className="grid gap-8 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+          <div>
+            <p className="maskio-kicker">Recensioni</p>
+            <h1 className="maskio-heading mt-6 max-w-4xl text-6xl font-bold text-white sm:text-7xl lg:text-8xl">
+              Quello che resta dopo il taglio.
+            </h1>
+          </div>
+          <p className="max-w-xl text-lg leading-relaxed text-zinc-300 sm:text-xl lg:justify-self-end">
+            Le opinioni dei clienti raccontano precisione, accoglienza e fiducia meglio di qualsiasi promessa.
           </p>
-        </motion.div>
+        </section>
 
-        {/* Loading State */}
         {loading && (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400"></div>
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="maskio-card animate-pulse rounded-2xl p-6">
+                <div className="h-12 w-12 rounded-full bg-white/10" />
+                <div className="mt-6 h-4 w-1/2 rounded bg-white/10" />
+                <div className="mt-5 space-y-3">
+                  <div className="h-3 rounded bg-white/10" />
+                  <div className="h-3 w-5/6 rounded bg-white/10" />
+                  <div className="h-3 w-2/3 rounded bg-white/10" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
-        {/* Error State */}
         {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <p className="text-red-400 text-lg mb-4">{error}</p>
-            <button
-              onClick={fetchReviews}
-              className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors"
-            >
+          <div className="maskio-panel mt-14 rounded-2xl p-8 text-center">
+            <p className="text-lg text-red-200">{error}</p>
+            <button type="button" onClick={fetchReviews} className="maskio-button mt-6 px-6 py-3">
               Riprova
             </button>
-          </motion.div>
+          </div>
         )}
 
-        {/* Reviews Grid */}
         {!loading && !error && reviews.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-14 columns-1 gap-5 md:columns-2 xl:columns-3">
             {reviews.map((review, index) => (
-              <motion.div
-                key={index}
+              <motion.article
+                key={`${review.author_name}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700"
+                transition={{ delay: index * 0.05, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="maskio-card mb-5 break-inside-avoid rounded-2xl p-6"
               >
-                {/* Author Info */}
-                <div className="flex items-center mb-4">
+                <div className="flex items-center gap-4">
                   {review.profile_photo_url ? (
-                    <img
-                      src={review.profile_photo_url}
-                      alt={review.author_name}
-                      className="w-12 h-12 rounded-full mr-4"
-                    />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={review.profile_photo_url} alt={review.author_name} className="h-12 w-12 rounded-2xl object-cover" />
                   ) : (
-                    <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-black font-bold text-lg">
-                        {review.author_name.charAt(0)}
-                      </span>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-300 text-lg font-bold text-black">
+                      {review.author_name.charAt(0)}
                     </div>
                   )}
                   <div>
-                    <h3 className="text-white font-semibold">{review.author_name}</h3>
-                    <p className="text-gray-400 text-sm">
-                      {formatDate(review.time)}
-                    </p>
+                    <h2 className="font-semibold text-white">{review.author_name}</h2>
+                    <p className="text-sm text-zinc-500">{formatDate(review.time)}</p>
                   </div>
                 </div>
-
-                {/* Rating */}
-                <div className="flex items-center mb-4">
-                  {renderStars(review.rating)}
-                  <span className="ml-2 text-gray-300">({review.rating}/5)</span>
-                </div>
-
-                {/* Review Text */}
-                <p className="text-gray-300 leading-relaxed">{review.text}</p>
-              </motion.div>
+                <div className="mt-5 flex items-center gap-1">{renderStars(review.rating)}</div>
+                <p className="mt-5 leading-relaxed text-zinc-300">{review.text}</p>
+              </motion.article>
             ))}
           </motion.div>
         )}
 
-        {/* No Reviews State */}
         {!loading && !error && reviews.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <p className="text-gray-400 text-lg">
-              Nessuna recensione disponibile al momento.
-            </p>
-          </motion.div>
+          <div className="maskio-panel mt-14 rounded-2xl p-8 text-center">
+            <p className="text-lg text-zinc-300">Nessuna recensione disponibile al momento.</p>
+          </div>
         )}
 
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-16 p-8 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-lg"
-        >
-          <h2 className="text-2xl font-bold text-black mb-4">
-            Vuoi lasciare anche tu una recensione?
-          </h2>
-          <p className="text-black/80 mb-6">
-            Condividi la tua esperienza con Maskio Barber e aiuta altri clienti a scoprire i nostri servizi.
-          </p>
-          <a
-            href="https://maps.google.com/maps?q=Maskio+Barber+Concept"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-8 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Lascia una Recensione su Google
-          </a>
-        </motion.div>
+        <section className="mt-16 rounded-2xl border border-yellow-500/20 bg-[linear-gradient(135deg,rgba(216,173,76,0.20),rgba(255,255,255,0.035))] p-8 sm:p-10">
+          <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <h2 className="text-3xl font-semibold text-white">Vuoi lasciare una recensione?</h2>
+              <p className="mt-3 max-w-2xl text-zinc-300">Condividi la tua esperienza su Google e aiuta altri clienti a scegliere con più fiducia.</p>
+            </div>
+            <a href="https://maps.google.com/maps?q=Maskio+Barber+Concept" target="_blank" rel="noopener noreferrer" className="maskio-button px-6 py-3">
+              Scrivi su Google
+            </a>
+          </div>
+        </section>
+
+        <div className="mt-8 text-center">
+          <Link href="/testimonianze" className="text-sm font-semibold text-yellow-200 underline decoration-yellow-200/25 underline-offset-4 hover:text-yellow-100">
+            Vai alla pagina testimonianze
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

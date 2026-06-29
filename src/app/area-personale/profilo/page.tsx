@@ -122,37 +122,38 @@ export default function ProfiloUtente() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-amber-500 mx-auto"></div>
-          <p className="mt-4 text-xl">Caricamento...</p>
+      <main className="maskio-page flex min-h-screen items-center justify-center">
+        <div className="text-center text-white">
+          <div className="mx-auto h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-yellow-300" />
+          <p className="mt-5 text-lg font-semibold">Caricamento profilo...</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   if (!session || !profile) return null;
 
   return (
-    <div className="min-h-screen bg-black py-12">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="maskio-page maskio-grain py-24 sm:py-28">
+      <div className="maskio-container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold text-white mb-4">Il Mio Profilo</h1>
-          <p className="text-gray-300">Gestisci le tue informazioni personali</p>
+          <p className="maskio-kicker mx-auto">Account</p>
+          <h1 className="maskio-heading mt-5 text-6xl font-bold text-white sm:text-7xl">Il mio profilo</h1>
+          <p className="mt-4 text-zinc-300">Gestisci le tue informazioni personali</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gray-800 border border-gray-700 rounded-xl p-8"
+          className="maskio-panel rounded-2xl p-6 sm:p-8"
         >
           {error && (
-            <div className="mb-6 bg-red-900/20 border border-red-500 text-red-400 px-4 py-3 rounded">
+            <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-100">
               {error}
             </div>
           )}
@@ -267,6 +268,6 @@ export default function ProfiloUtente() {
         {/* Lista d'Attesa dell'Utente */}
         {session?.user?.email && <UserWaitlist userEmail={session.user.email} />}
       </div>
-    </div>
+    </main>
   );
 }

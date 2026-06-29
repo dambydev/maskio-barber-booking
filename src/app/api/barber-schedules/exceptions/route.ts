@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
 import { neon } from '@neondatabase/serverless';
 import { format } from 'date-fns';
+import { isManualExceptionalSchedule } from '@/lib/barber-schedule-exceptions';
 
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -20,7 +21,8 @@ export async function GET(request: NextRequest) {
 
     // Get all schedules from date onwards where day_off=false
     const schedules = await sql`
-      SELECT bs.date, b.email as barber_email, b.name as barber_name, bs.day_off
+      SELECT bs.date, b.email as barber_email, b.name as barber_name, bs.day_off,
+             bs.unavailable_slots, bs.created_at, bs.updated_at
       FROM barber_schedules bs
       JOIN barbers b ON bs.barber_id = b.id
       WHERE bs.date >= ${from}
@@ -43,7 +45,7 @@ export async function GET(request: NextRequest) {
       
       if (recurringClosures.length > 0) {
         const closedDays = JSON.parse(recurringClosures[0].closed_days);
-        if (closedDays.includes(dayOfWeek)) {
+        if (closedDays.includes(dayOfWeek) && isManualExceptionalSchedule(schedule)) {
           // This is an exceptional opening!
           exceptions.push({
             date: schedule.date,

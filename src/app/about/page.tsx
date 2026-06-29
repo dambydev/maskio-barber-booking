@@ -1,125 +1,115 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Chi Siamo | Maskio Barber Concept',
   description: 'Scopri la storia di Maskio Barber Concept, il nostro team di professionisti e la nostra passione per l\'arte del barbiere.',
 };
 
+const values = [
+  {
+    title: 'Qualità misurabile',
+    text: 'Prodotti professionali, tagli puliti e finiture controllate su ogni dettaglio visibile.',
+  },
+  {
+    title: 'Consulenza reale',
+    text: 'Ogni servizio parte da capelli, forma del viso, routine e risultato desiderato.',
+  },
+  {
+    title: 'Ritmo contemporaneo',
+    text: 'Un salone diretto e moderno: prenotazione chiara, tempi rispettati, esperienza senza confusione.',
+  },
+];
+
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Chi Siamo
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            La passione per l'arte del barbiere incontra l'innovazione moderna
-          </p>
-        </div>
-
-        {/* Story Section */}
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+    <main className="maskio-page maskio-grain py-24 sm:py-28">
+      <div className="maskio-wide relative z-10">
+        <section className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-              La Nostra Storia
-            </h2>
-            <div className="space-y-4 text-gray-600 dark:text-gray-300">
-              <p>
-                Maskio Barber Concept nasce dalla passione per l'arte tradizionale del barbiere, 
-                combinata con le tecniche più moderne e innovative del settore.
-              </p>
-              <p>
-                Situati nel cuore di San Giovanni Rotondo, offriamo un'esperienza unica che 
-                rispetta la tradizione mentre abbraccia l'innovazione.
-              </p>
-              <p>
-                Il nostro team di professionisti esperti è dedicato a offrire servizi di 
-                altissima qualità in un ambiente moderno e accogliente.
-              </p>
-            </div>
-          </div>
-          <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
-            <Image
-              src="/hero-barber.jpg"
-              alt="Interno del barbiere"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-
-        {/* Values Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-            I Nostri Valori
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg text-center">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Qualità
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Utilizziamo solo i migliori prodotti e le tecniche più avanzate per garantire risultati eccellenti.
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg text-center">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Professionalità
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Il nostro team è formato da professionisti esperti e appassionati del loro mestiere.
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg text-center">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Passione
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Ogni taglio è realizzato con passione e attenzione ai dettagli per soddisfare ogni cliente.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Team Section */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-            Il Nostro Team
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-            Un team di professionisti dedicati a offrire il meglio dell'arte del barbiere, 
-            sempre aggiornati sulle ultime tendenze e tecniche del settore.
-          </p>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg inline-block">
-            <p className="text-amber-600 dark:text-amber-400 font-semibold text-lg">
-              📍 Via Sant'Agata 24, San Giovanni Rotondo
+            <p className="maskio-kicker">Maskio Barber Concept</p>
+            <h1 className="maskio-heading mt-6 max-w-3xl text-6xl font-bold text-white sm:text-7xl lg:text-8xl">
+              Stile maschile, senza rumore.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-300 sm:text-xl">
+              La passione per l'arte del barbiere incontra una cultura del taglio più moderna, precisa e personale.
             </p>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Vieni a trovarci per un'esperienza unica di bellezza e benessere
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/prenota" className="maskio-button px-6 py-3">
+                Prenota un appuntamento
+              </Link>
+              <Link href="/servizi" className="maskio-button-secondary px-6 py-3">
+                Vedi i servizi
+              </Link>
+            </div>
+          </div>
+
+          <div className="maskio-panel relative overflow-hidden rounded-2xl p-2">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[1rem] sm:aspect-[16/11] lg:aspect-[4/5]">
+              <Image
+                src="/fotoSalone.webp"
+                alt="Interno del salone Maskio Barber Concept"
+                fill
+                className="object-cover object-center contrast-110 saturate-[0.92]"
+                sizes="(max-width: 1024px) 100vw, 48vw"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/10 to-transparent" />
+              <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/10 bg-black/58 p-4 backdrop-blur-md">
+                <p className="text-sm font-semibold text-yellow-100">Via Sant'Agata, 24</p>
+                <p className="mt-1 text-sm text-zinc-300">San Giovanni Rotondo</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-20 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <div className="lg:sticky lg:top-28">
+            <h2 className="maskio-heading text-5xl font-bold text-white sm:text-6xl">La nostra storia</h2>
+            <p className="mt-5 max-w-md leading-relaxed text-zinc-400">
+              Un'identità locale, un metodo contemporaneo e un'attenzione concreta al risultato finale.
             </p>
           </div>
-        </div>
+          <div className="maskio-panel rounded-2xl p-6 sm:p-8">
+            <div className="space-y-5 text-lg leading-relaxed text-zinc-300">
+              <p>
+                Maskio Barber Concept nasce dalla passione per l'arte tradizionale del barbiere, combinata con tecniche moderne e un modo più ordinato di vivere il salone.
+              </p>
+              <p>
+                Situati nel cuore di San Giovanni Rotondo, lavoriamo su taglio, styling e cura della barba con una promessa semplice: capire cosa ti valorizza e renderlo facile da mantenere.
+              </p>
+              <p>
+                Il team è dedicato a offrire servizi di alta qualità in un ambiente curato, diretto e accogliente, senza sovraccaricare l'esperienza con formalità inutili.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-14 grid gap-4 md:grid-cols-3">
+          {values.map((value, index) => (
+            <article key={value.title} className={`maskio-card rounded-2xl p-6 ${index === 1 ? 'md:translate-y-8' : ''}`}>
+              <span className="text-sm font-bold tabular-nums text-yellow-200">0{index + 1}</span>
+              <h3 className="mt-8 text-2xl font-semibold text-white">{value.title}</h3>
+              <p className="mt-4 leading-relaxed text-zinc-400">{value.text}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="mt-24 overflow-hidden rounded-2xl border border-yellow-500/20 bg-[linear-gradient(135deg,rgba(216,173,76,0.16),rgba(255,255,255,0.035))] p-8 sm:p-10">
+          <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <h2 className="text-3xl font-semibold text-white">Vuoi conoscerci dal vivo?</h2>
+              <p className="mt-3 max-w-2xl text-zinc-300">
+                Passa in salone o prenota online: il modo migliore per capire Maskio è vedere il lavoro sul tuo taglio.
+              </p>
+            </div>
+            <Link href="/contatti" className="maskio-button px-6 py-3">
+              Contatti e orari
+            </Link>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

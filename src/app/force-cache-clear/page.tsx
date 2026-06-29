@@ -127,7 +127,7 @@ export default function ForceCacheClearPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-900 text-white p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-yellow-950 text-white p-4 flex items-center justify-center">
       <div className="bg-white/10 backdrop-blur-lg p-6 md:p-8 rounded-2xl max-w-md w-full shadow-2xl">
         <div className="text-center mb-6">
           <div className="text-5xl mb-3">🧹</div>
@@ -151,7 +151,7 @@ export default function ForceCacheClearPage() {
           
           <button
             onClick={clearCache}
-            className="w-full bg-white text-purple-600 px-6 py-4 rounded-xl font-bold hover:bg-purple-50 active:scale-95 transition shadow-lg"
+            className="w-full bg-white text-black px-6 py-4 rounded-xl font-bold hover:bg-yellow-50 active:scale-95 transition shadow-lg"
           >
             <div className="flex items-center justify-center gap-2">
               <span className="text-xl">�</span>
