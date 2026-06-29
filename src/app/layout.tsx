@@ -186,7 +186,7 @@ export default function RootLayout({
               {/* <CacheHelperButton /> */} {/* Disabilitato in produzione - riabilitare solo per debug */}
 
               {/* Stack unico per banner globali: evita sovrapposizioni tra prompt, cookie e install app */}
-              <div className="fixed inset-x-0 bottom-0 z-[85] flex max-h-[calc(100svh-5rem)] flex-col-reverse items-center gap-3 overflow-y-auto px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pointer-events-none sm:items-end sm:px-6">
+              <div className="pwa-banner-stack fixed inset-x-0 bottom-0 z-[85] flex max-h-[calc(100svh-5rem)] flex-col-reverse items-center gap-3 overflow-y-auto px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pointer-events-none sm:items-end sm:px-6">
                 <CookieConsentBanner />
                 <AddToHomeBanner />
                 <NotificationPrompt />

@@ -8,7 +8,6 @@ import { format, parseISO } from 'date-fns';
 import { it } from 'date-fns/locale';
 import Link from 'next/link';
 import PhoneRequiredModal from '@/components/PhoneRequiredModal';
-// import NotificationSettings from '@/components/NotificationSettings';
 import { usePhoneRequired } from '@/hooks/usePhoneRequired';
 
 interface UserBooking {
@@ -22,136 +21,74 @@ interface UserBooking {
   created_at: string;
   notes?: string;
   service_price?: number;
-  customer_name?: string; // <-- CAMPO AGGIUNTO
-  customer_phone?: string; // <-- CAMPO AGGIUNTO
+  customer_name?: string;
+  customer_phone?: string;
 }
 
 type TabType = 'appointments' | 'profile' | 'account';
 
+const tabs: { id: TabType; label: string }[] = [
+  { id: 'appointments', label: 'Appuntamenti' },
+  { id: 'profile', label: 'Profilo' },
+  { id: 'account', label: 'Account' },
+];
+
 export default function AreaPersonale() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [bookings, setBookings] = useState<UserBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('appointments');  // Verifica se l'utente è un barbiere o admin
+  const [activeTab, setActiveTab] = useState<TabType>('appointments');
   const isBarber = session?.user?.role === 'barber';
   const isAdmin = session?.user?.role === 'admin';
   const hasManagementAccess = isBarber || isAdmin;
 
-  // Stato per i permessi reali dal backend
   const [realPermissions, setRealPermissions] = useState({
     isAdmin: false,
     isBarber: false,
     hasManagementAccess: false,
-    checked: false
-  });  // Check permessi tramite API
+    checked: false,
+  });
+
   useEffect(() => {
     if (session?.user?.email === 'davide431@outlook.it') {
-      console.log('🔍 Checking permissions for davide431@outlook.it...');
-
       fetch('/api/staff/check-permissions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: session.user.email })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: session.user.email }),
       })
-        .then(res => {
-          console.log('🌐 API Response Status:', res.status);
-          return res.json();
-        })
-        .then(data => {
-          console.log('📋 API Response Data:', data);
+        .then((res) => res.json())
+        .then((data) => {
           if (data.success && data.permissions) {
-            const newPermissions = {
+            setRealPermissions({
               isAdmin: data.permissions.isAdmin,
               isBarber: data.permissions.isBarber,
               hasManagementAccess: data.permissions.hasManagementAccess,
-              checked: true
-            };
-            console.log('✅ Setting real permissions:', newPermissions);
-            setRealPermissions(newPermissions);
-          } else {
-            console.log('⚠️ No permissions in API response or API failed:', data);
-            setRealPermissions({
-              isAdmin: false,
-              isBarber: false,
-              hasManagementAccess: false,
-              checked: true
+              checked: true,
             });
+          } else {
+            setRealPermissions({ isAdmin: false, isBarber: false, hasManagementAccess: false, checked: true });
           }
         })
-        .catch(err => {
-          console.error('❌ Error checking permissions:', err);
-          setRealPermissions({
-            isAdmin: false,
-            isBarber: false,
-            hasManagementAccess: false,
-            checked: true
-          });
+        .catch((err) => {
+          console.error('Error checking permissions:', err);
+          setRealPermissions({ isAdmin: false, isBarber: false, hasManagementAccess: false, checked: true });
         });
     } else {
-      setRealPermissions({
-        isAdmin: false,
-        isBarber: false,
-        hasManagementAccess: false,
-        checked: true
-      });
+      setRealPermissions({ isAdmin: false, isBarber: false, hasManagementAccess: false, checked: true });
     }
   }, [session?.user?.email]);
 
-  // Usa i permessi reali per davide431@outlook.it, altrimenti usa la sessione
   const effectiveIsAdmin = session?.user?.email === 'davide431@outlook.it' ? realPermissions.isAdmin : isAdmin;
   const effectiveIsBarber = session?.user?.email === 'davide431@outlook.it' ? realPermissions.isBarber : isBarber;
   const effectiveHasManagementAccess = session?.user?.email === 'davide431@outlook.it' ? realPermissions.hasManagementAccess : hasManagementAccess;
-    // Debug temporaneo
-  console.log('🔍 Session Debug:', {
-    email: session?.user?.email,
-    role: session?.user?.role,
-    isAdmin,
-    isBarber,
-    hasManagementAccess,
-    fullSession: session
-  });  const [sessionUpdateAttempted, setSessionUpdateAttempted] = useState(false);  // Debug visibile
+
   useEffect(() => {
-    if (session?.user?.email === 'davide431@outlook.it' && realPermissions.checked) {
-      const debugInfo = {
-        email: session.user.email,
-        sessionRole: session.user.role,
-        sessionIsAdmin: isAdmin,
-        sessionIsBarber: isBarber,
-        sessionHasManagement: hasManagementAccess,
-        realIsAdmin: realPermissions.isAdmin,
-        realIsBarber: realPermissions.isBarber,
-        realHasManagement: realPermissions.hasManagementAccess,
-        effectiveIsAdmin,
-        effectiveIsBarber,
-        effectiveHasManagementAccess
-      };
-
-      console.log('🎯 Debug Info for davide431@outlook.it:', debugInfo);
-
-      // Debug aggiuntivo per il rendering condizionale
-      console.log('🖼️ Rendering conditions:');
-      console.log('- Will show management access?', effectiveHasManagementAccess);
-      console.log('- Will show admin features?', effectiveIsAdmin);
-      console.log('- Permissions checked?', realPermissions.checked);
-
-      // Se c'è una discrepanza tra session e real permissions
-      if (session.user.role === 'customer' && effectiveIsAdmin) {
-        console.log('⚠️ Role mismatch: session shows customer but API shows admin');
-        console.log('✅ Using API permissions instead of session');
-      }
-    }
-  }, [session, realPermissions, effectiveIsAdmin, effectiveIsBarber, effectiveHasManagementAccess]);  // Aggiorna il tab iniziale in base al ruolo
-  useEffect(() => {
-    // Tutti iniziano da 'appointments', sia customer che barbieri che admin
     setActiveTab('appointments');
   }, [effectiveHasManagementAccess]);
 
-  // Hook per gestire il telefono richiesto
   const { showPhoneModal, handlePhoneComplete, userEmail, userName } = usePhoneRequired();
 
   const fetchUserBookings = useCallback(async () => {
@@ -159,36 +96,20 @@ export default function AreaPersonale() {
 
     try {
       setLoading(true);
-
-      // --- LOGICA MODIFICATA ---
-      // Se l'utente è un barbiere, carica le prenotazioni in cui è il barbiere.
-      // Altrimenti, carica quelle in cui è il cliente.
       const isBarberUser = session.user.role === 'barber';
       const params = new URLSearchParams();
 
       if (isBarberUser) {
-        // I barbieri vedono gli appuntamenti a loro assegnati
         params.append('barberEmail', session.user.email);
       } else {
-        // I clienti vedono gli appuntamenti prenotati da loro
         params.append('userId', session.user.id);
       }
 
       const response = await fetch(`/api/bookings?${params.toString()}`);
-      // --- FINE LOGICA MODIFICATA ---
-
       if (!response.ok) throw new Error('Errore nel caricamento delle prenotazioni');
 
       const data = await response.json();
-
-      // La risposta dell'API include un campo customer_name, che usiamo per i barbieri
-      // e un campo barber_name, che usiamo per i clienti.
-      // L'interfaccia UserBooking può essere arricchita se necessario.
-      const bookingsData = data.bookings.map((b: UserBooking) => ({ // <-- TIPO AGGIUNTO
-        ...b,
-        customer_name: b.customer_name, // Assicuriamoci che il nome cliente sia presente
-      }));
-
+      const bookingsData = data.bookings.map((b: UserBooking) => ({ ...b, customer_name: b.customer_name }));
       setBookings(bookingsData || []);
     } catch (err) {
       setError('Impossibile caricare le prenotazioni');
@@ -196,7 +117,7 @@ export default function AreaPersonale() {
     } finally {
       setLoading(false);
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, session?.user?.email, session?.user?.role]);
 
   const fetchUserProfile = useCallback(async () => {
     try {
@@ -223,40 +144,38 @@ export default function AreaPersonale() {
 
   const openWhatsAppCustomer = (phone: string, customerName: string | undefined) => {
     const cleanPhone = phone.replace(/\D/g, '');
-    let whatsappPhone = cleanPhone.startsWith('39') ? cleanPhone : '39' + cleanPhone;
+    const whatsappPhone = cleanPhone.startsWith('39') ? cleanPhone : '39' + cleanPhone;
     const message = `Ciao ${customerName || 'cliente'}, ti contatto da Maskio Barber per il tuo appuntamento.`;
     const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const makePhoneCallCustomer = (phone: string) => {
-      window.open(`tel:${phone}`, '_self');
+    window.open(`tel:${phone}`, '_self');
   };
 
   const canCancelBooking = (bookingDate: string, bookingTime: string) => {
     try {
-      // Ora permettiamo l'annullamento in qualsiasi momento
       return true;
     } catch (error) {
       console.error('Error checking booking cancellation:', error);
       return false;
     }
   };
+
   const handleCancelBooking = async (bookingId: string) => {
     if (!confirm('Sei sicuro di voler cancellare questa prenotazione?')) return;
 
     try {
       setLoading(true);
-      const response = await fetch(`/api/bookings?id=${bookingId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/bookings?id=${bookingId}`, { method: 'DELETE' });
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Errore nella cancellazione');
       }
 
-      await fetchUserBookings(); // Refresh bookings
+      await fetchUserBookings();
       alert('Prenotazione cancellata con successo');
     } catch (err) {
       console.error('Error cancelling booking:', err);
@@ -268,12 +187,13 @@ export default function AreaPersonale() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'text-green-400 bg-green-900/20';
-      case 'pending': return 'text-yellow-400 bg-yellow-900/20';
-      case 'cancelled': return 'text-red-400 bg-red-900/20';
-      default: return 'text-gray-400 bg-gray-900/20';
+      case 'confirmed': return 'border-green-500/25 bg-green-500/10 text-green-200';
+      case 'pending': return 'border-yellow-500/25 bg-yellow-500/10 text-yellow-100';
+      case 'cancelled': return 'border-red-500/25 bg-red-500/10 text-red-200';
+      default: return 'border-white/10 bg-white/[0.04] text-zinc-300';
     }
   };
+
   const getStatusText = (status: string) => {
     switch (status) {
       case 'confirmed': return 'Confermata';
@@ -285,18 +205,11 @@ export default function AreaPersonale() {
 
   const generateWhatsAppLink = (phone: string, barberName: string, serviceName: string, date: string, time: string) => {
     if (!phone) return '';
-
-    // Pulisce il numero di telefono da spazi e caratteri speciali, mantiene solo numeri e +
     const cleanPhone = phone.replace(/[^\d+]/g, '');
-
-    // Crea il messaggio per WhatsApp
     const message = `Ciao ${barberName}! Ti scrivo per la mia prenotazione del ${date} alle ${time} per ${serviceName}.`;
-
-    // Codifica il messaggio per URL
-    const encodedMessage = encodeURIComponent(message);
-
-    return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
+
   const handleLogout = async () => {
     if (confirm('Sei sicuro di voler uscire?')) {
       await signOut({ callbackUrl: '/' });
@@ -316,448 +229,272 @@ export default function AreaPersonale() {
 
   if (!session) return null;
 
-  // Ordina tutte le prenotazioni per data prima di filtrarle
   const sortedBookings = [...bookings].sort((a, b) =>
-    new Date(`${a.booking_date}T${a.booking_time}`).getTime() -
-    new Date(`${b.booking_date}T${b.booking_time}`).getTime()
+    new Date(`${a.booking_date}T${a.booking_time}`).getTime() - new Date(`${b.booking_date}T${b.booking_time}`).getTime()
   );
 
-  const upcomingBookings = sortedBookings.filter(booking =>
-    new Date(booking.booking_date + 'T' + booking.booking_time) > new Date() &&
-    booking.status !== 'cancelled'
+  const upcomingBookings = sortedBookings.filter((booking) =>
+    new Date(`${booking.booking_date}T${booking.booking_time}`) > new Date() && booking.status !== 'cancelled'
   );
 
-  const pastBookings = sortedBookings.filter(booking =>
-    new Date(booking.booking_date + 'T' + booking.booking_time) <= new Date() ||
-    booking.status === 'cancelled'
-  ).reverse(); // .reverse() per avere il più recente in cima
+  const pastBookings = sortedBookings.filter((booking) =>
+    new Date(`${booking.booking_date}T${booking.booking_time}`) <= new Date() || booking.status === 'cancelled'
+  ).reverse();
 
   const tabVariants = {
-    hidden: { opacity: 0, x: 20 },
-    visible: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -20 }
+    hidden: { opacity: 0, y: 14 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -14 },
   };
 
+  const stats = [
+    { label: 'Prossimi', value: upcomingBookings.length, tone: 'text-yellow-100' },
+    { label: 'Completati', value: pastBookings.length, tone: 'text-zinc-100' },
+    { label: 'Confermati', value: bookings.filter((b) => b.status === 'confirmed').length, tone: 'text-green-200' },
+  ];
+
   return (
-    <main className="maskio-page maskio-grain min-h-screen py-24">      {/* Header con Tab Navigation */}
-      <div className="sticky top-[5.5rem] z-40 px-4 sm:px-6">
-        <div className="maskio-panel mx-auto max-w-7xl rounded-2xl px-4 sm:px-6">          {/* Welcome Header */}
-          <div className="py-5 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-yellow-200">Area personale</p>
-            <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">
-              Ciao, {session.user.name?.split(' ')[0]}
-            </h1>
-            <p className="mt-2 text-xs text-zinc-400 md:text-sm">
-              Appuntamenti, profilo e impostazioni in un unico spazio.
-            </p>
-          </div>
-
-          {/* Tab Navigation */}
-          <div className="flex justify-center pb-4">            <div className="flex rounded-full border border-white/10 bg-black/35 p-1">
-              <button
-                onClick={() => setActiveTab('appointments')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === 'appointments'
-                    ? 'bg-yellow-300 text-black shadow-lg'
-                    : 'text-zinc-300 hover:text-white hover:bg-white/[0.06]'
-                }`}
-              >
-                <span className="hidden sm:inline">Appuntamenti</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === 'profile'
-                    ? 'bg-yellow-300 text-black shadow-lg'
-                    : 'text-zinc-300 hover:text-white hover:bg-white/[0.06]'
-                }`}
-              >
-                <span className="hidden sm:inline">Profilo</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('account')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === 'account'
-                    ? 'bg-yellow-300 text-black shadow-lg'
-                    : 'text-zinc-300 hover:text-white hover:bg-white/[0.06]'
-                }`}
-              >
-                <span className="hidden sm:inline">Account</span>
-              </button>
+    <main className="maskio-page maskio-grain min-h-screen py-24">
+      <section className="maskio-wide relative z-10">
+        <div className="maskio-panel overflow-hidden rounded-2xl p-5 sm:p-7">
+          <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <p className="maskio-kicker">Area personale</p>
+              <h1 className="maskio-heading mt-5 text-5xl font-bold text-white sm:text-7xl">
+                Ciao, {session.user.name?.split(' ')[0]}
+              </h1>
+              <p className="mt-4 max-w-2xl text-zinc-400">
+                Appuntamenti, dati personali e impostazioni raccolti in una dashboard più pulita.
+              </p>
+            </div>
+            <div className="flex rounded-full border border-white/10 bg-black/35 p-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`min-h-11 rounded-full px-4 text-sm font-semibold transition-colors ${
+                    activeTab === tab.id ? 'bg-yellow-300 text-black' : 'text-zinc-300 hover:bg-white/[0.06] hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Tab Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">        {/* Appointments Tab - Solo per clienti */}
+      <section className="maskio-wide relative z-10 mt-8">
         {activeTab === 'appointments' && (
-          <motion.div
-            key="appointments"
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-          >
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-center">
-                <h3 className="text-2xl md:text-3xl font-bold text-amber-500 mb-1">{upcomingBookings.length}</h3>
-                <p className="text-gray-300 text-sm">Prossimi</p>
-              </div>
-              <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-center">
-                <h3 className="text-2xl md:text-3xl font-bold text-blue-500 mb-1">{pastBookings.length}</h3>
-                <p className="text-gray-300 text-sm">Completati</p>
-              </div>
-              <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-center col-span-2 md:col-span-1">
-                <h3 className="text-2xl md:text-3xl font-bold text-green-500 mb-1">{bookings.filter(b => b.status === 'confirmed').length}</h3>
-                <p className="text-gray-300 text-sm">Confermati</p>
-              </div>
-            </div>            {/* Quick Action */}
-            <div className="mb-8">
-              <Link
-                href="/prenota"
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-black font-bold py-4 px-6 rounded-xl transition duration-300 flex items-center justify-center space-x-2 shadow-lg"
-              >
-                <span>✨</span>
-                <span>Prenota Nuovo Appuntamento</span>
-              </Link>
+          <motion.div key="appointments" variants={tabVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }}>
+            <div className="grid gap-4 md:grid-cols-3">
+              {stats.map((stat) => (
+                <div key={stat.label} className="maskio-card rounded-2xl p-5">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500">{stat.label}</p>
+                  <p className={`mt-4 text-4xl font-bold tabular-nums ${stat.tone}`}>{stat.value}</p>
+                </div>
+              ))}
             </div>
 
-            {/* Upcoming Bookings */}
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-                <span className="mr-2">🔜</span>
-                Prossimi Appuntamenti
-              </h2>
-              {upcomingBookings.length === 0 ? (
-                <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8 text-center">
-                  <div className="text-6xl mb-4">📅</div>
-                  <p className="text-gray-300 text-lg mb-4">Nessun appuntamento programmato</p>
-                  <Link
-                    href="/prenota"
-                    className="inline-block bg-amber-600 hover:bg-amber-700 text-black font-bold py-2 px-6 rounded-lg transition duration-300"
-                  >
-                    Prenota ora
-                  </Link>
+            <div className="mt-6 rounded-2xl border border-yellow-500/20 bg-[linear-gradient(135deg,rgba(216,173,76,0.18),rgba(255,255,255,0.035))] p-5 sm:p-6">
+              <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+                <div>
+                  <h2 className="text-2xl font-semibold text-white">Prenota il prossimo slot</h2>
+                  <p className="mt-2 text-zinc-300">Scegli servizio, barbiere e orario con il flusso di prenotazione originale.</p>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {upcomingBookings.map((booking) => (
-                    <motion.div
-                      key={booking.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="bg-gray-800 border border-gray-700 rounded-xl shadow-lg overflow-hidden"
-                    >
-                      <div className="p-6">
-                        <div className="flex justify-between items-start mb-4">
+                <Link href="/prenota" className="maskio-button px-6 py-3 text-sm uppercase tracking-[0.12em]">
+                  Nuovo appuntamento
+                </Link>
+              </div>
+            </div>
+
+            {error && <div className="mt-6 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-red-100">{error}</div>}
+
+            <div className="mt-8 grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
+              <section>
+                <div className="mb-4 flex items-end justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-white">Prossimi appuntamenti</h2>
+                    <p className="mt-1 text-sm text-zinc-500">Ordinati per data e ora.</p>
+                  </div>
+                </div>
+
+                {upcomingBookings.length === 0 ? (
+                  <div className="maskio-panel rounded-2xl p-8 text-center">
+                    <h3 className="text-2xl font-semibold text-white">Nessun appuntamento programmato</h3>
+                    <p className="mx-auto mt-3 max-w-md text-zinc-400">Quando prenoti, il prossimo appuntamento comparirà qui con azioni e dettagli rapidi.</p>
+                    <Link href="/prenota" className="maskio-button mt-6 px-6 py-3">Prenota ora</Link>
+                  </div>
+                ) : (
+                  <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                    {upcomingBookings.map((booking) => (
+                      <motion.article key={booking.id} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="maskio-panel rounded-2xl p-5">
+                        <div className="flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="text-xl font-bold text-white">{booking.service_name}</h3>
-                            {/* --- LOGICA DI VISUALIZZAZIONE MODIFICATA --- */}
-                            {isBarber ? (
-                              <p className="text-gray-300">Cliente: {booking.customer_name}</p>
-                            ) : (
-                              <p className="text-gray-300">Barbiere: {booking.barber_name}</p>
-                            )}
+                            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-yellow-200 tabular-nums">{booking.booking_time}</p>
+                            <h3 className="mt-2 text-2xl font-semibold text-white">{booking.service_name}</h3>
+                            <p className="mt-1 text-zinc-400">{isBarber ? `Cliente: ${booking.customer_name || 'Cliente'}` : `Barbiere: ${booking.barber_name}`}</p>
                           </div>
-                          <div className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(booking.status)}`}>
-                            {getStatusText(booking.status)}
-                          </div>
+                          <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${getStatusColor(booking.status)}`}>{getStatusText(booking.status)}</span>
                         </div>
 
-                        <div className="space-y-3 text-gray-400">
-                          <div className="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            <span>{format(parseISO(booking.booking_date), 'EEEE d MMMM yyyy', { locale: it })}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            <span>Ore: {booking.booking_time}</span>
+                        <div className="mt-5 grid gap-3 text-sm text-zinc-300">
+                          <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
+                            {format(parseISO(booking.booking_date), 'EEEE d MMMM yyyy', { locale: it })}
                           </div>
                           {booking.service_price && !isBarber && (
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                              <span>Prezzo: {booking.service_price.toFixed(2)} €</span>
-                            </div>
+                            <div className="rounded-2xl border border-white/10 bg-black/24 p-3 tabular-nums">Prezzo: {booking.service_price.toFixed(2)} €</div>
                           )}
                         </div>
 
                         {booking.status === 'confirmed' && !isBarber && (
-                          <div className="mt-6 pt-4 border-t border-gray-700 flex flex-col sm:flex-row gap-3">
-                              {canCancelBooking(booking.booking_date, booking.booking_time) ? (
-                                  <button
-                                      onClick={() => handleCancelBooking(booking.id)}
-                                      className="w-full bg-red-800 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                                  >
-                                      Cancella Prenotazione
-                                  </button>
-                              ) : (
-                                  <button
-                                      disabled
-                                      className="w-full bg-gray-600 text-gray-400 font-bold py-2 px-4 rounded-lg cursor-not-allowed"
-                                      title="L'annullamento è sempre disponibile per le prenotazioni confermate."
-                                  >
-                                      Non cancellabile
-                                  </button>
-                              )}
-                            <a
-                              href={generateWhatsAppLink(booking.barber_phone || '', booking.barber_name, booking.service_name, booking.booking_date, booking.booking_time)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                            >
-                              Contatta su WhatsApp
+                          <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 sm:grid-cols-3">
+                            {canCancelBooking(booking.booking_date, booking.booking_time) ? (
+                              <button onClick={() => handleCancelBooking(booking.id)} className="rounded-full border border-red-500/35 px-4 py-2 text-sm font-semibold text-red-100 transition-colors hover:bg-red-500/10">
+                                Cancella
+                              </button>
+                            ) : (
+                              <button disabled className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-zinc-500">Non cancellabile</button>
+                            )}
+                            <a href={generateWhatsAppLink(booking.barber_phone || '', booking.barber_name, booking.service_name, booking.booking_date, booking.booking_time)} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/10 px-4 py-2 text-center text-sm font-semibold text-zinc-100 transition-colors hover:border-yellow-300/35">
+                              WhatsApp
                             </a>
-                            <a
-                              href={`/api/booking/calendar/${booking.id}`}
-                              download
-                              className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                              Scarica Calendario
+                            <a href={`/api/booking/calendar/${booking.id}`} download className="rounded-full border border-white/10 px-4 py-2 text-center text-sm font-semibold text-zinc-100 transition-colors hover:border-yellow-300/35">
+                              Calendario
                             </a>
                           </div>
                         )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            {/* Recent Past Bookings */}
-            {pastBookings.length > 0 && (
-              <div>
-                <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-                  <span className="mr-2">📋</span>
-                  Ultimi Appuntamenti
-                </h2>
-                <div className="space-y-3">
-                  {pastBookings.slice(0, 3).map((booking) => (
-                    <div key={booking.id} className="bg-gray-900/50 border border-gray-700 rounded-xl p-4 opacity-75">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h3 className="text-white font-semibold">{booking.service_name}</h3>
-                          <p className="text-gray-400 text-sm">
-                            {booking.booking_date ? format(parseISO(booking.booking_date), 'dd/MM/yyyy', { locale: it }) : 'N/A'} - {booking.booking_time}
-                          </p>
+                        {isBarber && booking.customer_phone && (
+                          <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 sm:grid-cols-2">
+                            <button onClick={() => openWhatsAppCustomer(booking.customer_phone!, booking.customer_name)} className="maskio-button-secondary px-4 py-2 text-sm">WhatsApp cliente</button>
+                            <button onClick={() => makePhoneCallCustomer(booking.customer_phone!)} className="maskio-button-secondary px-4 py-2 text-sm">Chiama cliente</button>
+                          </div>
+                        )}
+                      </motion.article>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              <aside>
+                <h2 className="text-2xl font-semibold text-white">Ultimi appuntamenti</h2>
+                <div className="mt-4 space-y-3">
+                  {pastBookings.length === 0 ? (
+                    <div className="maskio-card rounded-2xl p-6 text-zinc-400">Lo storico comparirà dopo il primo appuntamento completato.</div>
+                  ) : (
+                    pastBookings.slice(0, 5).map((booking) => (
+                      <div key={booking.id} className="maskio-card rounded-2xl p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="font-semibold text-white">{booking.service_name}</h3>
+                            <p className="mt-1 text-sm text-zinc-500">{booking.booking_date ? format(parseISO(booking.booking_date), 'dd/MM/yyyy', { locale: it }) : 'N/A'} · {booking.booking_time}</p>
+                          </div>
+                          <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${getStatusColor(booking.status)}`}>{getStatusText(booking.status)}</span>
                         </div>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
-                          {getStatusText(booking.status)}
-                        </span>
                       </div>
-                    </div>
-                  ))}
-                  {pastBookings.length > 3 && (
-                    <div className="text-center">
-                      <button className="text-amber-500 hover:text-amber-400 text-sm font-medium">
-                        Vedi tutti ({pastBookings.length - 3} altri)
-                      </button>
-                    </div>
+                    ))
                   )}
                 </div>
-              </div>
-            )}
+              </aside>
+            </div>
           </motion.div>
         )}
 
-        {/* Profile Tab */}
         {activeTab === 'profile' && (
-          <motion.div
-            key="profile"
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-          >            {userProfile ? (
-              <div className="space-y-6">
-                {/* Profile Header */}
-                <div className={`bg-gradient-to-r ${isBarber ? 'from-blue-600/10 to-blue-500/10 border-blue-500/20' : 'from-amber-600/10 to-amber-500/10 border-amber-500/20'} border rounded-xl p-6`}>
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-16 h-16 ${isBarber ? 'bg-blue-500' : 'bg-amber-500'} rounded-full flex items-center justify-center text-2xl font-bold text-${isBarber ? 'white' : 'black'}`}>
-                      {isBarber ? '✂️' : (userProfile.name?.charAt(0) || '👤')}
-                    </div>                    <div>
-                      <h2 className="text-2xl font-bold text-white">{userProfile.name}</h2>                      <p className={`${effectiveHasManagementAccess ? 'text-blue-400' : 'text-amber-400'}`}>
+          <motion.div key="profile" variants={tabVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }}>
+            {userProfile ? (
+              <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+                <div className="maskio-panel rounded-2xl p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-yellow-300 text-2xl font-bold text-black">
+                      {effectiveIsBarber ? 'B' : (userProfile.name?.charAt(0) || 'M')}
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">{userProfile.name}</h2>
+                      <p className="mt-1 text-yellow-200">
                         {effectiveIsAdmin ? 'Amministratore' : effectiveIsBarber ? 'Barbiere' : `Cliente dal ${userProfile.createdAt ? format(parseISO(userProfile.createdAt), 'MMMM yyyy', { locale: it }) : 'N/A'}`}
                       </p>
-                    </div>                  </div>
+                    </div>
+                  </div>
+                  <Link href="/area-personale/profilo" className="maskio-button mt-7 w-full px-6 py-3">Modifica profilo</Link>
                 </div>
 
-                {/* Profile Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
-                    <h3 className="text-amber-500 font-semibold mb-2 flex items-center">
-                      <span className="mr-2">📧</span>
-                      Email
-                    </h3>
-                    <p className="text-white">{userProfile.email}</p>
-                  </div>
-
-                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
-                    <h3 className="text-amber-500 font-semibold mb-2 flex items-center">
-                      <span className="mr-2">📱</span>
-                      Telefono
-                    </h3>
-                    <p className="text-white">{userProfile.phone || 'Non specificato'}</p>
-                  </div>
-
-                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
-                    <h3 className="text-amber-500 font-semibold mb-2 flex items-center">
-                      <span className="mr-2">📅</span>
-                      Membro dal
-                    </h3>
-                    <p className="text-white">
-                      {userProfile.createdAt ? format(parseISO(userProfile.createdAt), 'dd MMMM yyyy', { locale: it }) : 'N/A'}
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
-                    <h3 className="text-amber-500 font-semibold mb-2 flex items-center">
-                      <span className="mr-2">⏰</span>
-                      Ultimo accesso
-                    </h3>
-                    <p className="text-white">
-                      {userProfile.lastLogin ? format(parseISO(userProfile.lastLogin), 'dd/MM/yyyy HH:mm', { locale: it }) : 'Primo accesso'}
-                    </p>
-                  </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[
+                    ['Email', userProfile.email],
+                    ['Telefono', userProfile.phone || 'Non specificato'],
+                    ['Membro dal', userProfile.createdAt ? format(parseISO(userProfile.createdAt), 'dd MMMM yyyy', { locale: it }) : 'N/A'],
+                    ['Ultimo accesso', userProfile.lastLogin ? format(parseISO(userProfile.lastLogin), 'dd/MM/yyyy HH:mm', { locale: it }) : 'Primo accesso'],
+                  ].map(([label, value]) => (
+                    <div key={label} className="maskio-card rounded-2xl p-5">
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500">{label}</p>
+                      <p className="mt-3 break-words font-semibold text-white">{value}</p>
+                    </div>
+                  ))}
                 </div>
 
-                {/* Stats */}
-                <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
-                  <h3 className="text-white font-bold mb-4 flex items-center">
-                    <span className="mr-2">📊</span>
-                    Le tue statistiche
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-amber-500">{bookings.length}</div>
-                      <div className="text-gray-400 text-sm">Appuntamenti totali</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-500">{bookings.filter(b => b.status === 'confirmed').length}</div>
-                      <div className="text-gray-400 text-sm">Confermati</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-500">{pastBookings.length}</div>
-                      <div className="text-gray-400 text-sm">Completati</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-amber-500">{upcomingBookings.length}</div>
-                      <div className="text-gray-400 text-sm">In programma</div>
-                    </div>
+                <div className="maskio-card rounded-2xl p-6 lg:col-span-2">
+                  <h3 className="text-xl font-semibold text-white">Statistiche</h3>
+                  <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
+                    {[
+                      ['Totali', bookings.length],
+                      ['Confermati', bookings.filter((b) => b.status === 'confirmed').length],
+                      ['Completati', pastBookings.length],
+                      ['In programma', upcomingBookings.length],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-2xl border border-white/10 bg-black/24 p-4 text-center">
+                        <p className="text-3xl font-bold text-yellow-100 tabular-nums">{value}</p>
+                        <p className="mt-2 text-sm text-zinc-500">{label}</p>
+                      </div>
+                    ))}
                   </div>
-                </div>
-
-                {/* Edit Profile Button */}
-                <div className="text-center">
-                  <Link
-                    href="/area-personale/profilo"
-                    className="inline-flex items-center space-x-2 bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-6 rounded-lg transition duration-300"
-                  >
-                    <span>✏️</span>
-                    <span>Modifica Profilo</span>
-                  </Link>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-12">
-                <div className="animate-pulse text-gray-400">Caricamento profilo...</div>
-              </div>
+              <div className="maskio-panel rounded-2xl p-8 text-center text-zinc-400">Caricamento profilo...</div>
             )}
           </motion.div>
         )}
 
-        {/* Account Tab */}
         {activeTab === 'account' && (
-          <motion.div
-            key="account"
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            {/* Account Status */}
-            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-                <span className="mr-2">🔐</span>
-                Stato Account
-              </h2>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-300">Il tuo account è attivo e verificato</p>
-                  <p className="text-green-400 text-sm font-medium mt-1">✓ Account verificato</p>
-                </div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          <motion.div key="account" variants={tabVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} className="grid gap-5 lg:grid-cols-2">
+            <div className="maskio-panel rounded-2xl p-6">
+              <h2 className="text-2xl font-semibold text-white">Stato account</h2>
+              <p className="mt-3 text-zinc-300">Il tuo account è attivo e verificato.</p>
+              <p className="mt-2 text-sm font-semibold text-green-200">Account verificato</p>
+            </div>
+
+            <div className="maskio-panel rounded-2xl p-6">
+              <h2 className="text-2xl font-semibold text-white">Azioni rapide</h2>
+              <div className="mt-5 space-y-3">
+                <Link href="/area-personale/profilo" className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/24 p-4 transition-colors hover:border-yellow-300/35">
+                  <span>
+                    <span className="block font-semibold text-white">Modifica profilo</span>
+                    <span className="text-sm text-zinc-500">Aggiorna le informazioni personali</span>
+                  </span>
+                  <span className="text-yellow-200">→</span>
+                </Link>
+                <Link href="/prenota" className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/24 p-4 transition-colors hover:border-yellow-300/35">
+                  <span>
+                    <span className="block font-semibold text-white">Nuova prenotazione</span>
+                    <span className="text-sm text-zinc-500">Blocca il prossimo appuntamento</span>
+                  </span>
+                  <span className="text-yellow-200">→</span>
+                </Link>
               </div>
             </div>
 
-            {/* Account Actions */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white mb-4">Azioni Account</h3>
-
-              <Link
-                href="/area-personale/profilo"
-                className="w-full bg-gray-800/50 border border-gray-700 hover:border-amber-500/50 rounded-xl p-4 flex items-center justify-between transition duration-300 group"
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">✏️</span>
-                  <div>
-                    <h4 className="font-semibold text-white group-hover:text-amber-400 transition duration-300">Modifica Profilo</h4>
-                    <p className="text-gray-400 text-sm">Aggiorna le tue informazioni personali</p>
-                  </div>
-                </div>
-                <span className="text-gray-400 group-hover:text-amber-400 transition duration-300">→</span>
-              </Link>
-
-              <Link
-                href="/prenota"
-                className="w-full bg-gray-800/50 border border-gray-700 hover:border-amber-500/50 rounded-xl p-4 flex items-center justify-between transition duration-300 group"
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">📅</span>
-                  <div>
-                    <h4 className="font-semibold text-white group-hover:text-amber-400 transition duration-300">Nuova Prenotazione</h4>
-                    <p className="text-gray-400 text-sm">Prenota il tuo prossimo appuntamento</p>
-                  </div>
-                </div>
-                <span className="text-gray-400 group-hover:text-amber-400 transition duration-300">→</span>
-              </Link>
+            <div className="rounded-2xl border border-red-500/25 bg-red-500/10 p-6">
+              <h3 className="text-xl font-semibold text-white">Disconnessione</h3>
+              <p className="mt-3 text-red-100/80">Dovrai effettuare nuovamente l'accesso per usare l'area personale.</p>
+              <button onClick={handleLogout} className="mt-5 rounded-full bg-red-500 px-6 py-3 font-bold text-white transition-colors hover:bg-red-400">Disconnetti account</button>
             </div>
 
-            {/* Notification Settings */}
-            {/* <NotificationSettings /> */}
-
-            {/* Logout Section */}
-            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                <span className="mr-2">⚠️</span>
-                Zona Pericolosa
-              </h3>
-              <p className="text-gray-300 mb-4">
-                Disconnessione dal tuo account. Dovrai effettuare nuovamente l'accesso.
-              </p>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center space-x-2"
-              >
-                <span>Disconnetti account</span>
-              </button>
-            </div>
-
-            {/* App Info */}
-            <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Informazioni App</h3>
-              <div className="space-y-2 text-sm text-gray-400">
+            <div className="maskio-card rounded-2xl p-6">
+              <h3 className="text-xl font-semibold text-white">Informazioni app</h3>
+              <div className="mt-4 space-y-2 text-sm text-zinc-400">
                 <p>Versione: 1.0.0</p>
                 <p>Ultimo aggiornamento: {new Date().toLocaleDateString('it-IT')}</p>
                 <p>Sviluppato per Maskio Barber Concept</p>
@@ -765,15 +502,9 @@ export default function AreaPersonale() {
             </div>
           </motion.div>
         )}
-      </div>
+      </section>
 
-      {/* Modal per richiesta telefono */}
-      <PhoneRequiredModal
-        isOpen={showPhoneModal}
-        userEmail={userEmail}
-        userName={userName}
-        onComplete={handlePhoneComplete}
-      />
+      <PhoneRequiredModal isOpen={showPhoneModal} userEmail={userEmail} userName={userName} onComplete={handlePhoneComplete} />
     </main>
   );
 }

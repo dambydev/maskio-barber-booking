@@ -236,31 +236,31 @@ const CalendarGrid = ({
       
       // Taglio e Barba (controlla per primo perché contiene "barba")
       if (service.includes('taglio') && service.includes('barba')) {
-        return 'bg-blue-600 border-blue-400 text-white';
+        return 'bg-blue-500/80 border-blue-300/70 text-white shadow-[0_10px_26px_rgba(37,99,235,0.25)]';
       }
       
       // Solo Barba
       if (service.includes('barba') && !service.includes('taglio')) {
-        return 'bg-yellow-600 border-yellow-400 text-white';
+        return 'bg-yellow-400/85 border-yellow-200/80 text-black shadow-[0_10px_26px_rgba(234,179,8,0.22)]';
       }
       
       // Solo Taglio
       if (service.includes('taglio') && !service.includes('barba')) {
-        return 'bg-green-600 border-green-400 text-white';
+        return 'bg-green-500/80 border-green-300/70 text-white shadow-[0_10px_26px_rgba(34,197,94,0.20)]';
       }
       
       // Default per servizi confermati non riconosciuti
-      return 'bg-green-600 border-green-400 text-white';
+      return 'bg-green-500/80 border-green-300/70 text-white shadow-[0_10px_26px_rgba(34,197,94,0.20)]';
     }
     
     // Stati diversi da confirmed
     switch (status) {
       case 'pending':
-        return 'bg-orange-600 border-orange-400 text-white';
+        return 'bg-orange-500/80 border-orange-300/70 text-white';
       case 'cancelled':
-        return 'bg-red-600 border-red-400 text-white';
+        return 'bg-red-500/80 border-red-300/70 text-white';
       default:
-        return 'bg-gray-600 border-gray-400 text-white';
+        return 'bg-zinc-600 border-zinc-400 text-white';
     }
   };
 
@@ -279,57 +279,61 @@ const CalendarGrid = ({
 
   if (dayBookings.length === 0) {
     return (
-      <div className="mt-8 bg-gray-800 rounded-lg p-8 text-center">
-        <h2 className="text-xl font-bold text-white mb-4">
-          📅 Calendario Prenotazioni - {format(parseISO(selectedDate + 'T00:00:00'), 'dd MMMM yyyy', { locale: it })}
-        </h2>
-        <div className="text-gray-400">
-          <p className="text-lg">Nessuna prenotazione per questa data</p>
-          <p className="text-sm mt-2">Seleziona un'altra data per vedere le prenotazioni</p>
+      <div className="relative z-10 mt-6">
+        <div className="maskio-panel rounded-[1.5rem] p-5 text-center sm:p-8">
+          <h2 className="text-lg font-bold text-white sm:text-xl">
+            Calendario prenotazioni · {format(parseISO(selectedDate + 'T00:00:00'), 'dd MMMM yyyy', { locale: it })}
+          </h2>
+          <div className="mt-3 text-zinc-400">
+            <p className="text-base">Nessuna prenotazione per questa data</p>
+            <p className="mt-2 text-sm">Seleziona un'altra data per vedere le prenotazioni</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-8 bg-gray-800 rounded-lg p-4 sm:p-6">
-      <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 text-center">
-        📅 Calendario Prenotazioni
-        <div className="text-sm sm:text-base font-normal text-gray-300 mt-1">
+    <>
+      <div className="relative z-10 mt-6">
+        <div className="maskio-panel rounded-[1.5rem] p-3 sm:p-5 md:rounded-2xl">
+      <h2 className="text-center text-xl font-bold text-white sm:text-2xl">
+        Calendario prenotazioni
+        <div className="mt-2 text-sm font-normal text-zinc-400 sm:text-base">
           {format(parseISO(selectedDate + 'T00:00:00'), 'dd MMMM yyyy', { locale: it })}
         </div>
       </h2>
       
       {/* Legenda */}
-      <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm">
-        <div className="flex items-center gap-1 sm:gap-2">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-600 border border-green-400 rounded"></div>
-          <span className="text-gray-300">✅ Confermato</span>
+      <div className="mt-4 flex flex-wrap justify-center gap-2 text-xs sm:gap-3 sm:text-sm">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/24 px-3 py-2 text-zinc-300">
+          <span className="h-2.5 w-2.5 rounded-full bg-green-400"></span>
+          <span>Confermato</span>
         </div>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-600 border border-yellow-400 rounded"></div>
-          <span className="text-gray-300">⏳ In attesa</span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/24 px-3 py-2 text-zinc-300">
+          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400"></span>
+          <span>In attesa</span>
         </div>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-600 border border-red-400 rounded"></div>
-          <span className="text-gray-300">❌ Annullato</span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/24 px-3 py-2 text-zinc-300">
+          <span className="h-2.5 w-2.5 rounded-full bg-red-400"></span>
+          <span>Annullato</span>
         </div>
       </div>
 
       {/* Griglia del calendario */}
-      <div className="overflow-x-auto">
+      <div className="mt-4 overflow-x-auto">
         <div className="min-w-[280px] sm:min-w-[500px] lg:min-w-[700px]">
           {/* Header con i barbieri */}
-          <div className="grid grid-cols-4 gap-1 mb-1">
-            <div className="p-1 sm:p-2 text-center font-semibold text-gray-300 bg-gray-700 rounded text-xs">
-              🕐 Orario
+          <div className="mb-1 grid grid-cols-4 gap-1">
+            <div className="rounded-xl border border-white/10 bg-black/30 p-2 text-center text-xs font-semibold text-zinc-300">
+              Orario
             </div>
             {BARBERS.map(barber => (
               <div 
                 key={barber.email} 
-                className="p-1 sm:p-2 text-center font-semibold text-white bg-amber-600 rounded text-xs"
+                className="rounded-xl border border-amber-300/20 bg-[linear-gradient(180deg,rgba(216,173,76,0.16),rgba(216,173,76,0.08))] p-2 text-center text-xs font-semibold text-amber-50"
               >
-                <span className="hidden sm:inline">🧔 </span>{barber.name}
+                {barber.name}
               </div>
             ))}
           </div>
@@ -344,7 +348,7 @@ const CalendarGrid = ({
               transition={{ duration: 0.3 }}
             >
               {/* Colonna orario */}
-              <div className="p-1 sm:p-2 text-center font-mono font-semibold text-white bg-gray-700 rounded border border-gray-600 text-xs">
+              <div className="p-1 sm:p-2 text-center font-mono font-semibold text-white rounded-xl border border-white/10 bg-black/30 text-xs">
                 {timeSlot}
               </div>
               
@@ -356,28 +360,28 @@ const CalendarGrid = ({
                 return (
                   <div 
                     key={`${barber.email}-${timeSlot}`}
-                    className="relative min-h-[35px] sm:min-h-[40px] border border-gray-600 rounded bg-gray-900/50"
+                    className="relative min-h-[35px] sm:min-h-[40px] rounded-xl border border-white/10 bg-black/24"
                   >
                     {booking ? (
                       <motion.div
-                        className={`absolute inset-0 p-1 rounded border-2 cursor-pointer hover:shadow-lg transition-all duration-200 ${getBookingStyles(booking.status, booking.service_name)}`}
+                        className={`absolute inset-0 rounded-xl border-2 p-1 cursor-pointer transition-all duration-200 hover:shadow-lg ${getBookingStyles(booking.status, booking.service_name)}`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => openBookingModal(booking)}
                       >
                         <div className="h-full flex flex-col justify-center text-xs">
                           <div className="flex items-center justify-between">
-                            <span className="font-semibold truncate text-xs">
+                            <span className="truncate text-[0.72rem] font-semibold">
                               {booking.customer_name.split(' ')[0]}
                             </span>
-                            <span className="text-xs">
+                            <span className="text-[0.72rem]">
                               {getStatusIcon(booking.status)}
                             </span>
                           </div>
                         </div>
                       </motion.div>
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-xs">
+                      <div className="absolute inset-0 flex items-center justify-center text-zinc-500 text-xs">
                         <span className="hidden sm:inline">Libero</span>
                         <span className="sm:hidden">-</span>
                       </div>
@@ -392,45 +396,45 @@ const CalendarGrid = ({
 
       {/* Statistiche giornaliere */}
       <div className="mt-4 sm:mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-        <div className="bg-gray-700 p-3 sm:p-4 rounded-lg text-center">
+        <div className="rounded-2xl border border-white/10 bg-black/24 p-3 text-center sm:p-4">
           <div className="text-lg sm:text-2xl font-bold text-white">
             {dayBookings.filter(b => b.status !== 'cancelled').length}
           </div>
-          <div className="text-xs sm:text-sm text-gray-300">Attive</div>
+          <div className="text-xs sm:text-sm text-zinc-300">Attive</div>
         </div>
-        <div className="bg-gray-700 p-3 sm:p-4 rounded-lg text-center">
+        <div className="rounded-2xl border border-white/10 bg-black/24 p-3 text-center sm:p-4">
           <div className="text-lg sm:text-2xl font-bold text-green-400">
             {dayBookings.filter(b => b.status === 'confirmed').length}
           </div>
-          <div className="text-xs sm:text-sm text-gray-300">Confermate</div>
+          <div className="text-xs sm:text-sm text-zinc-300">Confermate</div>
         </div>
-        <div className="bg-gray-700 p-3 sm:p-4 rounded-lg text-center">
+        <div className="rounded-2xl border border-white/10 bg-black/24 p-3 text-center sm:p-4">
           <div className="text-lg sm:text-2xl font-bold text-yellow-400">
             {dayBookings.filter(b => b.status === 'pending').length}
           </div>
-          <div className="text-xs sm:text-sm text-gray-300">In Attesa</div>
+          <div className="text-xs sm:text-sm text-zinc-300">In Attesa</div>
         </div>
       </div>
 
       {/* Legenda Colori Servizi */}
-      <div className="mt-4 bg-gray-700 rounded-lg p-4">
+      <div className="mt-4 rounded-2xl border border-white/10 bg-black/24 p-4">
         <h3 className="text-sm font-semibold text-white mb-3">📋 Legenda Servizi</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-green-600 border-2 border-green-400 rounded"></div>
-            <span className="text-sm text-gray-300">Taglio</span>
+            <span className="text-sm text-zinc-300">Taglio</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-yellow-600 border-2 border-yellow-400 rounded"></div>
-            <span className="text-sm text-gray-300">Barba</span>
+            <span className="text-sm text-zinc-300">Barba</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-blue-600 border-2 border-blue-400 rounded"></div>
-            <span className="text-sm text-gray-300">Taglio e Barba</span>
+            <span className="text-sm text-zinc-300">Taglio e Barba</span>
           </div>
         </div>
-        <div className="mt-2 pt-2 border-t border-gray-600">
-          <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="mt-2 pt-2 border-t border-white/10">
+          <div className="flex items-center gap-2 text-xs text-zinc-400">
             <span>Altri stati:</span>
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-orange-600 border border-orange-400 rounded"></div>
@@ -445,7 +449,7 @@ const CalendarGrid = ({
       </div>
 
       {/* Liste d'Attesa per questa data */}
-      <div className="mt-6 bg-gray-800 rounded-lg p-4">
+      <div className="mt-6 rounded-2xl border border-white/10 bg-black/24 p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
             🔔 Liste d'Attesa del {format(parseISO(selectedDate), 'dd/MM/yyyy')}
@@ -456,7 +460,7 @@ const CalendarGrid = ({
         </div>
 
         {waitlistEntries.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-zinc-400">
             <p className="text-sm">📭 Nessuna lista d'attesa per questa data</p>
           </div>
         ) : (
@@ -467,7 +471,7 @@ const CalendarGrid = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-gray-700 rounded-lg p-3 border border-yellow-500"
+                className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-3"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex-1">
@@ -477,7 +481,7 @@ const CalendarGrid = ({
                         entry.status === 'active' || entry.status === 'waiting' ? 'bg-yellow-500 text-black' :
                         entry.status === 'notified' ? 'bg-blue-500 text-white' :
                         entry.status === 'booked' ? 'bg-green-500 text-white' :
-                        'bg-gray-500 text-white'
+                        'bg-zinc-500 text-white'
                       }`}>
                         {entry.status === 'active' || entry.status === 'waiting' ? '⏳ In Attesa' :
                          entry.status === 'notified' ? '🔔 Notificato' :
@@ -485,7 +489,7 @@ const CalendarGrid = ({
                          '❌ Scaduto'}
                       </span>
                     </div>
-                    <div className="text-sm text-gray-300 space-y-1">
+                    <div className="text-sm text-zinc-300 space-y-1">
                       <div className="flex items-center gap-2">
                         <span>🧔 {entry.barber_name}</span>
                         {entry.preferred_time && (
@@ -497,7 +501,7 @@ const CalendarGrid = ({
                           <span>📞 {entry.user_phone}</span>
                         </div>
                       )}
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-zinc-400">
                         Iscritto: {format(parseISO(entry.created_at), 'dd/MM/yyyy HH:mm')}
                       </div>
                     </div>
@@ -536,6 +540,8 @@ const CalendarGrid = ({
         )}
       </div>
 
+      </div></div>
+
       {/* Modal per dettagli prenotazione - ottimizzato per mobile PWA */}
       {selectedBooking && (
         <motion.div 
@@ -550,7 +556,7 @@ const CalendarGrid = ({
           }}
         >
           <motion.div 
-            className="bg-gray-800 rounded-lg shadow-xl w-full max-w-sm mx-auto 
+            className="maskio-panel rounded-2xl shadow-2xl w-full max-w-sm mx-auto
                      max-h-[60vh] sm:max-h-[70vh] overflow-y-auto
                      mb-16 sm:mb-0" // Margine inferiore per evitare sovrapposizione con navbar PWA
             initial={{ scale: 0.9, opacity: 0 }}
@@ -559,14 +565,14 @@ const CalendarGrid = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Modal */}
-            <div className="sticky top-0 bg-gray-800 p-4 border-b border-gray-700 rounded-t-lg">
+            <div className="sticky top-0 border-b border-white/10 bg-zinc-950/95 p-4 backdrop-blur rounded-t-2xl">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold text-white">
                   📅 Dettagli Prenotazione
                 </h3>
                 <button
                   onClick={closeBookingModal}
-                  className="text-gray-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-700 transition-colors"
+                  className="text-zinc-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/[0.06] transition-colors"
                 >
                   ×
                 </button>
@@ -584,37 +590,37 @@ const CalendarGrid = ({
               
               {/* Informazioni Cliente */}
               <div className="space-y-2">
-                <div className="bg-gray-700 rounded-lg p-3">
+                <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
                   <h4 className="text-white font-semibold mb-2">👤 Cliente</h4>
-                  <p className="text-gray-300"><strong>Nome:</strong> {selectedBooking.customer_name}</p>
-                  <p className="text-gray-300"><strong>Telefono:</strong> {selectedBooking.customer_phone}</p>
+                  <p className="text-zinc-300"><strong>Nome:</strong> {selectedBooking.customer_name}</p>
+                  <p className="text-zinc-300"><strong>Telefono:</strong> {selectedBooking.customer_phone}</p>
                   {selectedBooking.customer_email && (
-                    <p className="text-gray-300"><strong>Email:</strong> {selectedBooking.customer_email}</p>
+                    <p className="text-zinc-300"><strong>Email:</strong> {selectedBooking.customer_email}</p>
                   )}
                 </div>
                 
                 {/* Informazioni Servizio */}
-                <div className="bg-gray-700 rounded-lg p-3">
+                <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
                   <h4 className="text-white font-semibold mb-2">✂️ Servizio</h4>
-                  <p className="text-gray-300"><strong>Tipo:</strong> {selectedBooking.service_name}</p>
-                  <p className="text-gray-300"><strong>Barbiere:</strong> {selectedBooking.barber_name}</p>
-                  <p className="text-gray-300">
+                  <p className="text-zinc-300"><strong>Tipo:</strong> {selectedBooking.service_name}</p>
+                  <p className="text-zinc-300"><strong>Barbiere:</strong> {selectedBooking.barber_name}</p>
+                  <p className="text-zinc-300">
                     <strong>Data e Ora:</strong> {format(parseISO(selectedBooking.booking_date + 'T00:00:00'), 'dd/MM/yyyy', { locale: it })} - {selectedBooking.booking_time}
                   </p>
                 </div>
                 
                 {/* Note (se presenti) */}
                 {selectedBooking.notes && (
-                  <div className="bg-gray-700 rounded-lg p-3">
+                  <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
                     <h4 className="text-white font-semibold mb-2">📝 Note</h4>
-                    <p className="text-gray-300">{selectedBooking.notes}</p>
+                    <p className="text-zinc-300">{selectedBooking.notes}</p>
                   </div>
                 )}
                 
                 {/* Data Creazione */}
-                <div className="bg-gray-700 rounded-lg p-3">
+                <div className="rounded-2xl border border-white/10 bg-black/24 p-3">
                   <h4 className="text-white font-semibold mb-2">📆 Informazioni</h4>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-zinc-300 text-sm">
                     <strong>Prenotata il:</strong> {format(parseISO(selectedBooking.created_at), 'dd/MM/yyyy HH:mm', { locale: it })}
                   </p>
                 </div>
@@ -675,7 +681,7 @@ const CalendarGrid = ({
           </motion.div>
         </motion.div>
       )}
-    </div>
+    </>
   );
 };
 

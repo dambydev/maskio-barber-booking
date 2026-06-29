@@ -83,7 +83,7 @@ const AllBookingsTable = ({
       </div>
 
       {/* Azioni Mobile - Full Width */}
-      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-700">
+      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
         <button
           type="button"
           onClick={() => onWhatsAppClick(booking)}
@@ -1624,20 +1624,70 @@ Grazie! 😊`;
   }
 
   return (
-    <main className="maskio-page maskio-grain space-y-5 px-4 py-24 md:space-y-7 md:pb-10 sm:px-6">
-      {/* Barra Azioni Principali */}
-      <div className="maskio-wide relative z-10 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setShowCustomerSearch(!showCustomerSearch)}
-          className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${showCustomerSearch
-            ? 'bg-yellow-300 text-black'
-            : 'border border-white/10 bg-white/[0.04] text-zinc-200 hover:border-yellow-300/35'
-            }`}
-        >
-          Ricerca cliente
-        </button>
-      </div>
+    <main className="maskio-page maskio-grain space-y-4 px-2 py-20 sm:px-3 md:space-y-7 md:px-4 md:pb-10">
+      {/* Hero operativo */}
+      <section className="relative z-10">
+        <div className="maskio-panel overflow-hidden rounded-[1.5rem] px-4 py-5 sm:px-6 sm:py-6 md:rounded-2xl md:px-7">
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div className="min-w-0">
+              <p className="maskio-kicker">Pannello operativo</p>
+              <h1 className="maskio-heading mt-4 text-[2.45rem] font-bold text-white sm:text-5xl lg:text-6xl">
+                Prenotazioni, senza attrito.
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+                Vista giornaliera, ricerca cliente, chiusure e storico in un’unica console compatta.
+              </p>
+              {isAdmin && (
+                <span className="mt-4 inline-flex rounded-full border border-red-500/25 bg-red-500/10 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-red-200">
+                  Admin mode
+                </span>
+              )}
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2 lg:min-w-[300px] lg:grid-cols-1">
+              <button
+                type="button"
+                onClick={() => setShowCustomerSearch(!showCustomerSearch)}
+                className={`rounded-full px-4 py-3 text-sm font-bold transition-all duration-200 active:scale-[0.98] ${showCustomerSearch
+                  ? 'bg-yellow-300 text-black'
+                  : 'border border-white/10 bg-white/[0.04] text-zinc-100 hover:border-yellow-300/35 hover:bg-white/[0.07]'
+                  }`}
+              >
+                Ricerca cliente
+              </button>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-2">
+                <a
+                  href="/admin/users"
+                  className="rounded-full border border-white/10 bg-black/30 px-3 py-3 text-center text-sm font-semibold text-zinc-100 transition-colors hover:border-yellow-300/35 active:scale-[0.98]"
+                  title="Gestione Clienti e Account"
+                >
+                  Clienti
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updated = !displayMode || displayMode === 'grid' ? 'table' : 'grid';
+                    setDisplayMode(updated);
+                  }}
+                  className="rounded-full border border-white/10 bg-black/30 px-3 py-3 text-sm font-semibold text-zinc-100 transition-colors hover:border-yellow-300/35 active:scale-[0.98]"
+                >
+                  {displayMode === 'table' ? 'Calendario' : 'Storico'}
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowClosureSettings(!showClosureSettings)}
+                className={`rounded-full border px-4 py-3 text-sm font-bold transition-colors active:scale-[0.98] ${showClosureSettings
+                  ? 'border-yellow-300 bg-yellow-300 text-black'
+                  : 'border-white/10 bg-black/30 text-zinc-100 hover:border-yellow-300/35'
+                  }`}
+              >
+                Gestione chiusure
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Modal Ricerca Cliente */}
       {showCustomerSearch && (
@@ -1760,69 +1810,47 @@ Grazie! 😊`;
       {/* Statistiche - Ottimizzate per Mobile */}
       {stats && (
         <div className="maskio-wide relative z-10 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
-            <div className="text-xl font-semibold text-white md:text-2xl">{stats.totalBookings}</div>
+          <div className="maskio-card rounded-2xl p-4 md:p-5">
+            <div className="text-3xl font-bold text-white md:text-4xl">{stats.totalBookings}</div>
             <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-400 md:text-sm">Prenotazioni totali</div>
           </div>
-          <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
-            <div className="text-xl font-semibold text-yellow-200 md:text-2xl">{stats.todayBookings}</div>
+          <div className="rounded-2xl border border-yellow-500/20 bg-[linear-gradient(135deg,rgba(216,173,76,0.18),rgba(255,255,255,0.035))] p-4 md:p-5">
+            <div className="text-3xl font-bold text-yellow-100 md:text-4xl">{stats.todayBookings}</div>
             <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-300 md:text-sm">Oggi</div>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
-            <div className="text-xl font-semibold text-white md:text-2xl">{stats.selectedDateBookings}</div>
+          <div className="maskio-card rounded-2xl p-4 md:p-5">
+            <div className="text-3xl font-bold text-white md:text-4xl">{stats.selectedDateBookings}</div>
             <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-400 md:text-sm">
               {format(parseISO(selectedDate + 'T00:00:00'), 'dd/MM', { locale: it })}
             </div>
           </div>
-          <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.22)] md:p-5">
-            <div className="text-xl font-semibold text-green-200 md:text-2xl">€{stats.dailyRevenue.toFixed(2)}</div>
+          <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 md:p-5">
+            <div className="text-3xl font-bold text-green-200 md:text-4xl">€{stats.dailyRevenue.toFixed(2)}</div>
             <div className="mt-1 text-xs uppercase tracking-[0.12em] text-zinc-300 md:text-sm">
               Ricavi {format(parseISO(selectedDate + 'T00:00:00'), 'dd/MM', { locale: it })}
             </div>
           </div>
         </div>
       )}      <div className="maskio-wide relative z-10 py-8">
-        <div className="maskio-panel mb-8 flex flex-col justify-between gap-4 rounded-2xl p-5 md:flex-row md:items-center">
-          <div>
-            <h1 className="flex items-center gap-3 text-2xl font-semibold text-white md:text-3xl">
-              Pannello Prenotazioni
-              {isAdmin && <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-200">Admin Mode</span>}
-            </h1>
-            <p className="mt-2 text-sm text-yellow-200/80">
+        <div className="mb-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="maskio-card rounded-2xl p-5">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500">Giornata selezionata</p>
+            <h2 className="mt-2 text-2xl font-semibold text-white md:text-3xl">
+              {format(parseISO(selectedDate + 'T00:00:00'), 'EEEE d MMMM yyyy', { locale: it })}
+            </h2>
+            <p className="mt-2 text-sm text-zinc-400">
               {isAdmin ? 'Gestione completa del sistema' : `Bentornato, ${session?.user?.name || 'Barbiere'}`}
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="/admin/users"
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-yellow-400/40"
-              title="Gestione Clienti e Account"
-            >
-              <span className="hidden sm:inline">Gestione clienti</span>
-            </a>
-
-            <button
-              onClick={() => {
-                const updated = !displayMode || displayMode === 'grid' ? 'table' : 'grid';
-                setDisplayMode(updated);
-              }}
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-yellow-400/40"
-            >
-              <span className="hidden sm:inline">{displayMode === 'table' ? 'Vista calendario' : 'Vista storico'}</span>
-            </button>
-            <button
-              onClick={() => setShowClosureSettings(!showClosureSettings)}
-              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${showClosureSettings
-                ? 'border-yellow-400/40 bg-yellow-400 text-black'
-                : 'border-white/10 bg-zinc-900 text-white hover:border-yellow-400/40'
-                }`}
-            >
-              <span className="hidden sm:inline">Gestione chiusure</span>
-            </button>
+          <div className="maskio-card rounded-2xl p-5 text-sm text-zinc-300 lg:min-w-[260px]">
+            <p className="font-semibold text-white">Modalità attiva</p>
+            <p className="mt-2">{displayMode === 'grid' ? 'Calendario operativo' : 'Tabella storico'}</p>
           </div>
-        </div>  {showClosureSettings && (
-          <div className="space-y-6 md:space-y-8 border-t border-gray-700 pt-4 md:pt-6">            {/* Chiusure Ricorrenti - Giorni della Settimana */}
+        </div>
+
+{showClosureSettings && (
+          <div className="maskio-panel space-y-6 rounded-2xl p-5 md:space-y-8 md:p-7">            {/* Chiusure Ricorrenti - Giorni della Settimana */}
             <div>
               <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4 flex items-center gap-2">
                 🔄 Chiusure Ricorrenti
@@ -1860,7 +1888,7 @@ Grazie! 😊`;
             </div>
 
             {/* Chiusure per Barbiere - Personalizzate */}
-            <div className="border-t border-gray-700 pt-4 md:pt-6">
+            <div className="border-t border-white/10 pt-4 md:pt-6">
               <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4 flex items-center gap-2">
                 {isAdmin ? '🧔 Chiusure per Barbiere' : '🧔 Le tue Chiusure'}
               </h3>
@@ -1871,7 +1899,7 @@ Grazie! 😊`;
                 }
               </p>
 
-              <div className="bg-gray-800 border border-gray-700 p-4 md:p-6 rounded-xl mb-4 md:mb-6">                <div className="space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-black/24 p-4 md:p-6 mb-4 md:mb-6">                <div className="space-y-4">
                 {/* Selezione Barbiere - Solo per Admin */}
                 {isAdmin && (
                   <div className="space-y-2">
@@ -1882,7 +1910,7 @@ Grazie! 😊`;
                       id="selectedClosureBarber"
                       value={selectedClosureBarber}
                       onChange={(e) => setSelectedClosureBarber(e.target.value)}
-                      className="w-full px-3 py-3 md:py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
+                      className="w-full px-3 py-3 md:py-2 maskio-input focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
                     >
                       <option value="all">Tutti i barbieri</option>
                       <option value="fabio.cassano97@icloud.com">Fabio Cassano</option>
@@ -1921,7 +1949,7 @@ Grazie! 😊`;
               </div>
               </div>
             </div>            {/* Chiusure Specifiche - Date - Ottimizzate per Mobile */}
-            <div className="border-t border-gray-700 pt-4 md:pt-6">
+            <div className="border-t border-white/10 pt-4 md:pt-6">
               <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4 flex items-center gap-2">
                 📅 Chiusure Specifiche
               </h3>
@@ -1930,7 +1958,7 @@ Grazie! 😊`;
               </p>
 
               {/* Form per aggiungere nuove chiusure - Mobile Friendly */}
-              <div className="bg-gray-800 border border-gray-700 p-4 md:p-6 rounded-xl mb-4 md:mb-6">
+              <div className="rounded-2xl border border-white/10 bg-black/24 p-4 md:p-6 mb-4 md:mb-6">
                 {/* ✅ NUOVO: Checkbox per selezionare barbieri - Gestione Reciproca */}
                 <div className="mb-4 pb-4 border-b border-gray-700">
                   <label className="block text-xs md:text-sm font-medium text-gray-300 mb-3">
@@ -1992,7 +2020,7 @@ Grazie! 😊`;
                       value={newClosureDate}
                       onChange={(e) => setNewClosureDate(e.target.value)}
                       min={getTodayString()}
-                      className="w-full px-3 py-3 md:py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
+                      className="w-full px-3 py-3 md:py-2 maskio-input focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
                       required
                     />
                   </div>
@@ -2007,7 +2035,7 @@ Grazie! 😊`;
                       value={newClosureEndDate}
                       onChange={(e) => setNewClosureEndDate(e.target.value)}
                       min={newClosureDate || getTodayString()}
-                      className="w-full px-3 py-3 md:py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
+                      className="w-full px-3 py-3 md:py-2 maskio-input focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
                       placeholder="Per intervallo di date"
                     />
                     <p className="text-xs text-gray-400">Lascia vuoto per una singola data</p>
@@ -2023,7 +2051,7 @@ Grazie! 😊`;
                       value={newClosureReason}
                       onChange={(e) => setNewClosureReason(e.target.value)}
                       placeholder="Es. Festa nazionale, ferie"
-                      className="w-full px-3 py-3 md:py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
+                      className="w-full px-3 py-3 md:py-2 maskio-input focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm"
                     />
                   </div>
 
@@ -2080,7 +2108,7 @@ Grazie! 😊`;
 
             {/* Chiusure Barbieri Esistenti - Nuova Sezione Collapsabile */}
             {Object.keys(barberClosures).length > 0 && (
-              <div className="border-t border-gray-700 pt-4 md:pt-6">
+              <div className="border-t border-white/10 pt-4 md:pt-6">
                 <button
                   onClick={() => setShowBarberClosuresList(!showBarberClosuresList)}
                   className="w-full flex items-center justify-between text-base md:text-lg font-semibold text-white mb-3 md:mb-4 hover:text-amber-400 transition-colors"
@@ -2118,7 +2146,7 @@ Grazie! 😊`;
 
                           <div className="space-y-2">
                             {Object.entries(barbersClosures).map(([barberEmail, closures]) => (
-                              <div key={barberEmail} className="bg-gray-800/50 rounded-lg p-3">
+                              <div key={barberEmail} className="rounded-xl border border-white/10 bg-black/24 p-3">
                                 <div className="flex items-center justify-between flex-wrap gap-2">
                                   <div className="flex items-center gap-3">
                                     <div className="text-amber-400">🧔</div>
@@ -2181,7 +2209,7 @@ Grazie! 😊`;
             )}
 
             {/* ✅ NUOVA SEZIONE: Aperture Eccezionali */}
-            <div className="border-t border-gray-700 pt-4 md:pt-6 mt-6">
+            <div className="border-t border-white/10 pt-4 md:pt-6 mt-6">
               <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4 flex items-center gap-2">
                 🔓 Aperture Eccezionali
               </h3>
@@ -2189,7 +2217,7 @@ Grazie! 😊`;
                 Apri eccezionalmente in giorni normalmente chiusi per chiusura ricorrente (es. giovedì o domenica).
               </p>
 
-              <div className="bg-gray-800 border border-gray-700 p-4 md:p-6 rounded-xl mb-4 md:mb-6">
+              <div className="rounded-2xl border border-white/10 bg-black/24 p-4 md:p-6 mb-4 md:mb-6">
                 <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-4 md:items-end">
                   <div className="space-y-2">
                     <label htmlFor="exceptionDate" className="block text-xs md:text-sm font-medium text-gray-300">
@@ -2201,7 +2229,7 @@ Grazie! 😊`;
                       value={exceptionDate}
                       onChange={(e) => setExceptionDate(e.target.value)}
                       min={format(new Date(), 'yyyy-MM-dd')}
-                      className="w-full px-3 py-3 md:py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base md:text-sm"
+                      className="w-full px-3 py-3 md:py-2 maskio-input focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base md:text-sm"
                     />
                   </div>
 
@@ -2213,7 +2241,7 @@ Grazie! 😊`;
                       id="exceptionBarber"
                       value={exceptionBarber}
                       onChange={(e) => setExceptionBarber(e.target.value)}
-                      className="w-full px-3 py-3 md:py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base md:text-sm"
+                      className="w-full px-3 py-3 md:py-2 maskio-input focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base md:text-sm"
                     >
                       <option value="">Seleziona barbiere</option>
                       <option value="fabio.cassano97@icloud.com">🧔 Fabio Cassano</option>
@@ -2308,54 +2336,58 @@ Grazie! 😊`;
           </div>
         )}
       </div>      {/* Filtri - Ottimizzati per Mobile */}
-      <div className="bg-gray-900 border border-gray-800 p-4 md:p-6 rounded-lg shadow">        <div className="flex flex-col gap-4 md:gap-6">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
-            📋 Gestione Prenotazioni
-          </h2>
-
-          {/* Controlli Barbieri - Solo per barbieri */}
-          {!isAdmin && currentBarber && (
-            <div className="flex flex-col sm:flex-row gap-2">
-              <div className="text-sm text-gray-300 flex items-center">
-                👤 {barberMapping[currentBarber as keyof typeof barberMapping] || 'Barbiere'}
+      <div className="relative z-10">
+        <div className="maskio-panel rounded-[1.5rem] px-3 py-4 sm:px-4 md:rounded-2xl md:p-6">
+          <div className="flex flex-col gap-4 md:gap-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="min-w-0">
+                <h2 className="text-lg font-bold text-white sm:text-xl">
+                  Gestione prenotazioni
+                </h2>
+                <p className="mt-1 text-sm text-zinc-400">
+                  Controlli operativi, filtri e calendario in un solo flusso.
+                </p>
               </div>
 
-              {/* Pulsante per le proprie prenotazioni */}
-              <button
-                onClick={() => switchToOwnBookings()}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'own'
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-              >
-                👤 Le tue prenotazioni
-              </button>
+              {/* Controlli Barbieri - Solo per barbieri */}
+              {!isAdmin && currentBarber && (
+                <div className="flex flex-wrap gap-2 md:justify-end">
+                  <div className="inline-flex items-center rounded-full border border-white/10 bg-black/24 px-3 py-2 text-sm text-zinc-300">
+                    👤 {barberMapping[currentBarber as keyof typeof barberMapping] || 'Barbiere'}
+                  </div>
 
-              {/* Pulsanti per gli altri barbieri */}
-              {getOtherBarbers(currentBarber).map((otherBarberEmail) => (
-                <button
-                  key={otherBarberEmail}
-                  onClick={() => switchToBarber(otherBarberEmail)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'other' && viewingBarber === otherBarberEmail
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                    }`}
-                >
-                  👁️ Vedi {barberMapping[otherBarberEmail as keyof typeof barberMapping] || 'Barbiere'}
-                </button>
-              ))}
+                  <button
+                    onClick={() => switchToOwnBookings()}
+                    className={`rounded-full px-3.5 py-2 text-sm font-medium transition-colors active:scale-[0.98] ${viewMode === 'own'
+                      ? 'bg-yellow-300 text-black'
+                      : 'border border-white/10 bg-black/24 text-zinc-300 hover:border-yellow-300/35'
+                      }`}
+                  >
+                    👤 Le tue
+                  </button>
+
+                  {getOtherBarbers(currentBarber).map((otherBarberEmail) => (
+                    <button
+                      key={otherBarberEmail}
+                      onClick={() => switchToBarber(otherBarberEmail)}
+                      className={`rounded-full px-3.5 py-2 text-sm font-medium transition-colors active:scale-[0.98] ${viewMode === 'other' && viewingBarber === otherBarberEmail
+                        ? 'bg-yellow-300 text-black'
+                        : 'border border-white/10 bg-black/24 text-zinc-300 hover:border-yellow-300/35'
+                        }`}
+                    >
+                      👁️ {barberMapping[otherBarberEmail as keyof typeof barberMapping] || 'Barbiere'}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-          {/* Controlli Admin - Rimosso pulsante obsoleto */}
-        </div>
 
-        {/* Selezione data orizzontale - Migliorata per mobile */}
-        <div>
-          <label className="block text-sm md:text-base font-medium text-gray-300 mb-3">
-            📅 Seleziona Data
-          </label>
-          <div className="flex gap-2 md:gap-3 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 -mx-1 px-1">{datesList.map((date) => {
+            {/* Selezione data orizzontale - Migliorata per mobile */}
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Seleziona data
+              </label>
+              <div className="-mx-2 flex gap-2 overflow-x-auto px-2 pb-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">{datesList.map((date) => {
             const dateStr = format(date, 'yyyy-MM-dd');
             const isSelected = selectedDate === dateStr;
             const isDateToday = isToday(date);
@@ -2402,68 +2434,69 @@ Grazie! 😊`;
             );
           })}
           </div>
-        </div>          {/* Filtro Status e Azioni - Ottimizzati per Mobile */}
-        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
-          <div className="flex-1 min-w-0">
-            <label htmlFor="status" className="block text-sm font-medium text-gray-300 mb-2">
-              🔍 Filtra per Status
-            </label>
-            <select
-              id="status"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-3 md:py-2 bg-gray-800 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base md:text-sm touch-manipulation"
-            >
-              <option value="all">Tutte le prenotazioni</option>
-              <option value="pending">In Attesa</option>
-              <option value="confirmed">Confermate</option>
-              <option value="cancelled">Annullate</option>
-            </select>
-          </div>
+        </div>            {/* Filtro Status e Azioni - Ottimizzati per Mobile */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+              <div className="min-w-0 flex-1">
+                <label htmlFor="status" className="mb-2 block text-sm font-medium text-gray-300">
+                  Filtra per status
+                </label>
+                <select
+                  id="status"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="maskio-input text-base sm:text-sm"
+                >
+                  <option value="all">Tutte le prenotazioni</option>
+                  <option value="pending">In attesa</option>
+                  <option value="confirmed">Confermate</option>
+                  <option value="cancelled">Annullate</option>
+                </select>
+              </div>
 
-          {/* Toggle Modalità Visualizzazione */}
-          <div className="flex-shrink-0">
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              👁️ Modalità Visualizzazione
-            </label>
-            <div className="flex bg-gray-800 border border-gray-600 rounded-lg overflow-hidden">
+              <div className="sm:w-auto">
+                <label className="mb-2 block text-sm font-medium text-gray-300">
+                  Modalità visualizzazione
+                </label>
+                <div className="inline-flex w-full overflow-hidden rounded-full border border-white/10 bg-black/24 sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('grid')}
+                    className={`flex-1 px-4 py-3 text-sm font-semibold transition-colors active:scale-[0.98] sm:flex-initial ${displayMode === 'grid'
+                      ? 'bg-yellow-300 text-black'
+                      : 'bg-black/24 text-zinc-300 hover:bg-white/[0.06]'
+                      }`}
+                  >
+                    Calendario
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('table')}
+                    className={`flex-1 px-4 py-3 text-sm font-semibold transition-colors active:scale-[0.98] sm:flex-initial ${displayMode === 'table'
+                      ? 'bg-yellow-300 text-black'
+                      : 'bg-black/24 text-zinc-300 hover:bg-white/[0.06]'
+                      }`}
+                  >
+                    Tabella
+                  </button>
+                </div>
+              </div>
+
               <button
                 type="button"
-                onClick={() => setDisplayMode('grid')}
-                className={`px-4 py-3 md:py-2 text-sm font-medium transition-colors ${displayMode === 'grid'
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
+                onClick={() => {
+                  setSelectedDate(getTodayString());
+                  setFilterStatus('all');
+                }}
+                className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/24 px-4 py-3 text-sm font-semibold text-zinc-300 transition-colors hover:border-yellow-300/35 hover:bg-white/[0.06] active:scale-[0.98]"
               >
-                📅 Calendario
-              </button>
-              <button
-                type="button"
-                onClick={() => setDisplayMode('table')}
-                className={`px-4 py-3 md:py-2 text-sm font-medium transition-colors ${displayMode === 'table'
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-              >
-                📋 Tabella
+                Reset filtri
               </button>
             </div>
           </div>
-
-          {/* Reset filtri - Mobile Friendly */}
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedDate(getTodayString());
-              setFilterStatus('all');
-            }}
-            className="px-4 py-3 md:py-2 text-sm text-gray-300 hover:text-white border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors whitespace-nowrap touch-manipulation"
-          >
-            🔄 Reset Filtri
-          </button>
         </div>
       </div>
-      </div>      {/* Lista prenotazioni - Modalità Griglia o Tabella */}
+
+      {/* Lista prenotazioni - Modalità Griglia o Tabella */}
       {displayMode === 'grid' ? (
         /* Modalità Calendario a Griglia - Mostra TUTTI i barbieri */
         <>
@@ -2494,7 +2527,7 @@ Grazie! 😊`;
         </>
       ) : (
         /* Modalità Tabella Tradizionale */
-        <div className="bg-gray-900 border border-gray-800 rounded-lg shadow overflow-hidden">
+        <div className="maskio-wide relative z-10"><div className="maskio-panel overflow-hidden rounded-2xl">
           {bookings.length === 0 ? (
             <div className="p-8 md:p-12 text-center">
               <div className="text-4xl md:text-6xl mb-4">📅</div>
@@ -2594,7 +2627,7 @@ Grazie! 😊`;
                             <button
                               type="button"
                               onClick={() => makePhoneCall(booking.customer_phone)}
-                              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium transition-colors touch-manipulation flex items-center justify-center gap-2"
+                              className="flex-1 bg-blue-500 hover:bg-yellow-300 text-black px-4 py-3 rounded-lg font-medium transition-colors touch-manipulation flex items-center justify-center gap-2"
                               title="Chiama il cliente"
                             >
                               <span role="img" aria-label="phone">📞</span> Chiama
@@ -2890,7 +2923,7 @@ Grazie! 😊`;
               </div>
             </>
           )}
-        </div>
+        </div></div>
       )}
 
       {/* SEZIONE STORICO PRENOTAZIONI - TEMPORANEAMENTE NASCOSTA */}

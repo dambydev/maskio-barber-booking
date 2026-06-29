@@ -10,7 +10,8 @@ import {
   ScissorsIcon, 
   MapPinIcon, 
   UserIcon,
-  ClipboardDocumentListIcon
+  ClipboardDocumentListIcon,
+  ChevronRightIcon
 } from '@heroicons/react/24/outline';
 import {
   HomeIcon as HomeIconSolid,
@@ -53,6 +54,7 @@ export default function MobileBottomNav() {
   if (!isStandalone) {
     return null;
   }
+
   const navItems = [
     {
       name: 'Home',
@@ -65,7 +67,8 @@ export default function MobileBottomNav() {
       href: '/chi-siamo',
       icon: InformationCircleIcon,
       iconSolid: InformationCircleIconSolid,
-    },    // Bottone centrale che cambia in base al ruolo
+    },
+    // Bottone centrale che cambia in base al ruolo
     isBarber ? {
       name: 'Pannello',
       href: '/pannello-prenotazioni',
@@ -91,32 +94,39 @@ export default function MobileBottomNav() {
       icon: UserIcon,
       iconSolid: UserIconSolid,
     },
-  ];return (    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-xl dark:bg-gray-900/90 dark:border-gray-700 standalone-only pb-6">
-      <div className="grid grid-cols-5 h-24 px-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          const IconComponent = isActive ? item.iconSolid : item.icon;
+  ];
 
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`
-                flex flex-col items-center justify-center space-y-1 transition-colors duration-200
-                ${isActive 
-                  ? 'text-amber-600 dark:text-amber-400' 
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                }                ${item.isHighlight 
-                  ? 'text-white bg-amber-600 rounded-xl px-3 py-2' 
-                  : ''
-                }
-              `}            >              <IconComponent className={`w-8 h-8 ${item.isHighlight ? 'text-white' : ''}`} />
-              <span className={`text-sm font-medium ${item.isHighlight ? 'text-white' : ''}`}>
-                {item.name}
-              </span>
-            </Link>
-          );
-        })}
+  return (
+    <nav className="standalone-only fixed inset-x-0 bottom-0 z-[90] px-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 sm:px-4">
+      <div className="mx-auto max-w-lg rounded-[1.6rem] border border-amber-400/20 bg-[linear-gradient(180deg,rgba(17,16,14,0.94),rgba(9,8,7,0.98))] px-2 py-2 shadow-[0_-16px_40px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
+        <div className="grid grid-cols-5 items-end gap-1">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            const IconComponent = isActive ? item.iconSolid : item.icon;
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                className={`bottom-nav-item group flex min-h-[3.75rem] flex-col items-center justify-center gap-1 rounded-[1.15rem] px-1 py-2 text-center transition-all duration-200 ${
+                  item.isHighlight
+                    ? isActive
+                      ? 'bg-amber-400 text-black shadow-[0_10px_24px_rgba(216,173,76,0.28)]'
+                      : 'bg-amber-500 text-black shadow-[0_10px_24px_rgba(216,173,76,0.18)]'
+                    : isActive
+                      ? 'bg-white/[0.06] text-amber-200 ring-1 ring-amber-300/20'
+                      : 'text-zinc-400 hover:bg-white/[0.035] hover:text-zinc-100'
+                }`}
+              >
+                <IconComponent className={`h-5 w-5 ${item.isHighlight && isActive ? 'text-black' : ''}`} />
+                <span className={`text-[0.68rem] font-semibold leading-none tracking-tight ${item.isHighlight && isActive ? 'text-black' : ''}`}>
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
