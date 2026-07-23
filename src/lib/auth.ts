@@ -320,7 +320,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
       return session
-    },    async jwt({ token, user, trigger, session }: { token: any; user?: any; trigger?: "signIn" | "signUp" | "update"; session?: any }) {      
+    },    async jwt({ token, user, trigger }: { token: any; user?: any; trigger?: "signIn" | "signUp" | "update" }) {
       if (user) {
         token.id = user.id;
         token.role = user.role || 'customer';
@@ -337,11 +337,12 @@ export const authOptions: NextAuthOptions = {
         }
       }
       
-      // Permette gli aggiornamenti dinamici della sessione
-      if (trigger === "update" && session?.role) {
-        token.role = session.role;
+      // I refresh richiesti dal client non possono modificare claim privilegiati.
+      // Ruolo e ID restano derivati esclusivamente da login e dati server-side.
+      if (trigger === "update") {
+        return token;
       }
-      
+
       return token
     }},
   pages: {

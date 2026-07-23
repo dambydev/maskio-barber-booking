@@ -7,7 +7,6 @@ import '../styles/christmas.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SecurityProvider from '../components/SecurityProvider';
-import DailyUpdateManager from '../components/DailyUpdateManager';
 import SessionProvider from '../components/SessionProvider';
 import { GoogleAnalytics } from '../components/GoogleAnalytics';
 
@@ -174,7 +173,6 @@ export default function RootLayout({
           <SessionProvider>
             <SecurityProvider>
               <DynamicManifest />
-              <DailyUpdateManager />
               {/* <PWANotificationBanner /> */}
               <Navbar />
               <main className="min-h-screen pt-[70px] standalone:pt-0">

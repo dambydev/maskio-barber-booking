@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookingService } from '@/services/bookingService';
+import { emitBookingChanged } from '@/lib/booking-events';
 
 interface Barber {
   id: string;
@@ -589,6 +590,7 @@ export default function BookingSwapModal({
       
       if (data.success) {
         alert(data.message);
+        emitBookingChanged('swap');
         onSwapComplete();
         onClose();
       } else {

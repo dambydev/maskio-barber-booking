@@ -9,6 +9,7 @@ import { it } from 'date-fns/locale';
 import Link from 'next/link';
 import PhoneRequiredModal from '@/components/PhoneRequiredModal';
 import { usePhoneRequired } from '@/hooks/usePhoneRequired';
+import { emitBookingChanged } from '@/lib/booking-events';
 
 interface UserBooking {
   id: string;
@@ -175,6 +176,7 @@ export default function AreaPersonale() {
         throw new Error(errorData.error || 'Errore nella cancellazione');
       }
 
+      emitBookingChanged('delete');
       await fetchUserBookings();
       alert('Prenotazione cancellata con successo');
     } catch (err) {
