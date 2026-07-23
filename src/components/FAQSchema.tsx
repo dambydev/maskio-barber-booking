@@ -1,4 +1,5 @@
 import { BUSINESS, formatBusinessHours } from '@/config/business';
+import { serializeJsonLd } from '@/lib/json-ld';
 
 interface FAQItem {
   question: string;
@@ -26,11 +27,14 @@ export default function FAQSchema({ faqs, pageName = 'FAQ' }: FAQSchemaProps) {
   };
 
   return (
-    <script
-      type="application/ld+json"
-      data-page={pageName}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-    />
+    <>
+      {/* nosemgrep: semgrep.nextjs-dangerous-html -- JSON-LD payload is escaped by serializeJsonLd. */}
+      <script
+        type="application/ld+json"
+        data-page={pageName}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
+      />
+    </>
   );
 }
 

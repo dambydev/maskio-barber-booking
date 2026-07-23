@@ -1,4 +1,5 @@
 import { BUSINESS, canonicalUrl } from '@/config/business';
+import { serializeJsonLd } from '@/lib/json-ld';
 
 const businessId = `${BUSINESS.canonicalOrigin}/#localbusiness`;
 const websiteId = `${BUSINESS.canonicalOrigin}/#website`;
@@ -62,10 +63,13 @@ const schema = {
 
 export default function JsonLdScript() {
   return (
-    <script
-      id="maskio-business-jsonld"
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      {/* nosemgrep: semgrep.nextjs-dangerous-html -- JSON-LD payload is escaped by serializeJsonLd. */}
+      <script
+        id="maskio-business-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
+      />
+    </>
   );
 }
