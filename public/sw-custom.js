@@ -10,41 +10,10 @@ if (workbox) {
   // Precache configuration
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
   
-  // 1. NetworkOnly per API critiche di disponibilità (NO CACHE)
-  workbox.routing.registerRoute(
-    /^https?:\/\/.*\/api\/bookings\/(batch-availability|slots)/,
-    new workbox.strategies.NetworkOnly({
-      plugins: [
-        {
-          fetchDidSucceed: async ({ response }) => {
-            console.log('[SW] API booking fresh from server:', response.url);
-            return response;
-          },
-          fetchDidFail: async ({ error }) => {
-            console.error('[SW] API booking fetch failed:', error);
-            throw error;
-          }
-        }
-      ]
-    })
-  );
-  
-  // 2. NetworkFirst per altre API (cache breve come fallback)
+  // Le API possono essere personali o mutabili: usa sempre la rete, senza fallback cache.
   workbox.routing.registerRoute(
     /^https?:\/\/.*\/api\/.*/,
-    new workbox.strategies.NetworkFirst({
-      cacheName: 'api-cache',
-      plugins: [
-        new workbox.expiration.ExpirationPlugin({
-          maxEntries: 50,
-          maxAgeSeconds: 30, // SOLO 30 SECONDI
-        }),
-        new workbox.cacheableResponse.CacheableResponsePlugin({
-          statuses: [200],
-        }),
-      ],
-      networkTimeoutSeconds: 5,
-    })
+    new workbox.strategies.NetworkOnly()
   );
   
   // 3. Cache-First per risorse statiche

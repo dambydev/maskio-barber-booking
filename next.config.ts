@@ -4,9 +4,14 @@ import withPWA from "@ducanh2912/next-pwa";
 
 const pwaConfig = {
   dest: "public",
-  register: true,
+  // Registration is owned exclusively by public/sw-init.js.
+  register: false,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+  // Replace next-pwa defaults: never runtime-cache dynamic API responses.
+  workboxOptions: {
+    runtimeCaching: [],
+  },
 };
 
 const nextConfig: NextConfig = {
