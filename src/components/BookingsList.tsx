@@ -240,7 +240,7 @@ export default function BookingsList() {
           Totale prenotazioni: {bookings.length}
         </p>
         <p className="text-xs text-gray-500 mt-1">
-          Aggiornamento automatico ogni 5 secondi
+          Aggiornamento automatico ogni 30 secondi quando la scheda è visibile
         </p>
       </motion.div>
         </div>
