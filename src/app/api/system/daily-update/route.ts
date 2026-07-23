@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Pool, type PoolClient } from '@neondatabase/serverless';
 import { NextRequest, NextResponse } from 'next/server';
 import { isAuthorizedCronRequest } from '@/lib/cron-auth';
-import { withPostgresAdvisoryLock } from '@/lib/postgres-advisory-lock';
+import { withPostgresAdvisoryTransactionLock } from '@/lib/postgres-advisory-lock';
 import {
   getUniversalSlots,
   getAutoClosureType,
@@ -180,7 +180,7 @@ async function handleDailyUpdate(request: NextRequest) {
   try {
     client = await pool.connect();
     const now = new Date();
-    const lockedRun = await withPostgresAdvisoryLock(client, LOCK_KEY, () => runDailyUpdate(client!, now));
+    const lockedRun = await withPostgresAdvisoryTransactionLock(client, LOCK_KEY, () => runDailyUpdate(client!, now));
 
     if (!lockedRun.acquired) {
       console.info(JSON.stringify({ event: 'daily_update_skipped', runId, reason: 'already_running' }));

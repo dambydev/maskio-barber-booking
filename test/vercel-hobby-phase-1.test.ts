@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { isAuthorizedCronRequest } from '../src/lib/cron-auth.ts';
-import { withPostgresAdvisoryLock } from '../src/lib/postgres-advisory-lock.ts';
+import { withPostgresAdvisoryTransactionLock } from '../src/lib/postgres-advisory-lock.ts';
 import { startVisiblePolling } from '../src/lib/visible-polling.ts';
 import { normalizeBookingsPayload } from '../src/lib/normalize-bookings.ts';
 import { BOOKING_CHANGED_EVENT } from '../src/lib/booking-events.ts';
@@ -11,19 +11,27 @@ class VisibilityTarget extends EventTarget {
   visibilityState: DocumentVisibilityState = 'visible';
 }
 
+class FakeLockServer {
+  owner: FakeAdvisoryClient | null = null;
+}
+
 class FakeAdvisoryClient {
-  locked = false;
-  unlocks = 0;
+  commands: string[] = [];
+  private readonly server: FakeLockServer;
+
+  constructor(server: FakeLockServer) {
+    this.server = server;
+  }
 
   async query(query: string) {
-    if (query.includes('pg_try_advisory_lock')) {
-      if (this.locked) return { rows: [{ locked: false }] };
-      this.locked = true;
+    this.commands.push(query);
+    if (query.includes('pg_try_advisory_xact_lock')) {
+      if (this.server.owner && this.server.owner !== this) return { rows: [{ locked: false }] };
+      this.server.owner = this;
       return { rows: [{ locked: true }] };
     }
-    if (query.includes('pg_advisory_unlock')) {
-      this.locked = false;
-      this.unlocks++;
+    if (query === 'COMMIT' || query === 'ROLLBACK') {
+      if (this.server.owner === this) this.server.owner = null;
     }
     return { rows: [] };
   }
@@ -36,28 +44,52 @@ test('cron authorization rejects missing/wrong secrets and accepts the configure
   assert.equal(isAuthorizedCronRequest('Bearer secret', undefined), false);
 });
 
-test('advisory lock permits only one concurrent daily-update run', async () => {
-  const client = new FakeAdvisoryClient();
+test('transaction advisory lock permits only one concurrent daily-update run', async () => {
+  const server = new FakeLockServer();
+  const firstClient = new FakeAdvisoryClient(server);
+  const secondClient = new FakeAdvisoryClient(server);
   let releaseFirst!: () => void;
   const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
   let workCount = 0;
 
-  const first = withPostgresAdvisoryLock(client, 'daily', async () => {
+  const first = withPostgresAdvisoryTransactionLock(firstClient, 'daily', async () => {
     workCount++;
     await gate;
     return 'done';
   });
   await new Promise((resolve) => setImmediate(resolve));
-  const second = await withPostgresAdvisoryLock(client, 'daily', async () => {
+  const second = await withPostgresAdvisoryTransactionLock(secondClient, 'daily', async () => {
     workCount++;
     return 'duplicate';
   });
 
   assert.deepEqual(second, { acquired: false });
   assert.equal(workCount, 1);
+  assert.deepEqual(secondClient.commands, [
+    'BEGIN',
+    'SELECT pg_try_advisory_xact_lock(hashtext($1)) AS locked',
+    'ROLLBACK',
+  ]);
+
   releaseFirst();
   assert.deepEqual(await first, { acquired: true, value: 'done' });
-  assert.equal(client.unlocks, 1);
+  assert.equal(firstClient.commands.at(-1), 'COMMIT');
+  assert.equal(server.owner, null);
+});
+
+test('transaction advisory lock rolls back and releases after job failure', async () => {
+  const server = new FakeLockServer();
+  const client = new FakeAdvisoryClient(server);
+
+  await assert.rejects(
+    withPostgresAdvisoryTransactionLock(client, 'daily', async () => {
+      throw new Error('job failed');
+    }),
+    /job failed/,
+  );
+
+  assert.equal(client.commands.at(-1), 'ROLLBACK');
+  assert.equal(server.owner, null);
 });
 
 test('visible polling starts once, uses 30 seconds, pauses hidden, refreshes visible/mutation and cleans up', async () => {

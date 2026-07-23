@@ -24,7 +24,7 @@
 - Configurato un solo cron in `vercel.json`: `0 2 * * *`.
 - Vercel interpreta il cron in UTC: 02:00 UTC corrisponde alle 03:00 Europe/Rome in CET e alle 04:00 in CEST.
 - GET e POST richiedono `Authorization: Bearer ${CRON_SECRET}`; secret assente o errato restituisce 401 prima di aprire connessioni DB.
-- Aggiunto advisory lock PostgreSQL session-scoped su una singola connessione Neon Pool. Una seconda esecuzione concorrente viene saltata senza svolgere il job.
+- Aggiunto `pg_try_advisory_xact_lock` dentro una transazione esplicita su un singolo Neon `PoolClient`. `BEGIN` mantiene lo stesso backend PostgreSQL anche con endpoint Neon pooled; COMMIT/ROLLBACK o terminazione della connessione rilasciano il lock. Una seconda esecuzione concorrente viene saltata senza svolgere il job.
 - Gli schedule invariati non vengono più aggiornati grazie a `IS DISTINCT FROM`.
 - Log strutturati: run ID, inizio/fine/fallimento, sorgente, durata, date, schedule aggiunti/modificati/invariati, closure inserite e cleanup. Nessuna PII.
 - Le regole di date, slot, domeniche, closure, recurring closure ed eccezioni non sono state riscritte.
@@ -110,6 +110,6 @@ Non è stata eseguita una chiamata autorizzata contro il database configurato in
 
 ## Rischi residui e lavoro escluso
 
-- L'advisory lock è cooperativo: senza vincoli unique un writer esterno al job può ancora creare duplicati. I vincoli DB sono fuori fase.
+- L'advisory lock transazionale è cooperativo: senza vincoli unique un writer esterno al job può ancora creare duplicati. I vincoli DB sono fuori fase.
 - La verifica end-to-end login/logout/OAuth e il cron su Neon richiedono ambiente/browser e credenziali controllate.
 - Restano intenzionalmente aperti: race di prenotazione, endpoint pubblici/ownership, N+1, batch availability, generatori slot divergenti, middleware/rate limiting e indici database.
