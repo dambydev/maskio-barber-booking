@@ -76,7 +76,14 @@
     "src/app/api/bookings/slots/route.ts": {
       "maxDuration": 5
     }
-  },  "regions": ["fra1"],
+  },
+  "crons": [
+    {
+      "path": "/api/system/daily-update",
+      "schedule": "0 2 * * *"
+    }
+  ],
+  "regions": ["fra1"],
   "devCommand": "npm run dev",
   "framework": "nextjs"
 }
