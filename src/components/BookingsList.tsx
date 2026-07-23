@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { BookingService } from '../services/bookingService';
+import { BOOKING_CHANGED_EVENT } from '../lib/booking-events';
+import { startVisiblePolling } from '../lib/visible-polling';
 import { Booking } from '../types/booking';
 
 export default function BookingsList() {
@@ -16,33 +18,38 @@ export default function BookingsList() {
   const isAuthorized = session?.user?.role === 'barber';
 
   useEffect(() => {
-    // Only load bookings if user is authorized
-    if (status === 'loading') return; // Still loading session
-    
+    if (status === 'loading') return;
+
     if (!session || !isAuthorized) {
       setLoading(false);
       return;
     }
 
-    const loadBookings = async () => {
-      try {
-        setLoading(true);
-        const currentBookings = await BookingService.getBookings();
-        setBookings(currentBookings);
-        setError(null);
-      } catch (err: any) {
-        setError('Errore nel caricamento delle prenotazioni');
-        console.error('Errore nel caricamento:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    let mounted = true;
 
-    loadBookings();
-    // Aggiorna ogni 5 secondi per vedere nuove prenotazioni
-    const interval = setInterval(loadBookings, 5000);
-    
-    return () => clearInterval(interval);
+    const stopPolling = startVisiblePolling({
+      intervalMs: 30_000,
+      eventName: BOOKING_CHANGED_EVENT,
+      poll: async (signal) => {
+        try {
+          const currentBookings = await BookingService.getBookings(signal);
+          if (!mounted) return;
+          setBookings(currentBookings);
+          setError(null);
+        } catch (error) {
+          if (!mounted || (error instanceof DOMException && error.name === 'AbortError')) return;
+          setError('Errore nel caricamento delle prenotazioni');
+          console.error('Errore nel caricamento delle prenotazioni');
+        } finally {
+          if (mounted) setLoading(false);
+        }
+      },
+    });
+
+    return () => {
+      mounted = false;
+      stopPolling();
+    };
   }, [session, isAuthorized, status]);
 
   const fadeInUp = {

@@ -1,17 +1,20 @@
 import { Booking, TimeSlot } from '../types/booking';
+import { emitBookingChanged } from '../lib/booking-events';
+import { normalizeBookingsPayload } from '../lib/normalize-bookings';
 
 const API_BASE = '/api/bookings';
 
 export class BookingService {  // Ottieni tutte le prenotazioni
-  static async getBookings(): Promise<Booking[]> {
+  static async getBookings(signal?: AbortSignal): Promise<Booking[]> {
     try {
       const response = await fetch(API_BASE, {
-        credentials: 'include' // Include cookies for authentication
+        credentials: 'include', // Include cookies for authentication
+        signal,
       });
       if (!response.ok) {
         throw new Error('Errore nel caricamento delle prenotazioni');
       }
-      return await response.json();
+      return normalizeBookingsPayload(await response.json()) as Booking[];
     } catch (error) {
       console.error('Errore nel caricamento delle prenotazioni:', error);
       throw error;
@@ -42,6 +45,7 @@ export class BookingService {  // Ottieni tutte le prenotazioni
 
       const result = await response.json();
       console.log('✅ API Success data:', result);
+      emitBookingChanged('create');
       return result;
     } catch (error) {
       console.error('💥 BookingService.createBooking error:', error);

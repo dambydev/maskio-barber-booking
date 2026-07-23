@@ -11,6 +11,7 @@ import BookingSwapModal from '@/components/BookingSwapModal';
 // 🎄 CHRISTMAS THEME - Rimuovi dopo le feste
 import ChristmasDecorations from '@/components/ChristmasDecorations';
 import { isChristmasThemeActive } from '@/config/christmas-theme';
+import { emitBookingChanged } from '@/lib/booking-events';
 // 🎄 END CHRISTMAS THEME
 
 interface Booking {
@@ -1419,6 +1420,7 @@ export default function PannelloPrenotazioni() {
         const result = await response.json();
         console.log('✅ Booking status updated successfully:', result);
 
+        emitBookingChanged('update');
         // Invalida la cache per forzare il refresh
         setBookingsCache({});
         setStatsCache({});
@@ -1448,6 +1450,7 @@ export default function PannelloPrenotazioni() {
       const response = await fetch(`/api/bookings?id=${bookingId}`, {
         method: 'DELETE',
       }); if (response.ok) {
+        emitBookingChanged('delete');
         // Invalida la cache per forzare il refresh
         setBookingsCache({});
         setStatsCache({});
