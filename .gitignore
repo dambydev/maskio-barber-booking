@@ -125,6 +125,7 @@ coverage/
 security-scan-results/
 vulnerability-reports/
 gitleaks-report.json
+.pi-subagents/
 
 .vercel
 VERCEL_REAL_CREDENTIALS.env

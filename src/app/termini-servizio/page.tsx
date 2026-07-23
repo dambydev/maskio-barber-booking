@@ -1,9 +1,11 @@
-import { Metadata } from 'next';
+import { BUSINESS, formatBusinessHours } from '@/config/business';
+import { publicPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Termini di Servizio | Maskio Barber',
-  description: 'Termini e condizioni per l\'utilizzo dei servizi di Maskio Barber',
-};
+export const metadata = publicPageMetadata({
+  title: 'Termini di servizio',
+  description: 'Consulta i termini e le condizioni di utilizzo dei servizi di Maskio Barber Concept.',
+  path: '/termini-servizio',
+});
 
 export default function TermsOfService() {
   return (
@@ -225,10 +227,17 @@ export default function TermsOfService() {
                   Per domande sui termini di servizio o per assistenza:
                 </p>
                 <div className="space-y-2 text-yellow-200">
-                  <p><strong>Email:</strong> fabio.cassano97@icloud.com</p>
-                  <p><strong>Telefono:</strong> +39 331 710 0730</p>
-                  <p><strong>Indirizzo:</strong> Via Sant'Agata, 24 - 71013 San Giovanni Rotondo (FG)</p>
-                  <p><strong>Orari:</strong> Lun-Sab 9:00-13:00 e 15:00-18:00 | Giovedì e domenica chiuso</p>
+                  <p><strong>Email:</strong> {BUSINESS.email}</p>
+                  <p><strong>Telefono:</strong> {BUSINESS.telephone}</p>
+                  <p><strong>Indirizzo:</strong> {BUSINESS.address.formatted}</p>
+                  <div>
+                    <strong>Orari:</strong>
+                    <ul className="mt-1 list-inside list-disc">
+                      {BUSINESS.hours.map(({ day, periods }) => (
+                        <li key={day}>{day}: {formatBusinessHours(periods)}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </section>

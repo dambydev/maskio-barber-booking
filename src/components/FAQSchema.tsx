@@ -1,3 +1,6 @@
+import { BUSINESS, formatBusinessHours } from '@/config/business';
+import { serializeJsonLd } from '@/lib/json-ld';
+
 interface FAQItem {
   question: string;
   answer: string;
@@ -9,36 +12,30 @@ interface FAQSchemaProps {
 }
 
 export default function FAQSchema({ faqs, pageName = 'FAQ' }: FAQSchemaProps) {
-  if (typeof window !== 'undefined') {
-    const faqSchema = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "name": `${pageName} - Maskio Barber Concept`,
-      "mainEntity": faqs.map(faq => ({
-        "@type": "Question",
-        "name": faq.question,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.answer
-        }
-      }))
-    };
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    name: `${pageName} - ${BUSINESS.name}`,
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
 
-    // Rimuovi script FAQ esistenti per questa pagina
-    const existingFAQScript = document.querySelector(`script[data-page="${pageName}"]`);
-    if (existingFAQScript) {
-      existingFAQScript.remove();
-    }
-
-    // Aggiungi nuovo schema FAQ
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-page', pageName);
-    script.textContent = JSON.stringify(faqSchema);
-    document.head.appendChild(script);
-  }
-
-  return null;
+  return (
+    <>
+      {/* nosemgrep: semgrep.nextjs-dangerous-html -- JSON-LD payload is escaped by serializeJsonLd. */}
+      <script
+        type="application/ld+json"
+        data-page={pageName}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
+      />
+    </>
+  );
 }
 
 // FAQ predefinite per i servizi
@@ -61,10 +58,12 @@ export const barberFAQs: FAQItem[] = [
   },
   {
     question: "Quali sono gli orari di apertura?",
-    answer: "Siamo aperti Lunedì, Martedì, Mercoledì e Venerdì dalle 9:00 alle 13:00 e dalle 15:00 alle 18:00. Chiusi Giovedì, Sabato e Domenica."
+    answer: BUSINESS.hours
+      .map(({ day, periods }) => `${day}: ${formatBusinessHours(periods)}`)
+      .join('; '),
   },
   {
     question: "Dove si trova il negozio?",
-    answer: "Ci troviamo in Via Sant'Agata 24, San Giovanni Rotondo (FG). Facilmente raggiungibile e con parcheggio disponibile nelle vicinanze."
+    answer: `Ci troviamo in ${BUSINESS.address.formatted}.`
   }
 ];

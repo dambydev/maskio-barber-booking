@@ -2,36 +2,37 @@
 
 import { motion } from 'framer-motion';
 import BookingButton from '../../components/BookingButton';
+import { BUSINESS, formatBusinessHours } from '@/config/business';
 
 const contactCards = [
   {
     title: 'Telefono',
-    value: '+39 331 710 0730',
+    value: BUSINESS.telephone,
     helper: 'Per chiamare direttamente il salone',
-    href: 'tel:+393317100730',
+    href: BUSINESS.telephoneHref,
     icon: 'M3 5a2 2 0 0 1 2-2h2.2a1 1 0 0 1 .95.68l1.1 3.3a1 1 0 0 1-.45 1.17l-1.5.9a12 12 0 0 0 5.65 5.65l.9-1.5a1 1 0 0 1 1.17-.45l3.3 1.1a1 1 0 0 1 .68.95V19a2 2 0 0 1-2 2h-1C8.27 21 3 15.73 3 9V5Z',
   },
   {
     title: 'Email',
-    value: 'fabio.cassano97@icloud.com',
+    value: BUSINESS.email,
     helper: 'Per richieste e comunicazioni',
-    href: 'mailto:fabio.cassano97@icloud.com',
+    href: `mailto:${BUSINESS.email}`,
     icon: 'M4 6h16v12H4V6Zm0 0 8 7 8-7',
   },
   {
     title: 'Indirizzo',
-    value: "Via Sant'Agata, 24\nSan Giovanni Rotondo (FG) 71013",
+    value: `${BUSINESS.address.street}\n${BUSINESS.address.postalCode} ${BUSINESS.address.locality} (${BUSINESS.address.province})`,
     helper: 'Apri la mappa e raggiungici',
-    href: "https://maps.google.com/?q=Via+Sant'Agata+24+San+Giovanni+Rotondo+FG",
+    href: BUSINESS.mapsUrl,
     icon: 'M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Zm0-8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
   },
 ];
 
-const hours = [
-  { day: 'Lunedì - Sabato', time: '09:00 - 13:00 / 15:00 - 18:00', closed: false },
-  { day: 'Giovedì', time: 'Chiuso', closed: true },
-  { day: 'Domenica', time: 'Chiuso', closed: true },
-];
+const hours = BUSINESS.hours.map(({ day, periods }) => ({
+  day,
+  time: formatBusinessHours(periods),
+  closed: periods.length === 0,
+}));
 
 export default function Page() {
   return (
@@ -101,7 +102,7 @@ export default function Page() {
               <BookingButton size="lg" className="rounded-full bg-yellow-400 px-8 py-4 text-sm font-bold uppercase tracking-[0.12em] text-black hover:bg-yellow-300">
                 Prenota ora
               </BookingButton>
-              <a href="https://maps.google.com/?q=Via+Sant'Agata+24+San+Giovanni+Rotondo+FG" target="_blank" rel="noopener noreferrer" className="maskio-button-secondary px-6 py-3">
+              <a href={BUSINESS.mapsUrl} target="_blank" rel="noopener noreferrer" className="maskio-button-secondary px-6 py-3">
                 Apri la mappa
               </a>
             </div>
