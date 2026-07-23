@@ -1,25 +1,11 @@
-import type { Metadata } from 'next';
+import { publicPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Contatti',
-  description: 'Contatta Maskio Barber Concept a San Giovanni Rotondo. Telefono: +39 331 710 0730. Via Sant\'Agata, 24. Prenota il tuo appuntamento.',
-  keywords: ['contatti barbiere', 'maskio barber contatti', 'telefono barbiere san giovanni rotondo', 'orari barbiere'],
-  openGraph: {
-    title: 'Contatti | Maskio Barber Concept',
-    description: 'Contatta Maskio Barber Concept. Tel: +39 331 710 0730. Via Sant\'Agata, 24, San Giovanni Rotondo.',
-    type: 'website',
-    locale: 'it_IT',
-    url: 'https://www.maskiobarberconcept.it/contatti',
-  },
-  alternates: {
-    canonical: 'https://www.maskiobarberconcept.it/contatti',
-  }
-};
+export const metadata = publicPageMetadata({
+  title: 'Contatti e orari',
+  description: "Contatta Maskio Barber Concept a San Giovanni Rotondo: telefono, email, orari e indirizzo in Via Sant'Agata 24.",
+  path: '/contatti',
+});
 
-export default function ContattiLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <>{children}</>;
-} 
+export default function ContattiLayout({ children }: { children: React.ReactNode }) {
+  return children;
+}

@@ -18,9 +18,7 @@ import CacheHelperButton from '../components/CacheHelperButton';
 import NotificationPrompt from '../components/NotificationPrompt';
 import PushNotificationBanner from '../components/PushNotificationBanner';
 import DynamicManifest from '../components/DynamicManifest';
-// Importazione URL per metadataBase
-import { URL } from 'url';
-import JsonLdScript from '../components/JsonLdScript';
+import { CANONICAL_ORIGIN } from '../config/business';
 import { CookieConsentProvider } from '../components/CookieConsentContext';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 
@@ -31,12 +29,12 @@ const barlow = Barlow({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.maskiobarberconcept.it'),
+  metadataBase: new URL(CANONICAL_ORIGIN),
   title: {
     default: 'Maskio Barber Concept | Barbiere a San Giovanni Rotondo',
     template: '%s | Maskio Barber Concept'
   },
-  description: 'Barbiere professionale a San Giovanni Rotondo. Tagli moderni, trattamenti barba, prenotazione online. Esperienza premium dal 2024.',
+  description: 'Barbiere professionale a San Giovanni Rotondo. Tagli moderni, trattamenti barba, prenotazione online. Esperienza dedicata alla cura maschile dal 2023.',
   applicationName: 'Maskio Barber Concept',
   authors: [{ name: 'Maskio Barber Concept' }],
   generator: 'Next.js',
@@ -80,19 +78,12 @@ export const metadata: Metadata = {
     description: 'Scopri una nuova concezione del barbiere: tagli moderni, trattamenti barba professionali, atmosfera accogliente. Prenota online il tuo appuntamento.',
     images: [
       {
-        url: '/og-image-1200x630.jpg',
+        url: '/og-maskio-1200x630.webp',
         width: 1200,
         height: 630,
-        alt: 'Maskio Barber Concept - Interno del negozio a San Giovanni Rotondo',
-        type: 'image/jpeg',
+        alt: 'Interno del salone Maskio Barber Concept a San Giovanni Rotondo',
+        type: 'image/webp',
       },
-      {
-        url: '/og-image-square.jpg',
-        width: 400,
-        height: 400,
-        alt: 'Logo Maskio Barber Concept',
-        type: 'image/jpeg',
-      }
     ],
   },
   // Twitter Cards ottimizzato
@@ -102,12 +93,12 @@ export const metadata: Metadata = {
     creator: '@maskiobarber',
     title: 'Maskio Barber Concept | San Giovanni Rotondo',
     description: 'Barbiere professionale a San Giovanni Rotondo. Prenota online il tuo taglio di capelli e trattamenti barba.',
-    images: ['/twitter-image.jpg'],
-  },
-
-  // Canonical URL per prevenire contenuti duplicati
-  alternates: {
-    canonical: 'https://www.maskiobarberconcept.it',
+    images: [{
+      url: '/og-maskio-1200x630.webp',
+      width: 1200,
+      height: 630,
+      alt: 'Interno del salone Maskio Barber Concept a San Giovanni Rotondo',
+    }],
   },
 
   // Security headers (rimossi i cache headers troppo restrittivi)
@@ -191,8 +182,6 @@ export default function RootLayout({
                 <PushNotificationBanner />
               </div>
 
-              {/* Schema.org JSON-LD script */}
-              <JsonLdScript />
             </SecurityProvider>
           </SessionProvider>
         </CookieConsentProvider>

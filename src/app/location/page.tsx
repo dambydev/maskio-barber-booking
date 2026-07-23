@@ -3,17 +3,18 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { BUSINESS, formatBusinessHours } from '@/config/business';
 
 const contactActions = [
-  { label: 'Chiama', href: 'tel:+393317100730', detail: '+39 331 710 0730' },
-  { label: 'WhatsApp', href: 'https://wa.me/393317100730', detail: 'Messaggio diretto' },
+  { label: 'Chiama', href: BUSINESS.telephoneHref, detail: BUSINESS.telephone },
+  { label: 'WhatsApp', href: BUSINESS.whatsappUrl, detail: 'Messaggio diretto' },
 ];
 
-const hours = [
-  { day: 'Lunedì - Sabato', value: '9:00-13:00 / 15:00-18:00', active: true },
-  { day: 'Giovedì', value: 'Chiuso', active: false },
-  { day: 'Domenica', value: 'Chiuso', active: false },
-];
+const hours = BUSINESS.hours.map(({ day, periods }) => ({
+  day,
+  value: formatBusinessHours(periods),
+  active: periods.length > 0,
+}));
 
 const arrivalNotes = [
   {
@@ -48,8 +49,8 @@ export default function Page() {
   }, [mapLoaded]);
 
   const openMaps = () => {
-    const address = "Via Sant'Agata 24, San Giovanni Rotondo, FG, Italy";
-    const coordinates = '41.7060835,15.7188087';
+    const address = BUSINESS.address.formatted;
+    const coordinates = `${BUSINESS.coordinates.latitude},${BUSINESS.coordinates.longitude}`;
     const placeName = 'Maskio Barber Concept';
     const userAgent = navigator.userAgent;
 
@@ -58,13 +59,13 @@ export default function Page() {
     } else if (/Android/.test(userAgent)) {
       window.open(`geo:${coordinates}?q=${encodeURIComponent(`${placeName}, ${address}`)}`, '_blank');
     } else {
-      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${placeName}, ${address}`)}`, '_blank');
+      window.open(BUSINESS.mapsUrl, '_blank');
     }
   };
 
   const openDirections = () => {
-    const address = "Via Sant'Agata 24, San Giovanni Rotondo, FG, Italy";
-    const coordinates = '41.7060835,15.7188087';
+    const address = BUSINESS.address.formatted;
+    const coordinates = `${BUSINESS.coordinates.latitude},${BUSINESS.coordinates.longitude}`;
     const placeName = 'Maskio Barber Concept';
     const userAgent = navigator.userAgent;
 
@@ -130,7 +131,7 @@ export default function Page() {
         ))}
         <button type="button" onClick={openMaps} className="maskio-card rounded-2xl p-5 text-left transition-colors hover:border-yellow-300/35">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-yellow-200">Coordinate</p>
-          <p className="mt-3 text-lg font-semibold text-white tabular-nums">41.7060835, 15.7188087</p>
+          <p className="mt-3 text-lg font-semibold text-white tabular-nums">{BUSINESS.coordinates.latitude}, {BUSINESS.coordinates.longitude}</p>
         </button>
       </section>
 
@@ -151,7 +152,7 @@ export default function Page() {
               </button>
             ) : (
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3004.5!2d15.7188087!3d41.7060835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDQyJzIyLjAiTiAxNcKwNDMnMDcuNyJF!5e0!3m2!1sit!2sit!4v1"
+                src={`https://www.google.com/maps?q=${BUSINESS.coordinates.latitude},${BUSINESS.coordinates.longitude}&output=embed`}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

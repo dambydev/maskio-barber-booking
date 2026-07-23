@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { BUSINESS, formatBusinessHours } from '@/config/business';
 
 const socialLinks = [
   {
@@ -47,16 +48,16 @@ export default function Footer() {
                 <svg className="h-5 w-5 flex-shrink-0 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5a2 2 0 0 1 2-2h3.28a1 1 0 0 1 .948.684l1.498 4.493a1 1 0 0 1-.502 1.21l-2.257 1.13a11.042 11.042 0 0 0 5.516 5.516l1.13-2.257a1 1 0 0 1 1.21-.502l4.493 1.498A1 1 0 0 1 21 16.72V19a2 2 0 0 1-2 2h-1C9.716 21 3 14.284 3 6V5Z" />
                 </svg>
-                <a href="tel:+393317100730" className="text-zinc-300 transition-colors hover:text-white">
-                  +39 331 710 0730
+                <a href={BUSINESS.telephoneHref} className="text-zinc-300 transition-colors hover:text-white">
+                  {BUSINESS.telephone}
                 </a>
               </div>
               <div className="flex items-center justify-center gap-3">
                 <svg className="h-5 w-5 flex-shrink-0 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 4.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z" />
                 </svg>
-                <a href="mailto:fabio.cassano97@icloud.com" className="break-words text-zinc-300 transition-colors hover:text-white">
-                  fabio.cassano97@icloud.com
+                <a href={`mailto:${BUSINESS.email}`} className="break-words text-zinc-300 transition-colors hover:text-white">
+                  {BUSINESS.email}
                 </a>
               </div>
               <div className="mt-6 flex flex-col items-center space-y-2">
@@ -66,10 +67,12 @@ export default function Footer() {
                   </svg>
                   <span className="text-sm font-medium text-zinc-300">Orari</span>
                 </div>
-                <div className="text-center text-sm text-zinc-300">
-                  <div>Lun-Sab: 9:00-13:00</div>
-                  <div>15:00-18:00</div>
-                  <div className="mt-2 text-red-300">Giovedì e Domenica: Chiuso</div>
+                <div className="space-y-1 text-center text-sm text-zinc-300">
+                  {BUSINESS.hours.map(({ day, periods }) => (
+                    <div key={day} className={periods.length === 0 ? 'text-red-300' : undefined}>
+                      {day}: {formatBusinessHours(periods)}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -119,12 +122,12 @@ export default function Footer() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
                 <p className="leading-relaxed text-zinc-300">
-                  Via Sant'Agata, 24<br />
-                  San Giovanni Rotondo (FG)
+                  {BUSINESS.address.street}<br />
+                  {BUSINESS.address.postalCode} {BUSINESS.address.locality} ({BUSINESS.address.province})
                 </p>
               </div>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Via+Sant'Agata+24,+San+Giovanni+Rotondo,+FG,+Italy"
+                href={BUSINESS.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-yellow-200 transition-colors hover:bg-white/[0.06] hover:text-yellow-100"
@@ -142,7 +145,7 @@ export default function Footer() {
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-6">
             <div className="flex flex-col items-center space-y-2 md:items-start">
               <p className="text-sm text-zinc-400">&copy; {new Date().getFullYear()} Maskio Barber Concept. Tutti i diritti riservati.</p>
-              <p className="text-xs text-zinc-500">P.IVA: 04123456789 • San Giovanni Rotondo (FG)</p>
+              <p className="text-xs text-zinc-500">P.IVA: {BUSINESS.vatNumber} • {BUSINESS.address.locality} ({BUSINESS.address.province})</p>
               <p className="text-xs text-zinc-500">
                 Sito realizzato da{' '}
                 <a href="https://linktr.ee/dambystudio" target="_blank" rel="noopener noreferrer" className="font-medium text-yellow-200 transition-colors hover:text-yellow-100">

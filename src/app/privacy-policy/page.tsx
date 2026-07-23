@@ -1,9 +1,10 @@
-import { Metadata } from 'next';
+import { publicPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy | Maskio Barber',
-  description: 'Informativa sulla privacy e protezione dei dati personali di Maskio Barber',
-};
+export const metadata = publicPageMetadata({
+  title: 'Privacy Policy',
+  description: 'Informativa sul trattamento e sulla protezione dei dati personali degli utenti di Maskio Barber Concept.',
+  path: '/privacy-policy',
+});
 
 export default function PrivacyPolicy() {
   return (

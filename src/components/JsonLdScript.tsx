@@ -1,130 +1,71 @@
-'use client';
+import { BUSINESS, canonicalUrl } from '@/config/business';
 
-import { useEffect } from 'react';
+const businessId = `${BUSINESS.canonicalOrigin}/#localbusiness`;
+const websiteId = `${BUSINESS.canonicalOrigin}/#website`;
+
+const openingHoursSpecification = BUSINESS.hours.flatMap(({ schemaDay, periods }) =>
+  periods.map(({ opens, closes }) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: `https://schema.org/${schemaDay}`,
+    opens,
+    closes,
+  })),
+);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['HairSalon', 'LocalBusiness'],
+      '@id': businessId,
+      name: BUSINESS.name,
+      url: canonicalUrl('/'),
+      description: 'Barbiere a San Giovanni Rotondo dedicato al taglio uomo e alla cura della barba.',
+      foundingDate: String(BUSINESS.foundingYear),
+      vatID: BUSINESS.vatNumber,
+      telephone: BUSINESS.telephone,
+      email: BUSINESS.email,
+      image: BUSINESS.images,
+      logo: BUSINESS.images[0],
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: BUSINESS.address.street,
+        postalCode: BUSINESS.address.postalCode,
+        addressLocality: BUSINESS.address.locality,
+        addressRegion: BUSINESS.address.region,
+        addressCountry: BUSINESS.address.country,
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: BUSINESS.coordinates.latitude,
+        longitude: BUSINESS.coordinates.longitude,
+      },
+      hasMap: BUSINESS.mapsUrl,
+      sameAs: BUSINESS.socialProfiles,
+      openingHoursSpecification,
+      priceRange: '€€',
+      areaServed: {
+        '@type': 'City',
+        name: BUSINESS.address.locality,
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      name: BUSINESS.name,
+      url: canonicalUrl('/'),
+      inLanguage: 'it-IT',
+      publisher: { '@id': businessId },
+    },
+  ],
+};
 
 export default function JsonLdScript() {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Schema principale per HairSalon / LocalBusiness
-      const businessSchema = {
-        "@context": "https://schema.org",
-        "@type": ["HairSalon", "LocalBusiness"],
-        "name": "Maskio Barber Concept",
-        "alternateName": "Maskio Barber",
-        "description": "Barbiere professionale a San Giovanni Rotondo specializzato in tagli moderni, trattamenti barba e styling maschile di alta qualità.",
-        "image": [
-          "https://maskiobarberconcept.it/logo.png",
-          "https://maskiobarberconcept.it/og-image-1200x630.jpg"
-        ],
-        "url": "https://maskiobarberconcept.it",
-        "telephone": "+39 331 710 0730",
-        "email": "fabio.cassano97@icloud.com",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Via Sant'Agata 24",
-          "addressLocality": "San Giovanni Rotondo",
-          "addressRegion": "Puglia", 
-          "postalCode": "71013",
-          "addressCountry": "IT"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 41.7089,
-          "longitude": 15.7181
-        },
-        "openingHoursSpecification": [
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Friday", "Saturday"],
-            "opens": "09:00",
-            "closes": "13:00"
-          },
-          {
-            "@type": "OpeningHoursSpecification", 
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Friday", "Saturday"],
-            "opens": "15:00",
-            "closes": "18:00"
-          }
-        ],
-        "priceRange": "€€",
-        "paymentAccepted": ["Cash", "Credit Card"],
-        "currenciesAccepted": "EUR",
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Servizi Barbiere",
-          "itemListElement": [
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Taglio Capelli Uomo",
-                "description": "Taglio professionale con consulenza stilistica personalizzata"
-              },
-              "price": "18",
-              "priceCurrency": "EUR"
-            },
-            {
-              "@type": "Offer", 
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Barba",
-                "description": "Rasatura e styling barba professionale"
-              },
-              "price": "10",
-              "priceCurrency": "EUR"
-            }
-          ]
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "San Giovanni Rotondo",
-          "containedInPlace": {
-            "@type": "AdministrativeArea",
-            "name": "Puglia"
-          }
-        },
-        "founder": {
-          "@type": "Fabio Cassano",
-          "name": "Maskio Barber Team"
-        },
-        "foundingDate": "2023",
-        "knowsAbout": [
-          "Taglio capelli maschile",
-          "Rasatura tradizionale", 
-          "Styling barba",
-          "Trattamenti capelli",
-          "Consulenza stilistica"
-        ]
-      };
-
-      // Schema per WebSite
-      const websiteSchema = {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Maskio Barber Concept",
-        "url": "https://maskiobarberconcept.it",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://maskiobarberconcept.it/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      };
-
-      // Rimuovi script esistenti
-      const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-      existingScripts.forEach(script => script.remove());
-
-      // Aggiungi schema business
-      const businessScript = document.createElement('script');
-      businessScript.type = 'application/ld+json';
-      businessScript.textContent = JSON.stringify(businessSchema);
-      document.head.appendChild(businessScript);      // Aggiungi schema website
-      const websiteScript = document.createElement('script');
-      websiteScript.type = 'application/ld+json';
-      websiteScript.textContent = JSON.stringify(websiteSchema);
-      document.head.appendChild(websiteScript);
-    }
-  }, []);
-
-  return null;
+  return (
+    <script
+      id="maskio-business-jsonld"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
 }

@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /pannello-prenotazioni/
-Disallow: /auth/
+# Le pagine HTML private restano accessibili ai crawler per leggere il meta noindex.
 Disallow: /api/
 Crawl-delay: 1
 

@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { PRIVATE_ROBOTS } from '@/lib/seo';
 import OfflineRetryButton from '@/components/OfflineRetryButton';
 
 export const metadata: Metadata = {
     title: 'Offline | Maskio Barber',
     description: 'Sei offline. Controlla la tua connessione.',
+    robots: PRIVATE_ROBOTS,
 };
 
 export const dynamic = 'force-static';
