@@ -39,14 +39,23 @@ const fadeUp = {
 export default function Page() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(false);
+  const mapsEmbedApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY;
+  const mapEmbedUrl = mapsEmbedApiKey
+    ? `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(mapsEmbedApiKey)}&q=place_id:${BUSINESS.googlePlaceId}&language=it&region=IT`
+    : null;
 
   useEffect(() => {
+    if (!mapEmbedUrl) {
+      setMapError(true);
+      return;
+    }
+
     const timer = setTimeout(() => {
       if (!mapLoaded) setMapError(true);
     }, 10000);
 
     return () => clearTimeout(timer);
-  }, [mapLoaded]);
+  }, [mapEmbedUrl, mapLoaded]);
 
   const openMaps = () => {
     const address = BUSINESS.address.formatted;
@@ -144,7 +153,7 @@ export default function Page() {
               </div>
             )}
 
-            {mapError ? (
+            {mapError || !mapEmbedUrl ? (
               <button type="button" onClick={openMaps} className="absolute inset-0 flex w-full flex-col items-center justify-center bg-[radial-gradient(circle_at_50%_0%,rgba(216,173,76,0.16),transparent_26rem),#0b0a08] p-8 text-center">
                 <span className="text-sm font-semibold uppercase tracking-[0.14em] text-yellow-200">Mappa non disponibile</span>
                 <span className="mt-4 max-w-sm text-2xl font-semibold text-white">Apri la posizione nell'app mappe del dispositivo.</span>
@@ -152,7 +161,7 @@ export default function Page() {
               </button>
             ) : (
               <iframe
-                src={`https://www.google.com/maps?q=${BUSINESS.coordinates.latitude},${BUSINESS.coordinates.longitude}&output=embed`}
+                src={mapEmbedUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
