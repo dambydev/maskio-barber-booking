@@ -28,6 +28,7 @@ export const BUSINESS = {
     latitude: 41.7073018,
     longitude: 15.7183462,
   },
+  googlePlaceId: 'ChIJJxigKx51NxMRN_cHtkuYN-M',
   mapsUrl:
     'https://www.google.it/maps/place/Maskio+barber+concept/@41.7080676,15.7233818,15z/data=!4m6!3m5!1s0x1337751e2ba01827:0xe337984bb607f737!8m2!3d41.7073018!4d15.7183462!16s%2Fg%2F11t_r13_b6?entry=tts&g_ep=EgoyMDI2MDcyMS4wIPu8ASoASAFQAw%3D%3D&skid=974f2cd2-6909-4e38-b7ef-1c93b215eed8',
   socialProfiles: [

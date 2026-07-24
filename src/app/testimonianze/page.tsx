@@ -62,6 +62,30 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+function ReviewAvatar({ name, photoUrl }: { name: string; photoUrl?: string }) {
+  const [imageError, setImageError] = useState(false);
+
+  if (!photoUrl || imageError) {
+    return (
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-yellow-300 text-lg font-bold text-black" aria-hidden="true">
+        {name.trim().charAt(0).toUpperCase() || '?'}
+      </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={photoUrl}
+      alt=""
+      className="h-12 w-12 shrink-0 rounded-2xl object-cover"
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setImageError(true)}
+    />
+  );
+}
+
 export default function TestimonianzePage() {
   const [reviews, setReviews] = useState<GoogleReview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,14 +176,7 @@ export default function TestimonianzePage() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    {review.profile_photo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={review.profile_photo_url} alt={review.author_name} className="h-12 w-12 rounded-2xl object-cover" />
-                    ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-300 text-lg font-bold text-black">
-                        {review.author_name.charAt(0)}
-                      </div>
-                    )}
+                    <ReviewAvatar name={review.author_name} photoUrl={review.profile_photo_url} />
                     <div>
                       <h2 className="font-semibold text-white">{review.author_name}</h2>
                       <p className="text-sm text-zinc-500">{review.relative_time_description || 'Recensione Google'}</p>
