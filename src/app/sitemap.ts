@@ -9,7 +9,6 @@ const PUBLIC_ROUTES = [
   { path: '/lavora-con-noi', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/prodotti', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/location', changeFrequency: 'monthly', priority: 0.7 },
-  { path: '/reviews', changeFrequency: 'weekly', priority: 0.6 },
   { path: '/testimonianze', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/privacy-policy', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/cookie-policy', changeFrequency: 'yearly', priority: 0.3 },
